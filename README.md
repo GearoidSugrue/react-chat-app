@@ -1,4 +1,6 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# About
+It's a basic chat app like Slack. The primary purpose of developing this app is the learn React. I'll add features, technologies, and best practices over time.
+Some (much) of this code is NOT prod ready or how I would do it in real prod env.
 
 ## Available Scripts
 
@@ -66,3 +68,5 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `npm run build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
