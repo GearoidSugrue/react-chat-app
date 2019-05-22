@@ -30,8 +30,6 @@ function LoginUser({ onLogin }) {
         status === fetchUsersStatus.FETCHING &&
         <TypoGraphy color="inherit" style={{ margin: '8px' }}>
           Loading users...
-
-          // todo something different here?
         </TypoGraphy>
       }
       {

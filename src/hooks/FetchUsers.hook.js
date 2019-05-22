@@ -1,12 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-// export const fetchUsersStatus = {
-//   FETCHING: 'FETCHING',
-//   SUCCESS: 'SUCCESS',
-//   ERROR: 'ERROR'
-// }
-
 const FETCHING = `FETCHING`;
 const SUCCESS = `SUCCESS`;
 const ERROR = `ERROR`;
@@ -17,7 +11,7 @@ export const fetchUsersStatus = {
   ERROR
 };
 
-function useFetchUsers() { // todo add deafult users?
+function useFetchUsers() {
   const [users, setUsers] = useState([]);
   const [status, setStatus] = useState(FETCHING);
   const [retryCount, setRetryCount] = useState(1);
@@ -34,7 +28,6 @@ function useFetchUsers() { // todo add deafult users?
 
         try {
           const result = await axios('http://localhost:3001/users');
-          // const allUsers = Object.values(result.data || {})
           const allUsers = result.data || [];
           console.log(allUsers)
           setUsers(allUsers);

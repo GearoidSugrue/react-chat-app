@@ -8,7 +8,6 @@ import Fade from '@material-ui/core/Fade';
 import LoginUser from './LoginUser';
 import CreateUser from './CreateUser';
 
-
 const styles = theme => ({
   // todo move inline css here 
 });

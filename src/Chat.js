@@ -19,13 +19,13 @@ function Chat({ chatroom, username, messages }) {
   return (
     <Fade in={true}>
       <FlexView column grow vAlignContent='top' hAlignContent='left'>
-        <TypoGraphy variant="h5" color="inherit">
-          Chat room: {chatroom}
-          <div>
-            User: <Avatar src={`https://api.adorable.io/avatars/36/${username}.png`} style={{ borderRadius: '25%' }} />
-          </div>
-        </TypoGraphy>
-        'Welcome to chat!' + {username}
+
+        {
+          !chatroom &&
+          <TypoGraphy variant="h5" color="inherit">
+            {`Hello ${username}, select a room or user to start chatting!`}
+          </TypoGraphy>
+        }
 
         {
           <List

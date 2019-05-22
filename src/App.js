@@ -1,63 +1,55 @@
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import FlexView from "react-flexview";
+import classNames from "classnames";
 
-import React, { useState, useEffect } from 'react';
+import { withStyles } from "@material-ui/core/styles";
+import AppBar from "@material-ui/core/AppBar";
+import IconButton from "@material-ui/core/IconButton";
+import Toolbar from "@material-ui/core/Toolbar";
+import TypoGraphy from "@material-ui/core/Typography";
 
-// useMediaQuery will be stable in the next material ui version. It was waiting for the Hooks API to be stable, which is now stable
-import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
+import MenuIcon from "@material-ui/icons/Menu";
 
-import PropTypes from 'prop-types';
-import FlexView from 'react-flexview';
-import classNames from 'classnames';
+import openSocket from "socket.io-client";
 
-import AppBar from '@material-ui/core/AppBar';
-import Divider from '@material-ui/core/Divider';
-import Drawer from '@material-ui/core/Drawer';
-import Hidden from '@material-ui/core/Hidden';
-import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
-import Toolbar from '@material-ui/core/Toolbar';
-import TypoGraphy from '@material-ui/core/Typography';
-
-// import { useTheme } from '@material-ui/styles';
-
-import openSocket from 'socket.io-client';
-
-import Chat from './Chat';
-import LoginPage from './login/LoginPage';
-
-
-import { withStyles } from '@material-ui/core/styles';
+import Chat from "./Chat";
+import LoginPage from "./login/LoginPage";
+import SideDrawer from "./side-drawer/SideDrawer";
 
 const drawerWidth = 240;
+
+// todo add css for side drawer element margins
 
 const styles = theme => ({
   // dev css that gives a easy to see border around containers. Delete when dev complete.
   highlightBorders: {
-    border: '3px solid blue'
+    border: "3px solid blue"
   },
   root: {
-    display: 'flex',
+    display: "flex"
   },
   appBar: {
-    transition: theme.transitions.create(['margin', 'width'], {
+    transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
+      duration: theme.transitions.duration.leavingScreen
+    })
   },
   // todo create css class for mobile apppBar that doesn't shift
   appBarShift: {
-    transition: theme.transitions.create(['margin', 'width'], {
+    transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
+      duration: theme.transitions.duration.enteringScreen
     }),
 
     // small screens won't show a side drawer so no need for a left margin on the toolbar
     marginLeft: 0,
 
     // adds a left margin to the toolbar so the side drawer doesn't overlap it
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up("sm")]: {
       width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: drawerWidth,
-    },
+      marginLeft: drawerWidth
+    }
   },
   // drawer: {
   //   [theme.breakpoints.up('sm')]: {
@@ -69,17 +61,17 @@ const styles = theme => ({
     marginRight: 20,
 
     // only very small screens need to toggle the side drawer so the menu button will be hidden on larger devices
-    [theme.breakpoints.up('sm')]: {
-      display: 'none',
-    },
+    [theme.breakpoints.up("sm")]: {
+      display: "none"
+    }
   },
   toolbar: theme.mixins.toolbar,
 
   hide: {
-    display: 'none',
+    display: "none"
   },
   drawer: {
-    width: drawerWidth,
+    width: drawerWidth
   },
 
   // todo delete if scrolling works as expected
@@ -91,205 +83,166 @@ const styles = theme => ({
   //   justifyContent: 'flex-end',
   // },
   content: {
-    transition: theme.transitions.create('margin', {
+    transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
+      duration: theme.transitions.duration.leavingScreen
+    })
   },
   contentShift: {
-    transition: theme.transitions.create('margin', {
+    transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
+      duration: theme.transitions.duration.enteringScreen
     }),
 
     // side drawer is not displayed on very small devices so no need for a left margin on the main content
     marginLeft: 0,
 
     // adds a left margin to the main content so the side drawer doesn't overlap it
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: drawerWidth,
-    },
+    [theme.breakpoints.up("sm")]: {
+      marginLeft: drawerWidth
+    }
   },
+  userBar: {
+    "justify-content": "space-between"
+  },
+  userBarElement: {
+    margin: "auto"
+  }
 });
 
-// todo move drawer into it's own sub directory and file
 function App({ classes, theme }) {
-  // const themes = useTheme();
-
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-  console.log('isSmallScreen', isSmallScreen)
-
-
-  const [mobileOpen, setMobileOpen] = useState(false);
-
-  const [socket] = useState(() => openSocket('http://localhost:3001'));
+  const [socket] = useState(() => openSocket("http://localhost:3001"));
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [messages, setMessages] = useState([]);
-  const [chatroom, setChatroom] = useState('');
-  const [username, setUsername] = useState('');
+  const [chatroom, setChatroom] = useState("");
+  const [username, setUsername] = useState("");
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  const handleSideDrawerToggle = () => setMobileDrawerOpen(!mobileDrawerOpen);
+
   useEffect(
     function connectToSocketServer() {
-      console.log('inside App useEffect')
+      console.log("connectToSocketServer useEffect");
 
-      socket.on('message', message => setMessages(messages => [...messages, message]));
+      socket.on("message", message =>
+        setMessages(messages => [...messages, message])
+      );
       return function closeSocket() {
         socket.close();
-      }
-    }, [socket]);
+      };
+    },
+    [socket]
+  );
 
   useEffect(
     function joinChat() {
-      console.log('Join chat effect', username, chatroom);
+      console.log("joinChat effect", username, chatroom);
 
-      if (socket && username && chatroom) {
-        socket.emit('join chatroom', {
+      const validJoin = socket && username && chatroom;
+
+      if (validJoin) {
+        socket.emit("join chatroom", {
           chatroom,
           username
         });
       }
 
       return function leaveChat() {
-        socket.emit('leave chatroom', {
-          chatroom,
-          username
-        });
-      }
-    }, [socket, chatroom, username]);
+        if (validJoin) {
+          socket.emit("leave chatroom", {
+            chatroom,
+            username
+          });
+        }
+      };
+    },
+    [socket, chatroom, username]
+  );
 
   useEffect(
     function loginUser() {
-      console.log('Login User effect', username);
+      console.log("loginUser effect", username);
 
-      if (socket && username) { // todo addd isLoggedIn * setIsLoggedIn
-        socket.emit('login', {
+      const validLogin = socket && username;
+
+      if (validLogin) {
+        // username is only ever set after the user has clicked login so it's value changing can be used to login
+        socket.emit("login", {
           username
         });
         setIsLoggedIn(true);
       }
 
       return function logout() {
-        console.log('Login cleanUp - logged out...')
-        socket.emit('login', { username });
+        console.log("Login effect - cleanUp - logged out...");
+        setChatroom("");
+        setMessages([]);
         setIsLoggedIn(false);
-      }
-    }, [socket, username]);
-
-  // const handleJoinChat = ({ chatroom, username }) => {
-  //   setChatroom(chatroom);
-  //   setUsername(username);
-  // }
-
-  const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
-  console.log('drawer', mobileOpen)
-
-  const drawer = (
-    <div>
-      <div className={classes.toolbar} >
-        <TypoGraphy noWrap>
-          User: {username}
-        </TypoGraphy>
-      </div>
-
-      <Divider />
-      Rooms!
-      <Divider />
-      {/* <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-      </List> */}
-      <Divider />
-      Users
-      {/* <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-      </List> */}
-    </div>
+        socket.emit("logout");
+      };
+    },
+    [socket, username]
   );
 
   return (
-    <FlexView column grow width='100%' height='100vh'>
-
-      <Hidden smUp implementation="js">
-        <Drawer
-          classes={{
-            paper: classes.drawer,
-          }}
-          variant="temporary"
-          anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-          open={mobileOpen && isLoggedIn}
-          onClose={handleDrawerToggle}
-        >
-          {drawer}
-        </Drawer>
-      </Hidden>
-
-      <Hidden xsDown implementation="js">
-        <Drawer
-          classes={{
-            paper: classes.drawer,
-          }}
-          variant="persistent"
-          anchor={theme.direction === 'rtl' ? 'right' : 'left'}
-          open={isLoggedIn}
-        >
-          {drawer}
-        </Drawer>
-      </Hidden>
+    <FlexView column grow width="100%" height="100vh">
+      {/* todo investigate Inversion of control */}
+      <SideDrawer
+        username={username}
+        isLoggedIn={isLoggedIn}
+        mobileDrawerOpen={mobileDrawerOpen}
+        onMobileDrawerToggle={handleSideDrawerToggle}
+        onChatroomChange={room => setChatroom(room)}
+        onLogout={() => setUsername("")}
+      />
 
       <AppBar
         position="relative"
         className={classNames(classes.appBar, {
-          [classes.appBarShift]: isLoggedIn,
+          [classes.appBarShift]: isLoggedIn
         })}
       >
-
         <Toolbar>
           <IconButton
             className={classNames(classes.menuButton, {
-              [classes.hide]: !isLoggedIn,
+              [classes.hide]: !isLoggedIn
             })}
-            onClick={() => setMobileOpen(!mobileOpen)}>
+            onClick={() => setMobileDrawerOpen(!mobileDrawerOpen)}
+          >
             <MenuIcon />
           </IconButton>
           <TypoGraphy variant="h5" color="inherit" noWrap>
-            Very Basic Group Chat
+            {chatroom || "Group Chat"}
           </TypoGraphy>
         </Toolbar>
       </AppBar>
 
-
-      <FlexView column grow
+      <FlexView
+        column
+        grow
         className={classNames(classes.highlightBorders, classes.content, {
-          [classes.contentShift]: isLoggedIn,
+          [classes.contentShift]: isLoggedIn
         })}
       >
-        {
-          isLoggedIn ?
-            <Chat chatroom={chatroom} username={username} messages={messages}></Chat> :
-            <LoginPage onLogin={({ username }) => {
+        {isLoggedIn ? (
+          <Chat chatroom={chatroom} username={username} messages={messages} />
+        ) : (
+          <LoginPage
+            onLogin={({ username }) => {
               setUsername(username);
               setIsLoggedIn(true);
-            }}></LoginPage>
-        }
+            }}
+          />
+        )}
       </FlexView>
-    </FlexView >
+    </FlexView>
   );
 }
 
 App.propTypes = {
   classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
 export default withStyles(styles, { withTheme: true })(App);
-
