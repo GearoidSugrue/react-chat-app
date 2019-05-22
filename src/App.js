@@ -21,10 +21,7 @@ import UserDetails from "./side-drawer/UserDetails";
 import Chatrooms from "./side-drawer/Chatrooms";
 import Users from "./side-drawer/Users";
 
-const drawerWidth = 240;
-
 // todo add css for side drawer element margins
-
 const styles = theme => ({
   // dev css that gives a easy to see border around containers. Delete when dev complete.
   highlightBorders: {
@@ -51,16 +48,10 @@ const styles = theme => ({
 
     // adds a left margin to the toolbar so the side drawer doesn't overlap it
     [theme.breakpoints.up("sm")]: {
-      width: `calc(100% - ${drawerWidth}px)`,
-      marginLeft: drawerWidth
+      width: `calc(100% - ${theme.sideDrawer.width})`,
+      marginLeft: theme.sideDrawer.width
     }
   },
-  // drawer: {
-  //   [theme.breakpoints.up('sm')]: {
-  //     width: drawerWidth,
-  //     flexShrink: 0,
-  //   },
-  // },
   menuButton: {
     marginRight: 20,
 
@@ -98,12 +89,12 @@ const styles = theme => ({
 
     // adds a left margin to the main content so the side drawer doesn't overlap it
     [theme.breakpoints.up("sm")]: {
-      marginLeft: drawerWidth
+      marginLeft: theme.sideDrawer.width
     }
   }
 });
 
-function App({ classes, theme }) {
+function App({ classes }) {
   const [socket] = useState(() => openSocket("http://localhost:3001"));
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [messages, setMessages] = useState([]);

@@ -7,12 +7,10 @@ import Drawer from "@material-ui/core/Drawer";
 import Hidden from "@material-ui/core/Hidden";
 import TypoGraphy from "@material-ui/core/Typography";
 
-const drawerWidth = 240; // this duplicated from App.js should probably find a better place for it! useTheme maybe?
-
 // todo add css for side drawer element margins
 const styles = theme => ({
   drawer: {
-    width: drawerWidth
+    width: theme.sideDrawer.width
   }
 });
 
