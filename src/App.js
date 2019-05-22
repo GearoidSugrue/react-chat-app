@@ -15,7 +15,11 @@ import openSocket from "socket.io-client";
 
 import Chat from "./Chat";
 import LoginPage from "./login/LoginPage";
-import SideDrawer from "./side-drawer/SideDrawer";
+import ChatSideDrawer from "./side-drawer/ChatSideDrawer";
+
+import UserDetails from "./side-drawer/UserDetails";
+import Chatrooms from "./side-drawer/Chatrooms";
+import Users from "./side-drawer/Users";
 
 const drawerWidth = 240;
 
@@ -66,14 +70,9 @@ const styles = theme => ({
     }
   },
   toolbar: theme.mixins.toolbar,
-
   hide: {
     display: "none"
   },
-  drawer: {
-    width: drawerWidth
-  },
-
   // todo delete if scrolling works as expected
   // drawerHeader: {
   //   display: 'flex',
@@ -101,12 +100,6 @@ const styles = theme => ({
     [theme.breakpoints.up("sm")]: {
       marginLeft: drawerWidth
     }
-  },
-  userBar: {
-    "justify-content": "space-between"
-  },
-  userBarElement: {
-    margin: "auto"
   }
 });
 
@@ -185,16 +178,23 @@ function App({ classes, theme }) {
     [socket, username]
   );
 
+  const userDetails = (
+    <UserDetails username={username} onLogout={() => setUsername("")} />
+  );
+  const rooms = <Chatrooms onChatroomSelected={room => setChatroom(room)} />;
+  const users = (
+    <Users onUserSelected={user => console.log("User selected:", user)} />
+  );
+
   return (
     <FlexView column grow width="100%" height="100vh">
-      {/* todo investigate Inversion of control */}
-      <SideDrawer
-        username={username}
+      <ChatSideDrawer
+        userBar={userDetails}
+        chatrooms={rooms}
+        users={users}
         isLoggedIn={isLoggedIn}
         mobileDrawerOpen={mobileDrawerOpen}
         onMobileDrawerToggle={handleSideDrawerToggle}
-        onChatroomChange={room => setChatroom(room)}
-        onLogout={() => setUsername("")}
       />
 
       <AppBar
