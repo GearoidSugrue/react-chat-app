@@ -1,44 +1,38 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import FlexView from "react-flexview";
-import classNames from "classnames";
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import FlexView from 'react-flexview';
+import classNames from 'classnames';
 
-import { withStyles } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import IconButton from "@material-ui/core/IconButton";
-import Toolbar from "@material-ui/core/Toolbar";
-import TypoGraphy from "@material-ui/core/Typography";
+import { withStyles } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import IconButton from '@material-ui/core/IconButton';
+import Toolbar from '@material-ui/core/Toolbar';
+import TypoGraphy from '@material-ui/core/Typography';
 
-import MenuIcon from "@material-ui/icons/Menu";
+import MenuIcon from '@material-ui/icons/Menu';
 
-import openSocket from "socket.io-client";
+import Chat from './chat/Chat';
+import LoginPage from './login/LoginPage';
+import ChatSideDrawer from './side-drawer/ChatSideDrawer';
 
-import Chat from "./Chat";
-import LoginPage from "./login/LoginPage";
-import ChatSideDrawer from "./side-drawer/ChatSideDrawer";
+import UserDetails from './side-drawer/UserDetails';
+import Chatrooms from './side-drawer/Chatrooms';
+import Users from './side-drawer/Users';
 
-import UserDetails from "./side-drawer/UserDetails";
-import Chatrooms from "./side-drawer/Chatrooms";
-import Users from "./side-drawer/Users";
+import { useChatApi } from './chat-api/ChatApiContext';
 
-// todo add css for side drawer element margins
 const styles = theme => ({
-  // dev css that gives a easy to see border around containers. Delete when dev complete.
-  highlightBorders: {
-    border: "3px solid blue"
-  },
   root: {
-    display: "flex"
+    display: 'flex'
   },
   appBar: {
-    transition: theme.transitions.create(["margin", "width"], {
+    transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     })
   },
-  // todo create css class for mobile apppBar that doesn't shift
   appBarShift: {
-    transition: theme.transitions.create(["margin", "width"], {
+    transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen
     }),
@@ -47,7 +41,7 @@ const styles = theme => ({
     marginLeft: 0,
 
     // adds a left margin to the toolbar so the side drawer doesn't overlap it
-    [theme.breakpoints.up("sm")]: {
+    [theme.breakpoints.up('sm')]: {
       width: `calc(100% - ${theme.sideDrawer.width})`,
       marginLeft: theme.sideDrawer.width
     }
@@ -56,13 +50,13 @@ const styles = theme => ({
     marginRight: 20,
 
     // only very small screens need to toggle the side drawer so the menu button will be hidden on larger devices
-    [theme.breakpoints.up("sm")]: {
-      display: "none"
+    [theme.breakpoints.up('sm')]: {
+      display: 'none'
     }
   },
   toolbar: theme.mixins.toolbar,
   hide: {
-    display: "none"
+    display: 'none'
   },
   // todo delete if scrolling works as expected
   // drawerHeader: {
@@ -73,13 +67,13 @@ const styles = theme => ({
   //   justifyContent: 'flex-end',
   // },
   content: {
-    transition: theme.transitions.create("margin", {
+    transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     })
   },
   contentShift: {
-    transition: theme.transitions.create("margin", {
+    transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen
     }),
@@ -88,101 +82,87 @@ const styles = theme => ({
     marginLeft: 0,
 
     // adds a left margin to the main content so the side drawer doesn't overlap it
-    [theme.breakpoints.up("sm")]: {
+    [theme.breakpoints.up('sm')]: {
       marginLeft: theme.sideDrawer.width
     }
   }
 });
 
 function App({ classes }) {
-  const [socket] = useState(() => openSocket("http://localhost:3001"));
-  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
-  const [messages, setMessages] = useState([]);
-  const [chatroom, setChatroom] = useState("");
-  const [username, setUsername] = useState("");
-
+  const chatApi = useChatApi();
+  const [username, setUsername] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const handleSideDrawerToggle = () => setMobileDrawerOpen(!mobileDrawerOpen);
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
-  useEffect(
-    function connectToSocketServer() {
-      console.log("connectToSocketServer useEffect");
+  const [chatroom, setChatroom] = useState('');
+  const [selectedUser, setSelectedUser] = useState('');
 
-      socket.on("message", message =>
-        setMessages(messages => [...messages, message])
-      );
-      return function closeSocket() {
-        socket.close();
-      };
-    },
-    [socket]
-  );
+  const [messages, setMessages] = useState([]); // todo find better way?
 
+  // todo this should be replace with something better
   useEffect(
     function joinChat() {
-      console.log("joinChat effect", username, chatroom);
+      console.log('joinChat effect', username, chatroom);
 
-      const validJoin = socket && username && chatroom;
-
-      if (validJoin) {
-        socket.emit("join chatroom", {
-          chatroom,
-          username
-        });
-      }
+      chatApi.joinChatroom({ chatroom, username });
 
       return function leaveChat() {
-        if (validJoin) {
-          socket.emit("leave chatroom", {
-            chatroom,
-            username
-          });
-        }
+        chatApi.leaveChatroom({ chatroom, username });
       };
     },
-    [socket, chatroom, username]
+    [chatApi, chatroom, username]
   );
 
   useEffect(
-    function loginUser() {
-      console.log("loginUser effect", username);
-
-      const validLogin = socket && username;
-
-      if (validLogin) {
-        // username is only ever set after the user has clicked login so it's value changing can be used to login
-        socket.emit("login", {
-          username
-        });
-        setIsLoggedIn(true);
-      }
-
-      return function logout() {
-        console.log("Login effect - cleanUp - logged out...");
-        setChatroom("");
-        setMessages([]);
-        setIsLoggedIn(false);
-        socket.emit("logout");
-      };
+    function closeMobileDrawerOnSelection() {
+      setMobileDrawerOpen(false);
     },
-    [socket, username]
+    [setMobileDrawerOpen, chatroom, selectedUser]
   );
 
-  const userDetails = (
-    <UserDetails username={username} onLogout={() => setUsername("")} />
+  function handleLogin({ username }) {
+    chatApi.login({ username });
+    setIsLoggedIn(true);
+    setUsername(username);
+  }
+
+  function handleLogout() {
+    chatApi.logout({ username });
+    setIsLoggedIn(false);
+    setUsername('');
+    setChatroom('');
+    setSelectedUser('');
+  }
+
+  function handleChatroomSelected(chatroom) {
+    setChatroom(chatroom);
+    setSelectedUser('');
+  }
+
+  function handleUserSelected(user) {
+    setSelectedUser(user);
+    setChatroom('');
+  }
+
+  function handleSideDrawerToggle() {
+    setMobileDrawerOpen(!mobileDrawerOpen);
+  }
+
+  const userDetailsFragment = (
+    <UserDetails username={username} onLogout={handleLogout} />
   );
-  const rooms = <Chatrooms onChatroomSelected={room => setChatroom(room)} />;
-  const users = (
-    <Users onUserSelected={user => console.log("User selected:", user)} />
+  const roomsFragment = (
+    <Chatrooms onChatroomSelected={handleChatroomSelected} />
   );
+  const usersFragment = <Users onUserSelected={handleUserSelected} />;
 
   return (
     <FlexView column grow width="100%" height="100vh">
       <ChatSideDrawer
-        userBar={userDetails}
-        chatrooms={rooms}
-        users={users}
+        userBar={userDetailsFragment}
+        chatrooms={roomsFragment}
+        users={usersFragment}
         isLoggedIn={isLoggedIn}
         mobileDrawerOpen={mobileDrawerOpen}
         onMobileDrawerToggle={handleSideDrawerToggle}
@@ -199,12 +179,12 @@ function App({ classes }) {
             className={classNames(classes.menuButton, {
               [classes.hide]: !isLoggedIn
             })}
-            onClick={() => setMobileDrawerOpen(!mobileDrawerOpen)}
+            onClick={handleSideDrawerToggle}
           >
             <MenuIcon />
           </IconButton>
           <TypoGraphy variant="h5" color="inherit" noWrap>
-            {chatroom || "Group Chat"}
+            {chatroom || selectedUser.username || 'Group Chat'}
           </TypoGraphy>
         </Toolbar>
       </AppBar>
@@ -212,20 +192,18 @@ function App({ classes }) {
       <FlexView
         column
         grow
-        className={classNames(classes.highlightBorders, classes.content, {
+        className={classNames(classes.content, {
           [classes.contentShift]: isLoggedIn
         })}
       >
-        {isLoggedIn ? (
-          <Chat chatroom={chatroom} username={username} messages={messages} />
-        ) : (
-          <LoginPage
-            onLogin={({ username }) => {
-              setUsername(username);
-              setIsLoggedIn(true);
-            }}
+        {isLoggedIn && (
+          <Chat
+            username={username}
+            chatroom={chatroom}
+            selectedUser={selectedUser}
           />
         )}
+        {!isLoggedIn && <LoginPage onLogin={handleLogin} />}
       </FlexView>
     </FlexView>
   );
