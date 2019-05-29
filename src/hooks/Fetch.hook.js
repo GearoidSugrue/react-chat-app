@@ -11,7 +11,7 @@ export const fetchStatus = {
   ERROR
 };
 
-function useFetch(endpoint) {
+export default function useFetch(endpoint, fetchConfig = {}) {
   const [data, setData] = useState([]);
   const [status, setStatus] = useState(FETCHING);
   const [retryCount, setRetryCount] = useState(1);
@@ -27,7 +27,10 @@ function useFetch(endpoint) {
         setStatus(FETCHING);
 
         try {
-          const result = await axios(`http://localhost:3001/${endpoint}`);
+          const result = await axios(
+            `http://localhost:3001/${endpoint}`,
+            fetchConfig
+          );
           setData(result.data);
           setStatus(SUCCESS);
         } catch (error) {
@@ -43,5 +46,3 @@ function useFetch(endpoint) {
 
   return { data, status, retry, retryCount };
 }
-
-export default useFetch;
