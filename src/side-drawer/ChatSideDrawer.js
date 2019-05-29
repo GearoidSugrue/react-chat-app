@@ -1,16 +1,23 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 
-import { withStyles } from "@material-ui/core/styles";
-import Divider from "@material-ui/core/Divider";
-import Drawer from "@material-ui/core/Drawer";
-import Hidden from "@material-ui/core/Hidden";
-import TypoGraphy from "@material-ui/core/Typography";
+import { withStyles } from '@material-ui/core/styles';
+import Divider from '@material-ui/core/Divider';
+import Drawer from '@material-ui/core/Drawer';
+import Hidden from '@material-ui/core/Hidden';
+import TypoGraphy from '@material-ui/core/Typography';
 
 // todo add css for side drawer element margins
 const styles = theme => ({
   drawer: {
     width: theme.sideDrawer.width
+  },
+  header: {
+    'text-transform': 'uppercase',
+    'font-weight': 500,
+    padding: '8px 16px' // todo get spacing values from the theme
+
+    // margin: 'auto'
   }
 });
 
@@ -34,13 +41,16 @@ function ChatSideDrawer({
       {userBar}
       <Divider />
 
-      <TypoGraphy color="inherit">Chatrooms</TypoGraphy>
+      <TypoGraphy noWrap color="inherit" className={classes.header}>
+        Chatrooms
+      </TypoGraphy>
       {chatrooms}
       <Divider />
 
-      <TypoGraphy color="inherit">Users</TypoGraphy>
+      <TypoGraphy noWrap color="inherit" className={classes.header}>
+        Users
+      </TypoGraphy>
       {users}
-      <Divider />
     </div>
   );
 
@@ -53,7 +63,7 @@ function ChatSideDrawer({
             paper: classes.drawer
           }}
           variant="temporary"
-          anchor={theme.direction === "rtl" ? "right" : "left"}
+          anchor={theme.direction === 'rtl' ? 'right' : 'left'}
           open={mobileDrawerOpen && isLoggedIn}
           onClose={onMobileDrawerToggle}
         >
@@ -67,7 +77,7 @@ function ChatSideDrawer({
             paper: classes.drawer
           }}
           variant="persistent"
-          anchor={theme.direction === "rtl" ? "right" : "left"}
+          anchor={theme.direction === 'rtl' ? 'right' : 'left'}
           open={isLoggedIn}
         >
           {sideDrawer}

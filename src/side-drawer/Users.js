@@ -1,15 +1,15 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 // import FlexView from "react-flexview";
 
-import { withStyles } from "@material-ui/core/styles";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import TypoGraphy from "@material-ui/core/Typography";
+import { withStyles } from '@material-ui/core/styles';
+import List from '@material-ui/core/List';
 
-import useFetchUsers, { fetchUsersStatus } from "../hooks/FetchUsers.hook";
+import TypoGraphy from '@material-ui/core/Typography';
+
+import useFetchUsers, { fetchUsersStatus } from '../hooks/Users.hook';
+import User from './User';
 
 // todo add css for side drawer element margins
 const styles = theme => ({});
@@ -22,24 +22,22 @@ function Users({ onUserSelected }) {
     <>
       {usersStatus === fetchUsersStatus.FETCHING && (
         // todo move css out
-        <TypoGraphy color="inherit" style={{ margin: "8px" }}>
+        <TypoGraphy color="inherit" style={{ margin: '8px' }}>
           Loading users...
         </TypoGraphy>
       )}
       {usersStatus === fetchUsersStatus.SUCCESS && (
         <List>
-          {users.map((user, index) => (
-            <ListItem
-              button
+          {users.map(user => (
+            <User
               key={user.username}
-              onClick={() => onUserSelected(user)}
-            >
-              <ListItemText primary={user.username} />
-            </ListItem>
+              user={user}
+              onUserSelected={onUserSelected}
+            />
           ))}
         </List>
       )}
-      {usersStatus === fetchUsersStatus.ERROR && "// Error 0_0 ...retry is WIP"}
+      {usersStatus === fetchUsersStatus.ERROR && '// Error 0_0 ...retry is WIP'}
     </>
   );
 }
