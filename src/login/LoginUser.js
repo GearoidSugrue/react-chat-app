@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -9,7 +8,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import TypoGraphy from '@material-ui/core/Typography';
 
-import useFetchUsers, { fetchUsersStatus } from '../hooks/FetchUsers.hook'
+import useFetchUsers, { fetchUsersStatus } from '../hooks/Users.hook';
 
 const styles = theme => ({
   // todo move inline css here
@@ -26,18 +25,18 @@ function LoginUser({ onLogin }) {
         Select a user
       </TypoGraphy>
 
-      {
-        status === fetchUsersStatus.FETCHING &&
+      {status === fetchUsersStatus.FETCHING && (
         <TypoGraphy color="inherit" style={{ margin: '8px' }}>
           Loading users...
         </TypoGraphy>
-      }
-      {
-        status === fetchUsersStatus.SUCCESS &&
-        <FormControl style={{
-          margin: '8px',
-          minWidth: '120px'
-        }}>
+      )}
+      {status === fetchUsersStatus.SUCCESS && (
+        <FormControl
+          style={{
+            margin: '8px',
+            minWidth: '120px'
+          }}
+        >
           <InputLabel htmlFor="filled-users-select">Users</InputLabel>
           <Select
             // style={{ margin: '8px' }}
@@ -45,22 +44,27 @@ function LoginUser({ onLogin }) {
             onChange={event => setSelectedUser(event.target.value)}
             inputProps={{
               name: 'users',
-              id: 'filled-users-select',
+              id: 'filled-users-select'
             }}
           >
             <MenuItem value="">
               <em>None</em>
             </MenuItem>
-            {
-              users.filter(user => !user.online).map(user => (<MenuItem value={user.username}>{user.username}</MenuItem>))
-            }
+            {users
+              .filter(user => !user.online)
+              .map(user => (
+                <MenuItem key={user.username} value={user.username}>
+                  {user.username}
+                </MenuItem>
+              ))}
           </Select>
         </FormControl>
-      }
-      {
-        status === fetchUsersStatus.ERROR &&
+      )}
+      {status === fetchUsersStatus.ERROR && (
         <TypoGraphy color="inherit" style={{ margin: '8px' }}>
-          {retryCount < 3 ? 'Hmm... I failed to load users ಠ~ಠ' : 'Well this is embarrassing... ⊙﹏⊙'}
+          {retryCount < 3
+            ? 'Hmm... I failed to load users ಠ~ಠ'
+            : 'Well this is embarrassing... ⊙﹏⊙'}
 
           <Button
             style={{ margin: '8px' }}
@@ -71,7 +75,7 @@ function LoginUser({ onLogin }) {
             Retry
           </Button>
         </TypoGraphy>
-      }
+      )}
       <Button
         style={{ margin: '8px' }}
         color="secondary"
@@ -82,11 +86,11 @@ function LoginUser({ onLogin }) {
         Login
       </Button>
     </>
-  )
+  );
 }
 
 LoginUser.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(LoginUser);
