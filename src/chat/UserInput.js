@@ -12,17 +12,18 @@ import { useAreKeysPressed } from '../hooks/KeysPressPressed.hook';
 const styles = theme => ({
   userInput: {
     display: 'flex',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    padding: theme.spacing(2)
     // 'text-align': 'start' // prevents scroll bar from showing on parent container
   },
   textInput: {
     flex: 1
   },
   sendButton: {
-    margin: theme.spacing.unit
+    margin: theme.spacing(1)
   },
   sendIcon: {
-    marginLeft: theme.spacing.unit
+    marginLeft: theme.spacing(1)
   }
 });
 
