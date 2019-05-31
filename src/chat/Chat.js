@@ -10,7 +10,7 @@ import MessageList from './MessageList';
 import UserInput from './UserInput';
 
 import { useChatApi } from '../chat-api/ChatApiContext';
-import useMessages from '../hooks/Messages.hook';
+import useMessages, { fetchMessagesStatus } from '../hooks/Messages.hook';
 
 // todo: show online and offline users in a sub-toolbar?
 
@@ -21,7 +21,7 @@ const styles = theme => ({
     overflow: 'auto' // todo fix not showing scroll bar issue
   },
   message: {
-    padding: `0 0 ${theme.spacing.unit}px 0`
+    padding: theme.spacing(0, 0, 1, 0)
   }
 });
 
@@ -29,7 +29,11 @@ function Chat({ classes, username, chatroom, selectedUser }) {
   console.log('Chat:', { username, chatroom, selectedUser });
 
   const chatApi = useChatApi();
-  const { messages } = useMessages({ username, chatroom, selectedUser });
+  const { messages, status: messagesStatus } = useMessages({
+    username,
+    chatroom,
+    selectedUser
+  });
 
   function handleOnSendMessage(message) {
     if (chatroom) {
@@ -57,7 +61,14 @@ function Chat({ classes, username, chatroom, selectedUser }) {
         {showChat && (
           <>
             <FlexView column grow vAlignContent="top">
-              <MessageList messages={messages} />
+              {messagesStatus === fetchMessagesStatus.FETCHING && (
+                <TypoGraphy color="inherit" style={{ margin: '8px' }}>
+                  Loading messages...
+                </TypoGraphy>
+              )}
+              {messagesStatus === fetchMessagesStatus.SUCCESS && (
+                <MessageList messages={messages} />
+              )}
             </FlexView>
 
             <FlexView column vAlignContent="bottom">

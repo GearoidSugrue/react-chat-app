@@ -1,14 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
-// import FlexView from 'react-flexview';
-
+import clsx from 'clsx';
 import { withStyles } from '@material-ui/core/styles';
-// import Avatar from '@material-ui/core/Avatar';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 
 import useOnlineStatus from '../hooks/OnlineStatus.hook';
 
@@ -18,33 +14,49 @@ const styles = theme => ({
     height: '12px',
     transition: 'background-color 0.5s ease',
     background: '#bdc3c7',
-    'border-radius': '50%',
-    // borderRadius: '50%',
-    display: 'inline-block',
-    margin: 'auto'
-    // 'box-shadow': '0 0 1px 1px #ecf0f1'
+    borderRadius: '50%',
+    display: 'inline-block'
   },
   online: {
     background: '#2ecc71'
+  },
+  username: {
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    margin: theme.spacing(1, 2)
+  },
+  // unseenMessagesUsername: {
+  //   fontWeight: 500
+  // },
+  unseenMessages: {
+    background: 'blue'
   }
-  // offline: {
-  //   background: 'grey'
-  // }
 });
 
-function User({ classes, user, onUserSelected }) {
+function User({ classes, user, isSelected, onUserSelected }) {
   const online = useOnlineStatus(user);
+  const [unseenMessages, setUnseenMessages] = useState(false);
+  // todo add hook userMessage/userActivity that listens for messages from a user
+  // update unseenMessages in effect if on new message and isSelected is false
+
+  // todo: should a unseenMessage counter be better?
+
+  const onlineIconClasses = clsx(classes.circle, online && classes.online);
+  const usernameClasses = clsx(
+    classes.username
+    // unseenMessages && classes.unseenMessagesUsername
+  );
+  const unseenMessagesIconClasses = clsx(classes.circle, classes.newActivity);
 
   return (
-    <ListItem button onClick={() => onUserSelected(user)}>
-      {/* <div> */}
-      <span
-        className={classNames(classes.circle, {
-          [classes.online]: online
-        })}
-      />
-      {/* </div> */}
-      <ListItemText primary={user.username} />
+    <ListItem button selected={isSelected} onClick={() => onUserSelected(user)}>
+      <span className={onlineIconClasses} />
+
+      <ListItemText className={usernameClasses} primary={user.username} />
+
+      {unseenMessages && !isSelected && (
+        <span className={unseenMessagesIconClasses} />
+      )}
     </ListItem>
   );
 }
