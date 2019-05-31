@@ -8,7 +8,7 @@ export const fetchRoomsStatus = fetchStatus;
 // fetches the list of rooms and then updates the list whenever changes occur
 export default function useFetchRooms() {
   const [rooms, setRooms] = useState([]);
-  const { data: fetchedRooms, ...fetch } = useFetch('rooms');
+  const { data: fetchedRooms, ...fetch } = useFetch('/rooms');
   const chatApi = useChatApi();
 
   useEffect(

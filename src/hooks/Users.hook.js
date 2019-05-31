@@ -8,7 +8,7 @@ export const fetchUsersStatus = fetchStatus;
 // fetches the list of users and then updates the list whenever changes occur
 export default function useFetchUsers() {
   const [users, setUsers] = useState([]);
-  const { data: fetchedUsers, ...fetch } = useFetch('users');
+  const { data: fetchedUsers, ...fetch } = useFetch('/users');
   const chatApi = useChatApi();
 
   useEffect(

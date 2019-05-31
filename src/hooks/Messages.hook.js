@@ -1,52 +1,51 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import useFetch, { fetchStatus } from './Fetch.hook';
 
 import { useChatApi } from '../chat-api/ChatApiContext';
 
-export const fetchRoomsStatus = fetchStatus;
+export const fetchMessagesStatus = fetchStatus;
 
 // fetches the message history and then adds new messages whenever they occur
 export default function useMessages({ username, chatroom, selectedUser }) {
+  const selectedUsername = selectedUser.username;
   const [messages, setMessages] = useState([]);
+  const chatApi = useChatApi();
 
-  // todo this should be made simpler..
-  const fetchMessagesEndpoint = Boolean(chatroom)
-    ? 'rooms/:chatroom/messages'
-    : 'users/:username/messages';
+  const messagesEndpoint = useMemo(
+    () =>
+      (chatroom && `/rooms/${chatroom}/messages`) ||
+      (selectedUsername && `/users/${selectedUsername}/messages`),
+    [chatroom, selectedUsername]
+  );
 
-  const fetchMessagesConfig = Boolean(chatroom)
-    ? {
-        params: {
-          chatroom
-        }
-      }
-    : {
-        params: {
-          username: selectedUser.username
-        },
+  const messagesConfig = useMemo(() => {
+    if (selectedUsername) {
+      console.log('in useMemo - selectedUser', selectedUsername);
+      return {
         headers: {
           RequesterUsername: username
         }
       };
+    }
+  }, [chatroom, selectedUsername, username]);
 
   const { data: fetchedMessages, ...fetch } = useFetch(
-    fetchMessagesEndpoint,
-    fetchMessagesConfig
+    messagesEndpoint,
+    messagesConfig
   );
-  const chatApi = useChatApi();
 
   useEffect(
     function setLoadedMessages() {
-      console.log('chatApi in set loaded messages effect', fetchedMessages);
-
+      console.log('messages hook - setLoadedMessages effect', fetchedMessages);
       setMessages(fetchedMessages);
+      return () => setMessages([]); // todo is this needed?
     },
     [setMessages, fetchedMessages]
   );
 
   useEffect(
     function subscribeToNewMessages() {
-      console.log('chatApi in subscribe to rooms effect');
+      console.log('messages hook - subscribeToNewMessages');
 
       // todo change to function that takes in chatroom and/or selectedUser?
       const newMessageSub = chatApi.messages$.subscribe(message =>
@@ -55,7 +54,7 @@ export default function useMessages({ username, chatroom, selectedUser }) {
 
       return () => newMessageSub.unsubscribe();
     },
-    [chatApi, setMessages]
+    [chatApi, messages, setMessages]
   );
 
   return {
