@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -7,17 +7,14 @@ import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import TypoGraphy from '@material-ui/core/Typography';
 
-// todo add css for side drawer element margins
 const styles = theme => ({
   drawer: {
     width: theme.sideDrawer.width
   },
   header: {
-    'text-transform': 'uppercase',
-    'font-weight': 500,
-    padding: '8px 16px' // todo get spacing values from the theme
-
-    // margin: 'auto'
+    textTransform: 'uppercase',
+    fontWeight: 500,
+    padding: theme.spacing(2)
   }
 });
 
@@ -48,7 +45,7 @@ function ChatSideDrawer({
       <Divider />
 
       <TypoGraphy noWrap color="inherit" className={classes.header}>
-        Users
+        Direct Message
       </TypoGraphy>
       {users}
     </div>

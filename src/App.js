@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import FlexView from 'react-flexview';
-import classNames from 'classnames';
+import clsx from 'clsx';
 
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -95,30 +95,28 @@ function App({ classes }) {
 
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
-  const [chatroom, setChatroom] = useState('');
+  const [selectedChatroom, setChatroom] = useState('');
   const [selectedUser, setSelectedUser] = useState('');
-
-  const [messages, setMessages] = useState([]); // todo find better way?
 
   // todo this should be replace with something better
   useEffect(
     function joinChat() {
-      console.log('joinChat effect', username, chatroom);
+      console.log('joinChat effect', username, selectedChatroom);
 
-      chatApi.joinChatroom({ chatroom, username });
+      chatApi.joinChatroom({ chatroom: selectedChatroom, username });
 
       return function leaveChat() {
-        chatApi.leaveChatroom({ chatroom, username });
+        chatApi.leaveChatroom({ chatroom: selectedChatroom, username });
       };
     },
-    [chatApi, chatroom, username]
+    [chatApi, selectedChatroom, username]
   );
 
   useEffect(
     function closeMobileDrawerOnSelection() {
       setMobileDrawerOpen(false);
     },
-    [setMobileDrawerOpen, chatroom, selectedUser]
+    [setMobileDrawerOpen, selectedChatroom, selectedUser]
   );
 
   function handleLogin({ username }) {
@@ -135,8 +133,8 @@ function App({ classes }) {
     setSelectedUser('');
   }
 
-  function handleChatroomSelected(chatroom) {
-    setChatroom(chatroom);
+  function handleChatroomSelected(selectedChatroom) {
+    setChatroom(selectedChatroom);
     setSelectedUser('');
   }
 
@@ -153,9 +151,24 @@ function App({ classes }) {
     <UserDetails username={username} onLogout={handleLogout} />
   );
   const roomsFragment = (
-    <Chatrooms onChatroomSelected={handleChatroomSelected} />
+    <Chatrooms
+      selectedChatroom={selectedChatroom}
+      onChatroomSelected={handleChatroomSelected}
+    />
   );
-  const usersFragment = <Users onUserSelected={handleUserSelected} />;
+  const usersFragment = (
+    <Users selectedUser={selectedUser} onUserSelected={handleUserSelected} />
+  );
+
+  const appBarClasses = clsx(classes.appBar, isLoggedIn && classes.appBarShift);
+  const sideDrawerButtonClasses = clsx(
+    classes.menuButton,
+    !isLoggedIn && classes.hide
+  );
+  const mainContentClasses = clsx(
+    classes.content,
+    isLoggedIn && classes.contentShift
+  );
 
   return (
     <FlexView column grow width="100%" height="100vh">
@@ -168,38 +181,25 @@ function App({ classes }) {
         onMobileDrawerToggle={handleSideDrawerToggle}
       />
 
-      <AppBar
-        position="relative"
-        className={classNames(classes.appBar, {
-          [classes.appBarShift]: isLoggedIn
-        })}
-      >
+      <AppBar position="relative" className={appBarClasses}>
         <Toolbar>
           <IconButton
-            className={classNames(classes.menuButton, {
-              [classes.hide]: !isLoggedIn
-            })}
+            className={sideDrawerButtonClasses}
             onClick={handleSideDrawerToggle}
           >
             <MenuIcon />
           </IconButton>
           <TypoGraphy variant="h5" color="inherit" noWrap>
-            {chatroom || selectedUser.username || 'Group Chat'}
+            {selectedChatroom || selectedUser.username || 'Group Chat'}
           </TypoGraphy>
         </Toolbar>
       </AppBar>
 
-      <FlexView
-        column
-        grow
-        className={classNames(classes.content, {
-          [classes.contentShift]: isLoggedIn
-        })}
-      >
+      <FlexView column grow className={mainContentClasses}>
         {isLoggedIn && (
           <Chat
             username={username}
-            chatroom={chatroom}
+            chatroom={selectedChatroom}
             selectedUser={selectedUser}
           />
         )}

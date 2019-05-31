@@ -1,29 +1,33 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import PropTypes from 'prop-types';
-// import FlexView from "react-flexview";
-
 import { withStyles } from '@material-ui/core/styles';
+import { Button } from '@material-ui/core';
 import List from '@material-ui/core/List';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
+// import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import TypoGraphy from '@material-ui/core/Typography';
-import Group from '@material-ui/icons/Group';
+// import Group from '@material-ui/icons/Group';
 
 import useFetchRooms, { fetchRoomsStatus } from '../hooks/Rooms.hook';
 
-// todo add css for side drawer element margins
-const styles = theme => ({});
-
-function Chatrooms({ onChatroomSelected }) {
-  const { rooms, status: roomsStatus } = useFetchRooms();
+const styles = theme => ({
+  loading: {
+    margin: theme.spacing(2)
+  },
+  errorText: {
+    margin: theme.spacing(2)
+  }
+});
+function Chatrooms({ classes, selectedChatroom, onChatroomSelected }) {
+  const { rooms, status: roomsStatus, retry } = useFetchRooms();
 
   return (
     <>
       {roomsStatus === fetchRoomsStatus.FETCHING && (
-        // todo move css out
-        <TypoGraphy color="inherit" style={{ margin: '8px' }}>
+        // todo add loading placeholders
+        <TypoGraphy color="inherit" className={classes.loading}>
           Loading rooms...
         </TypoGraphy>
       )}
@@ -33,6 +37,7 @@ function Chatrooms({ onChatroomSelected }) {
             <ListItem
               button
               key={room}
+              selected={Boolean(selectedChatroom === room)}
               onClick={() => onChatroomSelected(room)}
             >
               {/* <ListItemIcon>
@@ -43,7 +48,14 @@ function Chatrooms({ onChatroomSelected }) {
           ))}
         </List>
       )}
-      {roomsStatus === fetchRoomsStatus.ERROR && '// Error 0_0 ...retry is WIP'}
+      {roomsStatus === fetchRoomsStatus.ERROR && (
+        <TypoGraphy color="inherit" className={classes.errorText}>
+          Error loading rooms!
+          <Button color="secondary" onClick={retry}>
+            Retry
+          </Button>
+        </TypoGraphy>
+      )}
     </>
   );
 }
