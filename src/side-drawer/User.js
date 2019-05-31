@@ -31,6 +31,10 @@ const styles = theme => ({
   unseenMessages: {
     background: 'blue'
   }
+
+  // usernameText: { text: {
+  //   fontWeight: 500
+  // }
 });
 
 function User({ classes, user, isSelected, onUserSelected }) {
@@ -51,6 +55,12 @@ function User({ classes, user, isSelected, onUserSelected }) {
   return (
     <ListItem button selected={isSelected} onClick={() => onUserSelected(user)}>
       <span className={onlineIconClasses} />
+
+      {/*  // todo: should username font' weight be increase if unseen messages? This should work...
+        classes={{ text: {
+          fontWeight: 500
+        }}} 
+      */}
 
       <ListItemText className={usernameClasses} primary={user.username} />
 

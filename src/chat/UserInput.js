@@ -55,8 +55,9 @@ function UserInput({ classes, onSendMessage }) {
         onChange={event => setUserInput(event.target.value)}
       />
       <Button
-        className={classes.sendButton}
+        variant="contained"
         color="secondary"
+        className={classes.sendButton}
         disabled={!userInput}
         onClick={sendMessage}
       >
