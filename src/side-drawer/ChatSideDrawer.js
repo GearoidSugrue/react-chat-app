@@ -3,9 +3,12 @@ import PropTypes from 'prop-types';
 
 import { withStyles } from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
+import IconButton from '@material-ui/core/IconButton';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
 import TypoGraphy from '@material-ui/core/Typography';
+
+import AddCircleOutline from '@material-ui/icons/AddCircleOutline';
 
 const styles = theme => ({
   drawer: {
@@ -33,6 +36,10 @@ function ChatSideDrawer({
   mobileDrawerOpen,
   onMobileDrawerToggle
 }) {
+  const handleCreateChatroom = () => {
+    console.log('Create chatroom clicked!');
+  };
+
   const sideDrawer = (
     <div>
       {userBar}
@@ -40,6 +47,13 @@ function ChatSideDrawer({
 
       <TypoGraphy noWrap color="inherit" className={classes.header}>
         Chatrooms
+        <IconButton
+          color="secondary"
+          className={classes.button}
+          onClick={handleCreateChatroom}
+        >
+          <AddCircleOutline />
+        </IconButton>
       </TypoGraphy>
       {chatrooms}
       <Divider />

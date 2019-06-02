@@ -15,6 +15,12 @@ export const ChatApiProvider = ({ chatApi, children }) => (
   </ChatApiContext.Provider>
 );
 
-// todo: should this be moved to hooks dir?
+/* todo: should this be moved to hooks dir?!!
+ * Maybe a ChatApi.hooks? Could create multiple hooks like useIsLoggedIn,
+ * or: const { username, isLoggedIn } = useLoggedInUser(); // isLoggedIn is not needed but it makes the code more explicit and easy to follow
+ *
+ *
+ */
+
 // custom hook to make it even easier for functions to use the ChatApi
 export const useChatApi = () => useContext(ChatApiContext);

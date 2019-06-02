@@ -98,6 +98,8 @@ function App({ classes }) {
   const [selectedChatroom, setChatroom] = useState('');
   const [selectedUser, setSelectedUser] = useState('');
 
+  // const { selectedUser, selectedChatroom } = useSelectedRecpricant()
+
   // todo this should be replace with something better
   useEffect(
     function joinChat() {
@@ -147,6 +149,7 @@ function App({ classes }) {
     setMobileDrawerOpen(!mobileDrawerOpen);
   }
 
+  // todo can these be back into ChatSideDrawer? useLoggedInUser?
   const userDetailsFragment = (
     <UserDetails username={username} onLogout={handleLogout} />
   );

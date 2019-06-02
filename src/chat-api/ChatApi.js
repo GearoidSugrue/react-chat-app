@@ -1,5 +1,3 @@
-// todo add ChatApi class
-
 import { fromEvent } from 'rxjs';
 import { map, filter } from 'rxjs/operators';
 
@@ -90,7 +88,6 @@ export class ChatApi {
     return this.messages.pipe(filter(correctUser));
   }
 
-  // todo this could probably be a custom hook: useOnlineStatus(username)
   userOnlineStatus$({ username }) {
     console.log('userOnlineStatus', { username });
     const correctUser = statusUpdate => statusUpdate.username === username;

@@ -25,5 +25,5 @@ export default function useOnlineStatus({
     [chatApi, setOnlineStatus]
   );
 
-  return onlineStatus; // todo check if this should be array
+  return onlineStatus;
 }

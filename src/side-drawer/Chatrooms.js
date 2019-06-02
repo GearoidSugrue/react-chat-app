@@ -4,11 +4,9 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
 import List from '@material-ui/core/List';
-// import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import TypoGraphy from '@material-ui/core/Typography';
-// import Group from '@material-ui/icons/Group';
 
 import useFetchRooms, { fetchRoomsStatus } from '../hooks/Rooms.hook';
 
@@ -40,9 +38,6 @@ function Chatrooms({ classes, selectedChatroom, onChatroomSelected }) {
               selected={Boolean(selectedChatroom === room)}
               onClick={() => onChatroomSelected(room)}
             >
-              {/* <ListItemIcon>
-                <Group />
-              </ListItemIcon> */}
               <ListItemText primary={room} />
             </ListItem>
           ))}
