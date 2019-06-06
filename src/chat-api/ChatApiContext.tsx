@@ -1,13 +1,17 @@
-import React, { createContext, useContext } from 'react';
+// import * as React, { createContext, useContext } from 'react';
+import * as React from 'react';
+import { createContext, useContext } from 'react';
 
 import openSocket from 'socket.io-client';
 
 import { ChatApi } from './ChatApi';
 
-export const ChatApiContext = createContext();
+export const ChatApiContext = createContext(
+  new ChatApi(openSocket('http://localhost:3001'))
+);
 
 // chatApi can be provided if a different chatApi is wanted for some part of the app. Not really needed but ehh...
-export const ChatApiProvider = ({ chatApi, children }) => (
+export const ChatApiProvider = ({ chatApi, children }: any) => (
   <ChatApiContext.Provider
     value={chatApi || new ChatApi(openSocket('http://localhost:3001'))}
   >

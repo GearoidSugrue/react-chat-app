@@ -1,18 +1,19 @@
-import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 
-import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 // import Fade from '@material-ui/core/Fade';
 import Input from '@material-ui/core/Input';
+import { withStyles } from '@material-ui/core/styles';
 
 import Send from '@material-ui/icons/Send';
+
 import { useAreKeysPressed } from '../hooks/KeysPressPressed.hook';
 
 const styles = theme => ({
   userInput: {
     display: 'flex',
-    flexDirection: 'row',
+    // flexDirection: 'row', // todo fix broken by ts migration
     padding: theme.spacing(2)
     // 'text-align': 'start' // prevents scroll bar from showing on parent container
   },

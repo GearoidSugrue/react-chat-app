@@ -1,23 +1,23 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import FlexView from 'react-flexview';
-import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Fade from '@material-ui/core/Fade';
+import { withStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
+import React, { useState } from 'react';
+import FlexView from 'react-flexview';
 
-import LoginUser from './LoginUser';
 import CreateUser from './CreateUser';
+import LoginUser from './LoginUser';
 
 const styles = theme => ({
-  // todo move inline css here 
+  // todo move inline css here
 });
 
-function LoginPage({ onLogin }) {
+function LoginPage({ classes, onLogin }) {
   const [isNewUser, setIsNewUser] = useState(false);
 
   const existingUserFragment = (
     <FlexView column>
-      <LoginUser onLogin={onLogin}></LoginUser>
+      <LoginUser onLogin={onLogin} />
       <Button
         style={{ margin: '8px' }}
         color="secondary"
@@ -31,7 +31,7 @@ function LoginPage({ onLogin }) {
 
   const newUserFragment = (
     <FlexView column>
-      <CreateUser onCreateUser={onLogin}></CreateUser>
+      <CreateUser onCreateUser={onLogin} />
       <Button
         style={{ margin: '8px' }}
         color="secondary"
@@ -44,27 +44,30 @@ function LoginPage({ onLogin }) {
   );
 
   return (
-    <FlexView column grow vAlignContent='center' hAlignContent='center' >
-      <FlexView column grow vAlignContent='center' style={{ minWidth: '25%', minHeight: '25%', alignItems: 'stretch' }}>
-        {
-          !isNewUser &&
+    <FlexView column grow vAlignContent="center" hAlignContent="center">
+      <FlexView
+        column
+        grow
+        vAlignContent="center"
+        style={{ minWidth: '25%', minHeight: '25%', alignItems: 'stretch' }}
+      >
+        {!isNewUser && (
           <Fade in={true} timeout={600}>
             {existingUserFragment}
           </Fade>
-        }
-        {
-          isNewUser &&
+        )}
+        {isNewUser && (
           <Fade in={true} timeout={600}>
             {newUserFragment}
           </Fade>
-        }
+        )}
       </FlexView>
-    </FlexView >
-  )
+    </FlexView>
+  );
 }
 
 LoginPage.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(LoginPage);

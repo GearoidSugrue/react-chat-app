@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
 
-import { withStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 // import Fade from '@material-ui/core/Fade';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemText from '@material-ui/core/ListItemText';
+import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
   messagesList: {
@@ -18,13 +18,13 @@ const styles = theme => ({
 });
 
 function MessageList({ classes, messages = [] }) {
-  const [messagesEndRef, setMessagesEndRef] = useState('');
+  const [messagesEndRef, setMessagesEndRef] = useState({} as HTMLDivElement);
 
   // This effect Scrolls down to the newest message. Triggered by message change.
   useEffect(
     function scrollToBottom() {
-      console.log('scrollToBottom effect');
-      if (messagesEndRef) {
+      console.log('scrollToBottom effect', messagesEndRef);
+      if (messagesEndRef && messagesEndRef.scrollIntoView) {
         messagesEndRef.scrollIntoView({ behavior: 'smooth' });
       }
     },
@@ -35,7 +35,11 @@ function MessageList({ classes, messages = [] }) {
     <List dense={true} className={classes.messagesList}>
       {messages.map(({ username, message }, i) => {
         return (
-          <ListItem className={classes.message} key={i} alignItems="flex-start">
+          <ListItem
+            className={classes.message}
+            key={username + i}
+            alignItems="flex-start"
+          >
             <ListItemAvatar>
               <Avatar
                 src={`https://api.adorable.io/avatars/36/${username}.png`}

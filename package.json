@@ -2,25 +2,37 @@
   "name": "playground-app",
   "version": "0.1.0",
   "private": true,
+  "scripts": {
+    "start": "react-scripts-ts start",
+    "build": "react-scripts-ts build",
+    "test": "react-scripts-ts test --env=jsdom",
+    "eject": "react-scripts-ts eject",
+    "tslint": "tslint 'src/**/*.{ts,tsx}'"
+  },
   "dependencies": {
     "@material-ui/core": "4.0.1",
     "@material-ui/icons": "4.0.1",
     "@material-ui/styles": "4.0.1",
-    "axios": "0.18.0",
+    "axios": "0.19.0",
     "react": "16.8.6",
     "react-dom": "16.8.6",
     "react-flexview": "4.0.3",
-    "react-scripts": "3.0.0",
+    "react-scripts-ts": "3.1.0",
+    "rxjs": "6.5.2",
     "socket.io-client": "2.2.0"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
+  "devDependencies": {
+    "@types/jest": "24.0.13",
+    "@types/node": "12.0.4",
+    "@types/react": "16.8.19",
+    "@types/react-dom": "16.8.4",
+    "@types/socket.io-client": "1.4.32",
+    "prettier": "1.17.1",
+    "tslint": "5.17.0",
+    "tslint-config-prettier": "1.18.0",
+    "tslint-react": "4.0.0",
+    "tslint-react-hooks": "2.1.0",
+    "typescript": "3.5.1"
   },
   "browserslist": {
     "production": [

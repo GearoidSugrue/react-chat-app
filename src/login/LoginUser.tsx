@@ -1,23 +1,28 @@
-import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
+import React, { useState } from 'react';
+
 import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
+import { withStyles } from '@material-ui/core/styles';
 import TypoGraphy from '@material-ui/core/Typography';
 
+import { User } from 'src/types/User.type';
 import useFetchUsers, { fetchUsersStatus } from '../hooks/Users.hook';
 
 const styles = theme => ({
   // todo move inline css here
 });
 
-function LoginUser({ onLogin }) {
-  const [selectedUser, setSelectedUser] = useState('');
+function LoginUser({ classes, onLogin }) {
+  const [selectedUser, setSelectedUser] = useState({} as User);
 
   const { users, status, retry, retryCount } = useFetchUsers();
+
+  const handleUserSelected = event =>
+    setSelectedUser(event.target.value as User);
 
   return (
     <>
@@ -41,7 +46,7 @@ function LoginUser({ onLogin }) {
           <Select
             // style={{ margin: '8px' }}
             value={selectedUser}
-            onChange={event => setSelectedUser(event.target.value)}
+            onChange={handleUserSelected}
             inputProps={{
               name: 'users',
               id: 'filled-users-select'
@@ -53,7 +58,7 @@ function LoginUser({ onLogin }) {
             {users
               .filter(user => !user.online)
               .map(user => (
-                <MenuItem key={user.username} value={user.username}>
+                <MenuItem key={user.username} value={user}>
                   {user.username}
                 </MenuItem>
               ))}
@@ -80,8 +85,8 @@ function LoginUser({ onLogin }) {
         style={{ margin: '8px' }}
         color="secondary"
         variant="contained"
-        disabled={!selectedUser}
-        onClick={() => onLogin({ username: selectedUser })}
+        disabled={!selectedUser.userId}
+        onClick={() => onLogin(selectedUser)}
       >
         Login
       </Button>

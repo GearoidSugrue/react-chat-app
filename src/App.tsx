@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import FlexView from 'react-flexview';
 import clsx from 'clsx';
+import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
+import FlexView from 'react-flexview';
 
-import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import IconButton from '@material-ui/core/IconButton';
+import { withStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import TypoGraphy from '@material-ui/core/Typography';
 
@@ -15,16 +15,19 @@ import Chat from './chat/Chat';
 import LoginPage from './login/LoginPage';
 import ChatSideDrawer from './side-drawer/ChatSideDrawer';
 
-import UserDetails from './side-drawer/UserDetails';
 import Chatrooms from './side-drawer/Chatrooms';
+import UserDetails from './side-drawer/UserDetails';
 import Users from './side-drawer/Users';
 
 import { useChatApi } from './chat-api/ChatApiContext';
+import { Chatroom } from './types/Chatroom.type';
+import { User } from './types/User.type';
 
 const styles = theme => ({
   root: {
     display: 'flex'
   },
+
   appBar: {
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.sharp,
@@ -90,28 +93,34 @@ const styles = theme => ({
 
 function App({ classes }) {
   const chatApi = useChatApi();
+
+  // todo maybe combine username, userId, loggedIn into one or two custom hooks?
   const [username, setUsername] = useState('');
+  const [userId, setUserId] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
-  const [selectedChatroom, setChatroom] = useState('');
-  const [selectedUser, setSelectedUser] = useState('');
+  const [selectedChatroom, setChatroom] = useState({} as Chatroom);
+  const [selectedUser, setSelectedUser] = useState({} as User);
 
   // const { selectedUser, selectedChatroom } = useSelectedRecpricant()
 
   // todo this should be replace with something better
   useEffect(
     function joinChat() {
-      console.log('joinChat effect', username, selectedChatroom);
+      console.log('joinChat effect', userId, selectedChatroom);
 
-      chatApi.joinChatroom({ chatroom: selectedChatroom, username });
+      chatApi.joinChatroom({ chatroomId: selectedChatroom.chatroomId, userId });
 
       return function leaveChat() {
-        chatApi.leaveChatroom({ chatroom: selectedChatroom, username });
+        chatApi.leaveChatroom({
+          chatroomId: selectedChatroom.chatroomId,
+          userId
+        });
       };
     },
-    [chatApi, selectedChatroom, username]
+    [chatApi, selectedChatroom, userId]
   );
 
   useEffect(
@@ -121,28 +130,31 @@ function App({ classes }) {
     [setMobileDrawerOpen, selectedChatroom, selectedUser]
   );
 
-  function handleLogin({ username }) {
-    chatApi.login({ username });
+  function handleLogin(user: User) {
+    chatApi.login({ userId: user.userId });
     setIsLoggedIn(true);
-    setUsername(username);
+    setUserId(user.userId);
+    setUsername(user.username);
   }
 
   function handleLogout() {
-    chatApi.logout({ username });
+    chatApi.logout();
     setIsLoggedIn(false);
+    setUserId('');
     setUsername('');
-    setChatroom('');
-    setSelectedUser('');
+    setChatroom({} as Chatroom);
+    setSelectedUser({} as User);
   }
 
-  function handleChatroomSelected(selectedChatroom) {
-    setChatroom(selectedChatroom);
-    setSelectedUser('');
+  function handleChatroomSelected(chatroom: Chatroom) {
+    console.log('chatroom selected', chatroom);
+    setChatroom(chatroom);
+    setSelectedUser({} as User);
   }
 
-  function handleUserSelected(user) {
+  function handleUserSelected(user: User) {
     setSelectedUser(user);
-    setChatroom('');
+    setChatroom({} as Chatroom);
   }
 
   function handleSideDrawerToggle() {
@@ -193,7 +205,7 @@ function App({ classes }) {
             <MenuIcon />
           </IconButton>
           <TypoGraphy variant="h5" color="inherit" noWrap>
-            {selectedChatroom || selectedUser.username || 'Group Chat'}
+            {selectedChatroom.name || selectedUser.username || 'Group Chat'}
           </TypoGraphy>
         </Toolbar>
       </AppBar>
@@ -201,8 +213,9 @@ function App({ classes }) {
       <FlexView column grow className={mainContentClasses}>
         {isLoggedIn && (
           <Chat
+            userId={userId}
             username={username}
-            chatroom={selectedChatroom}
+            selectedChatroom={selectedChatroom}
             selectedUser={selectedUser}
           />
         )}

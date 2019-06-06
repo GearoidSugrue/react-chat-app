@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 // code based on code here here: https://codesandbox.io/s/y3qzyr3lrz
 export default function useKeysPressed() {

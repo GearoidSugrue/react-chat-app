@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 
-import PropTypes from 'prop-types';
 import clsx from 'clsx';
-import { withStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
+
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import { withStyles } from '@material-ui/core/styles';
 
 import useOnlineStatus from '../hooks/OnlineStatus.hook';
 
@@ -39,7 +40,10 @@ const styles = theme => ({
 
 function User({ classes, user, isSelected, onUserSelected }) {
   const online = useOnlineStatus(user);
-  const [unseenMessages, setUnseenMessages] = useState(false);
+
+  console.log('User', { online, user });
+
+  const [unseenMessages] = useState(false);
   // todo add hook userMessage/userActivity that listens for messages from a user
   // update unseenMessages in effect if on new message and isSelected is false
 

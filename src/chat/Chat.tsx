@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import FlexView from 'react-flexview';
 
-import { withStyles } from '@material-ui/core/styles';
 import Fade from '@material-ui/core/Fade';
+import { withStyles } from '@material-ui/core/styles';
 import TypoGraphy from '@material-ui/core/Typography';
 
 import MessageList from './MessageList';
@@ -25,29 +25,32 @@ const styles = theme => ({
   }
 });
 
-function Chat({ classes, username, chatroom, selectedUser }) {
-  console.log('Chat:', { username, chatroom, selectedUser });
+function Chat({ classes, userId, username, selectedChatroom, selectedUser }) {
+  console.log('Chat:', { userId, selectedChatroom, selectedUser });
 
   const chatApi = useChatApi();
   const { messages, status: messagesStatus } = useMessages({
-    username,
-    chatroom,
+    userId,
+    selectedChatroom,
     selectedUser
   });
 
   function handleOnSendMessage(message) {
-    if (chatroom) {
-      chatApi.sendMessageToChatroom({ chatroom, username, message });
-    } else if (selectedUser) {
-      chatApi.sendMessageToUser({
-        toUsername: selectedUser.username,
-        username,
+    if (selectedChatroom.chatroomId) {
+      chatApi.sendMessageToChatroom({
+        chatroomId: selectedChatroom.chatroomId,
+        userId,
         message
+      });
+    } else if (selectedUser.userId) {
+      chatApi.sendMessageToUser({
+        message,
+        toUserId: selectedUser.userId
       });
     }
   }
 
-  const showChat = chatroom || selectedUser.username;
+  const showChat = selectedChatroom.chatroomId || selectedUser.username;
 
   return (
     <Fade in={true}>

@@ -1,11 +1,11 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import { withStyles } from '@material-ui/core/styles';
 import TypoGraphy from '@material-ui/core/Typography';
 
 import useFetchRooms, { fetchRoomsStatus } from '../hooks/Rooms.hook';
@@ -18,6 +18,7 @@ const styles = theme => ({
     margin: theme.spacing(2)
   }
 });
+
 function Chatrooms({ classes, selectedChatroom, onChatroomSelected }) {
   const { rooms, status: roomsStatus, retry } = useFetchRooms();
 
@@ -31,14 +32,14 @@ function Chatrooms({ classes, selectedChatroom, onChatroomSelected }) {
       )}
       {roomsStatus === fetchRoomsStatus.SUCCESS && (
         <List>
-          {rooms.map((room, index) => (
+          {rooms.map(room => (
             <ListItem
               button
-              key={room}
-              selected={Boolean(selectedChatroom === room)}
+              key={room.chatroomId}
+              selected={Boolean(selectedChatroom === room.chatroomId)}
               onClick={() => onChatroomSelected(room)}
             >
-              <ListItemText primary={room} />
+              <ListItemText primary={room.name} />
             </ListItem>
           ))}
         </List>

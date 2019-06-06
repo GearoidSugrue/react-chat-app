@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import useFetch, { fetchStatus } from './Fetch.hook';
 
 import { useChatApi } from '../chat-api/ChatApiContext';

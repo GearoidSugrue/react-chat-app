@@ -1,5 +1,5 @@
-
 import React, { useState } from 'react';
+
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Input from '@material-ui/core/Input';
@@ -7,8 +7,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import TypoGraphy from '@material-ui/core/Typography';
 import Clear from '@material-ui/icons/Clear';
 
-function CreateUser({ onCreateUser, onCancel }) {
-
+function CreateUser({ onCreateUser }) {
   const [username, setUsername] = useState('');
 
   return (
@@ -21,13 +20,13 @@ function CreateUser({ onCreateUser, onCancel }) {
         placeholder="Username"
         value={username}
         onChange={event => setUsername(event.target.value)}
-        endAdornment={(
+        endAdornment={
           <InputAdornment position="end">
             <IconButton onClick={() => setUsername('')}>
               <Clear />
             </IconButton>
           </InputAdornment>
-        )}
+        }
       />
       <Button
         style={{ margin: '8px' }}
@@ -39,7 +38,7 @@ function CreateUser({ onCreateUser, onCancel }) {
         Create User
       </Button>
     </>
-  )
+  );
 }
 
 export default CreateUser;

@@ -1,11 +1,11 @@
-import React from 'react';
 import PropTypes from 'prop-types';
+import React from 'react';
 
-import { withStyles } from '@material-ui/core/styles';
 import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
+import IconButton from '@material-ui/core/IconButton';
+import { withStyles } from '@material-ui/core/styles';
 import TypoGraphy from '@material-ui/core/Typography';
 
 import AddCircleOutline from '@material-ui/icons/AddCircleOutline';
@@ -15,7 +15,7 @@ const styles = theme => ({
     width: theme.sideDrawer.width
   },
   header: {
-    textTransform: 'uppercase',
+    // textTransform: 'uppercase', // todo fix as it's breaking compilation
     fontWeight: 500,
     padding: theme.spacing(2)
   }

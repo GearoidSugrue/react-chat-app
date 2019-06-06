@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
+import { useEffect, useState } from 'react';
 
 const FETCHING = `FETCHING`;
 const SUCCESS = `SUCCESS`;
@@ -11,7 +11,10 @@ export const fetchStatus = {
   ERROR
 };
 
-export default function useFetch(endpoint, fetchConfig) {
+export default function useFetch(
+  endpoint: string,
+  fetchConfig?: AxiosRequestConfig
+) {
   const [data, setData] = useState([]);
   const [status, setStatus] = useState(FETCHING);
   const [retryCount, setRetryCount] = useState(1);
@@ -43,7 +46,7 @@ export default function useFetch(endpoint, fetchConfig) {
         fetchData();
       }
     },
-    [endpoint, fetchConfig, retryCount]
+    [setStatus, setData, endpoint, fetchConfig, retryCount] // todo check if setStatus, setData, are needed
   );
 
   return { data, status, retry, retryCount };
