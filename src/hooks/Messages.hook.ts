@@ -54,14 +54,14 @@ export default function useMessages({
 
   useEffect(
     function subscribeToNewMessages() {
-      console.log('messages hook - subscribeToNewMessages');
+      console.log('messages hook - subscribeToNewMessages', { selectedUserId });
       let newMessage$: Observable<any>; // todo add Message type
       let newMessageSub: Subscription;
 
       if (selectedChatroomId) {
         newMessage$ = chatApi.listenForChatroomMessages(selectedChatroomId);
       } else if (selectedUserId) {
-        newMessage$ = chatApi.listenForUserMessages(selectedUserId);
+        newMessage$ = chatApi.listenForUserMessages({ userId, selectedUserId });
       }
 
       if (newMessage$) {
@@ -71,7 +71,7 @@ export default function useMessages({
       }
       return () => newMessageSub && newMessageSub.unsubscribe();
     },
-    [chatApi, messages, setMessages, selectedChatroomId, selectedUserId]
+    [chatApi, messages, setMessages, userId, selectedChatroomId, selectedUserId]
   );
 
   return {

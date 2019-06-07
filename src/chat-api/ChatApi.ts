@@ -1,19 +1,24 @@
-import { fromEvent, Observable } from 'rxjs';
+import { BehaviorSubject, fromEvent, Observable } from 'rxjs';
 import { filter, map, share, tap } from 'rxjs/operators';
 
-import { Chatroom } from 'src/types/Chatroom.type';
+import { Message } from 'src/types/Message.type';
+import { OnlineStatusMessage } from 'src/types/OnlineStatusMessage.type';
 import { User } from 'src/types/User.type';
 
 export class ChatApi {
   // todo create enums for ChatEvent
   // todo create types
+  loggedInUser$: BehaviorSubject<User>;
+
   chatroomsUpdates$: Observable<any>;
   usersUpdates$: Observable<any>;
-  messages$: Observable<any>;
-  onlineStatusUpdates$: Observable<any>;
+  messages$: Observable<Message>;
+  onlineStatusUpdates$: Observable<OnlineStatusMessage>;
 
   constructor(private socket) {
     console.log('socket constructor', socket);
+
+    this.loggedInUser$ = new BehaviorSubject({} as User);
 
     this.chatroomsUpdates$ = fromEvent(socket, 'rooms updated');
     this.usersUpdates$ = fromEvent(socket, 'users updated');
@@ -22,24 +27,26 @@ export class ChatApi {
     this.messages$ = fromEvent(socket, 'message').pipe(
       tap(message => console.log('New message received:', message)),
       share()
-    );
+    ) as Observable<Message>;
     this.onlineStatusUpdates$ = fromEvent(socket, 'online status change').pipe(
       tap(user => console.log('User online status change...', user)),
       share()
-    );
+    ) as Observable<OnlineStatusMessage>;
   }
 
-  login({ userId }) {
-    console.log('ChatAPI - login', { userId });
+  login(user: User) {
+    console.log('ChatAPI - login', { userId: user.userId });
 
-    if (userId) {
-      this.socket.emit('login', { userId });
+    if (user.userId) {
+      this.socket.emit('login', { userId: user.userId });
+      this.loggedInUser$.next(user);
     }
   }
 
   logout() {
     console.log('ChatAPI - logout');
     this.socket.emit('logout');
+    this.loggedInUser$.next({} as User);
   }
 
   sendMessageToChatroom({ chatroomId, userId, message }) {
@@ -91,14 +98,33 @@ export class ChatApi {
   }
 
   listenForChatroomMessages(selectedChatroomId: string): Observable<any> {
-    const correctChatroom = ({ chatroomId }: Chatroom) =>
+    const correctChatroom = ({ chatroomId }: Message) =>
       chatroomId === selectedChatroomId;
     return this.messages$.pipe(filter(correctChatroom));
   }
 
-  listenForUserMessages(selectedUserId: string): Observable<any> {
-    const correctUser = ({ userId }: User) => userId === selectedUserId;
-    return this.messages$.pipe(filter(correctUser));
+  listenForUserMessages({ userId, selectedUserId }): Observable<Message> {
+    console.log('listenForUserMessages', { userId, selectedUserId });
+    const isFromUser = (message: Message) =>
+      message.userId === userId && message.toUserId === selectedUserId;
+    const isFromSelectedUser = (message: Message) =>
+      message.toUserId === userId && message.userId === selectedUserId;
+
+    const filterMessage = (message: Message) =>
+      isFromUser(message) || isFromSelectedUser(message);
+
+    return this.messages$.pipe(filter(filterMessage));
+  }
+
+  directUserMessages$(
+    loggedInUserId: string,
+    fromUserId: string
+  ): Observable<Message> {
+    console.log('listenForUserMessages', { loggedInUserId, fromUserId });
+    const isFromCorrectUser = (message: Message) =>
+      message.userId === fromUserId && message.toUserId === loggedInUserId;
+
+    return this.messages$.pipe(filter(isFromCorrectUser));
   }
 
   chatroomNotifications$({ chatroomId }) {
@@ -115,7 +141,8 @@ export class ChatApi {
 
   userOnlineStatus$({ userId }): Observable<boolean> {
     console.log('userOnlineStatus', { userId });
-    const correctUser = statusUpdate => statusUpdate.userId === userId;
+    const correctUser = (onlineStatus: OnlineStatusMessage) =>
+      onlineStatus.userId === userId;
 
     return this.onlineStatusUpdates$.pipe(
       filter(correctUser),

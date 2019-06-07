@@ -35,6 +35,7 @@ function LoginUser({ classes, onLogin }) {
           Loading users...
         </TypoGraphy>
       )}
+
       {status === fetchUsersStatus.SUCCESS && (
         <FormControl
           style={{
@@ -65,6 +66,7 @@ function LoginUser({ classes, onLogin }) {
           </Select>
         </FormControl>
       )}
+
       {status === fetchUsersStatus.ERROR && (
         <TypoGraphy color="inherit" style={{ margin: '8px' }}>
           {retryCount < 3

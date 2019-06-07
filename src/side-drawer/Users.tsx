@@ -5,7 +5,9 @@ import TypoGraphy from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import useFetchUsers, { fetchUsersStatus } from '../hooks/Users.hook';
+import useUserLogin from 'src/hooks/UserLogin.hook';
+import useFetchUsers, { fetchUsersStatus } from 'src/hooks/Users.hook';
+import * as UserType from 'src/types/User.type';
 import User from './User';
 
 const styles = theme => ({
@@ -19,6 +21,10 @@ const styles = theme => ({
 
 function Users({ classes, selectedUser, onUserSelected }) {
   const { users, status: usersStatus, retry } = useFetchUsers();
+  const { user: loggedInUser } = useUserLogin();
+
+  const loggedInUserPredicate = (user: UserType.User) =>
+    user.userId !== loggedInUser.userId;
 
   return (
     <>
@@ -30,12 +36,23 @@ function Users({ classes, selectedUser, onUserSelected }) {
       )}
       {usersStatus === fetchUsersStatus.SUCCESS && (
         <List>
-          {users.map(user => (
+          {loggedInUser.userId && (
             <User
-              key={user.username}
+              key={loggedInUser.userId}
+              user={loggedInUser}
+              isSelected={Boolean(
+                selectedUser && selectedUser.userId === loggedInUser.userId
+              )}
+              onUserSelected={onUserSelected}
+            />
+          )}
+
+          {users.filter(loggedInUserPredicate).map(user => (
+            <User
+              key={user.userId}
               user={user}
               isSelected={Boolean(
-                selectedUser && user.username === selectedUser.username
+                selectedUser && selectedUser.userId === user.userId
               )}
               onUserSelected={onUserSelected}
             />

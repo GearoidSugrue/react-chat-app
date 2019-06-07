@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
+// import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import Hidden from '@material-ui/core/Hidden';
@@ -8,16 +9,22 @@ import IconButton from '@material-ui/core/IconButton';
 import { withStyles } from '@material-ui/core/styles';
 import TypoGraphy from '@material-ui/core/Typography';
 
-import AddCircleOutline from '@material-ui/icons/AddCircleOutline';
+import AddCircle from '@material-ui/icons/AddCircle'; // AddCircleOutlne
+import useUserLogin from 'src/hooks/UserLogin.hook';
+import Chatrooms from './Chatrooms';
+import UserDetails from './UserDetails';
+import Users from './Users';
 
 const styles = theme => ({
+  joinChatroomButton: {
+    margin: theme.spacing(1)
+  },
   drawer: {
     width: theme.sideDrawer.width
   },
   header: {
-    // textTransform: 'uppercase', // todo fix as it's breaking compilation
     fontWeight: 500,
-    padding: theme.spacing(2)
+    padding: theme.spacing(1, 2)
   }
 });
 
@@ -29,39 +36,48 @@ const styles = theme => ({
 function ChatSideDrawer({
   classes,
   theme,
-  userBar,
-  chatrooms,
-  users,
-  isLoggedIn,
+  selectedChatroom,
+  selectedUser,
   mobileDrawerOpen,
+  onLogout,
+  onChatroomSelected,
+  onUserSelected,
   onMobileDrawerToggle
 }) {
+  const { user, isLoggedIn } = useUserLogin();
+  const { username } = user;
   const handleCreateChatroom = () => {
     console.log('Create chatroom clicked!');
   };
 
   const sideDrawer = (
     <div>
-      {userBar}
+      <UserDetails username={username} onLogout={onLogout} />
+
       <Divider />
 
       <TypoGraphy noWrap color="inherit" className={classes.header}>
-        Chatrooms
+        CHATROOMS
         <IconButton
-          color="secondary"
-          className={classes.button}
+          // color="secondary"
+          // className={classes.button}
           onClick={handleCreateChatroom}
         >
-          <AddCircleOutline />
+          <AddCircle />
         </IconButton>
       </TypoGraphy>
-      {chatrooms}
+
+      <Chatrooms
+        selectedChatroom={selectedChatroom}
+        onChatroomSelected={onChatroomSelected}
+      />
+
       <Divider />
 
       <TypoGraphy noWrap color="inherit" className={classes.header}>
-        Direct Message
+        DIRECT MESSAGE
       </TypoGraphy>
-      {users}
+      <Users selectedUser={selectedUser} onUserSelected={onUserSelected} />
     </div>
   );
 

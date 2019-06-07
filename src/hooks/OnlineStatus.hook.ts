@@ -1,20 +1,23 @@
 import { useEffect, useState } from 'react';
 
 import { ChatApi } from 'src/chat-api/ChatApi';
-import { useChatApi } from '../chat-api/ChatApiContext';
+import { useChatApi } from 'src/chat-api/ChatApiContext';
 
 // after providing an initial online status this hook will be notified if the user's online status changes
-export default function useOnlineStatus({
-  userId,
-  online: initialOnlineStatus
-}: {
-  userId: string;
-  online: boolean;
-}) {
-  const [onlineStatus, setOnlineStatus] = useState(
-    Boolean(initialOnlineStatus)
-  );
+export default function useOnlineStatus(
+  {
+    userId,
+    online
+  }: {
+    userId: string;
+    online: boolean;
+  },
+  initialOnlineStatus?: boolean
+) {
   const chatApi: ChatApi = useChatApi();
+  const [onlineStatus, setOnlineStatus] = useState(
+    Boolean(online || initialOnlineStatus)
+  );
 
   useEffect(
     function subscribeToUserOnlineStatus() {

@@ -11,15 +11,11 @@ import TypoGraphy from '@material-ui/core/Typography';
 
 import MenuIcon from '@material-ui/icons/Menu';
 
+import { useChatApi } from './chat-api/ChatApiContext';
 import Chat from './chat/Chat';
+import useUserLogin from './hooks/UserLogin.hook';
 import LoginPage from './login/LoginPage';
 import ChatSideDrawer from './side-drawer/ChatSideDrawer';
-
-import Chatrooms from './side-drawer/Chatrooms';
-import UserDetails from './side-drawer/UserDetails';
-import Users from './side-drawer/Users';
-
-import { useChatApi } from './chat-api/ChatApiContext';
 import { Chatroom } from './types/Chatroom.type';
 import { User } from './types/User.type';
 
@@ -27,7 +23,6 @@ const styles = theme => ({
   root: {
     display: 'flex'
   },
-
   appBar: {
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.sharp,
@@ -93,35 +88,11 @@ const styles = theme => ({
 
 function App({ classes }) {
   const chatApi = useChatApi();
-
-  // todo maybe combine username, userId, loggedIn into one or two custom hooks?
-  const [username, setUsername] = useState('');
-  const [userId, setUserId] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
+  const { user, isLoggedIn } = useUserLogin();
+  const { username, userId } = user;
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
-
   const [selectedChatroom, setChatroom] = useState({} as Chatroom);
   const [selectedUser, setSelectedUser] = useState({} as User);
-
-  // const { selectedUser, selectedChatroom } = useSelectedRecpricant()
-
-  // todo this should be replace with something better
-  useEffect(
-    function joinChat() {
-      console.log('joinChat effect', userId, selectedChatroom);
-
-      chatApi.joinChatroom({ chatroomId: selectedChatroom.chatroomId, userId });
-
-      return function leaveChat() {
-        chatApi.leaveChatroom({
-          chatroomId: selectedChatroom.chatroomId,
-          userId
-        });
-      };
-    },
-    [chatApi, selectedChatroom, userId]
-  );
 
   useEffect(
     function closeMobileDrawerOnSelection() {
@@ -130,18 +101,12 @@ function App({ classes }) {
     [setMobileDrawerOpen, selectedChatroom, selectedUser]
   );
 
-  function handleLogin(user: User) {
-    chatApi.login({ userId: user.userId });
-    setIsLoggedIn(true);
-    setUserId(user.userId);
-    setUsername(user.username);
+  function handleLogin(userLoggingIn: User) {
+    chatApi.login(userLoggingIn);
   }
 
   function handleLogout() {
     chatApi.logout();
-    setIsLoggedIn(false);
-    setUserId('');
-    setUsername('');
     setChatroom({} as Chatroom);
     setSelectedUser({} as User);
   }
@@ -152,28 +117,15 @@ function App({ classes }) {
     setSelectedUser({} as User);
   }
 
-  function handleUserSelected(user: User) {
-    setSelectedUser(user);
+  function handleUserSelected(newlySelectedUser: User) {
+    console.log('handleUserSelected', newlySelectedUser);
+    setSelectedUser(newlySelectedUser);
     setChatroom({} as Chatroom);
   }
 
   function handleSideDrawerToggle() {
     setMobileDrawerOpen(!mobileDrawerOpen);
   }
-
-  // todo can these be back into ChatSideDrawer? useLoggedInUser?
-  const userDetailsFragment = (
-    <UserDetails username={username} onLogout={handleLogout} />
-  );
-  const roomsFragment = (
-    <Chatrooms
-      selectedChatroom={selectedChatroom}
-      onChatroomSelected={handleChatroomSelected}
-    />
-  );
-  const usersFragment = (
-    <Users selectedUser={selectedUser} onUserSelected={handleUserSelected} />
-  );
 
   const appBarClasses = clsx(classes.appBar, isLoggedIn && classes.appBarShift);
   const sideDrawerButtonClasses = clsx(
@@ -188,11 +140,12 @@ function App({ classes }) {
   return (
     <FlexView column grow width="100%" height="100vh">
       <ChatSideDrawer
-        userBar={userDetailsFragment}
-        chatrooms={roomsFragment}
-        users={usersFragment}
-        isLoggedIn={isLoggedIn}
+        selectedChatroom={selectedChatroom}
+        selectedUser={selectedUser}
         mobileDrawerOpen={mobileDrawerOpen}
+        onLogout={handleLogout}
+        onChatroomSelected={handleChatroomSelected}
+        onUserSelected={handleUserSelected}
         onMobileDrawerToggle={handleSideDrawerToggle}
       />
 

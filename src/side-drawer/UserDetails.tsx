@@ -12,13 +12,14 @@ import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import Paper from '@material-ui/core/Paper';
 import Popper from '@material-ui/core/Popper';
-import { withStyles } from '@material-ui/core/styles';
+import { Theme, withStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import TypoGraphy from '@material-ui/core/Typography';
 
 import MoreVert from '@material-ui/icons/MoreVert';
+import clsx from 'clsx';
 
-const styles = theme => ({
+const styles = (theme: Theme) => ({
   toolbar: {
     padding: theme.spacing(1, 2)
   },
@@ -31,15 +32,27 @@ const styles = theme => ({
   },
   userBarMenu: {
     width: '100%'
+  },
+  loading: {
+    background: theme.palette.primary.main
   }
 });
 
 function UserDetails({ classes, username, onLogout }) {
   const [userMenuElement, setUserMenuElement] = useState();
 
+  const [isAvatarLoaded, setIsAvatarLoaded] = useState(false);
+
   const handleLogout = () => {
     setUserMenuElement(null);
     onLogout();
+  };
+
+  const avatarClasses = clsx(!isAvatarLoaded && classes.loading);
+
+  const handleAvatarLoaded = () => {
+    console.log('handleAvatarLoaded');
+    setIsAvatarLoaded(true);
   };
 
   return (
@@ -48,11 +61,15 @@ function UserDetails({ classes, username, onLogout }) {
         className={classes.userBarButton}
         onClick={event => setUserMenuElement(event.currentTarget)}
       >
-        {/* make avatar it's own comp/hook? Also, add null/'' check for username, currently the avatar flickers with an incorrect place holder */}
-        <Avatar
-          src={`https://api.adorable.io/avatars/36/${username}.png`}
-          style={{ borderRadius: '25%' }}
-        />
+        {/* make avatar it's own comp/hook?*/}
+        {username && (
+          <Avatar
+            className={avatarClasses}
+            src={`https://api.adorable.io/avatars/36/${username}.png`}
+            onLoad={handleAvatarLoaded}
+            style={{ borderRadius: '25%' }}
+          />
+        )}
         <TypoGraphy noWrap className={classes.userBarElement}>
           {username}
         </TypoGraphy>
@@ -69,7 +86,6 @@ function UserDetails({ classes, username, onLogout }) {
           {({ TransitionProps }) => (
             <Grow {...TransitionProps}>
               <Paper>
-                {/* fix: doesn't trigger if users or chatrooms are clicked! */}
                 <ClickAwayListener onClickAway={() => setUserMenuElement(null)}>
                   <MenuList>
                     <MenuItem onClick={handleLogout}>Logout</MenuItem>

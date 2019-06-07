@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
@@ -7,7 +7,9 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import { withStyles } from '@material-ui/core/styles';
 
-import useOnlineStatus from '../hooks/OnlineStatus.hook';
+import { useChatApi } from 'src/chat-api/ChatApiContext';
+import useOnlineStatus from 'src/hooks/OnlineStatus.hook';
+import useUserLogin from 'src/hooks/UserLogin.hook';
 
 const styles = theme => ({
   circle: {
@@ -26,50 +28,59 @@ const styles = theme => ({
     overflow: 'hidden',
     margin: theme.spacing(1, 2)
   },
-  // unseenMessagesUsername: {
-  //   fontWeight: 500
-  // },
   unseenMessages: {
-    background: 'blue'
+    fontWeight: 600
   }
-
-  // usernameText: { text: {
-  //   fontWeight: 500
-  // }
 });
 
 function User({ classes, user, isSelected, onUserSelected }) {
-  const online = useOnlineStatus(user);
+  const chatApi = useChatApi();
+  const { user: loggedInUser } = useUserLogin(); // todo remove?
+  const isLoggedInUser = user.userId === loggedInUser.userId;
+  const online = useOnlineStatus(user, isLoggedInUser);
+  const [unseenMessagesCount, setUnseenMessagesCount] = useState(0);
+  const highlightText: boolean = !!unseenMessagesCount || isSelected;
 
-  console.log('User', { online, user });
+  useEffect(
+    function listenForUnseenMessages() {
+      const incrementUnseenMessages = () =>
+        setUnseenMessagesCount(unseenMessagesCount + 1);
 
-  const [unseenMessages] = useState(false);
-  // todo add hook userMessage/userActivity that listens for messages from a user
-  // update unseenMessages in effect if on new message and isSelected is false
+      const unseenMessagesSub = chatApi
+        .directUserMessages$(loggedInUser.userId, user.userId)
+        .subscribe(incrementUnseenMessages);
 
-  // todo: should a unseenMessage counter be better?
+      return () => unseenMessagesSub.unsubscribe();
+    },
+    [chatApi, loggedInUser, user, unseenMessagesCount, setUnseenMessagesCount]
+  );
+
+  useEffect(
+    function resetUnseenMessagesCount() {
+      setUnseenMessagesCount(0);
+    },
+    [isSelected, setUnseenMessagesCount]
+  );
 
   const onlineIconClasses = clsx(classes.circle, online && classes.online);
   const usernameClasses = clsx(
-    classes.username
-    // unseenMessages && classes.unseenMessagesUsername
+    classes.username,
+    highlightText && classes.unseenMessages
   );
-  const unseenMessagesIconClasses = clsx(classes.circle, classes.newActivity);
+
+  const displayText = user.username + (isLoggedInUser ? ' (you)' : '');
 
   return (
     <ListItem button selected={isSelected} onClick={() => onUserSelected(user)}>
       <span className={onlineIconClasses} />
 
-      {/*  // todo: should username font' weight be increase if unseen messages? This should work...
-        classes={{ text: {
-          fontWeight: 500
-        }}} 
-      */}
+      <ListItemText
+        classes={{ primary: usernameClasses }}
+        primary={displayText}
+      />
 
-      <ListItemText className={usernameClasses} primary={user.username} />
-
-      {unseenMessages && !isSelected && (
-        <span className={unseenMessagesIconClasses} />
+      {!!unseenMessagesCount && !isSelected && (
+        <span className={classes.unseenMessages}>{unseenMessagesCount}</span>
       )}
     </ListItem>
   );
