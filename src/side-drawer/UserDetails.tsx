@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 
 import PropTypes from 'prop-types';
 
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
-
 // import Menu from '@material-ui/core/Menu';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Grow from '@material-ui/core/Grow';
@@ -15,13 +13,13 @@ import Popper from '@material-ui/core/Popper';
 import { Theme, withStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import TypoGraphy from '@material-ui/core/Typography';
-
 import MoreVert from '@material-ui/icons/MoreVert';
-import clsx from 'clsx';
+
+import UserAvatar from './UserAvatar';
 
 const styles = (theme: Theme) => ({
   toolbar: {
-    padding: theme.spacing(1, 2)
+    padding: theme.spacing(0, 2)
   },
   userBarButton: {
     width: '100%',
@@ -32,27 +30,15 @@ const styles = (theme: Theme) => ({
   },
   userBarMenu: {
     width: '100%'
-  },
-  loading: {
-    background: theme.palette.primary.main
   }
 });
 
 function UserDetails({ classes, username, onLogout }) {
   const [userMenuElement, setUserMenuElement] = useState();
 
-  const [isAvatarLoaded, setIsAvatarLoaded] = useState(false);
-
   const handleLogout = () => {
     setUserMenuElement(null);
     onLogout();
-  };
-
-  const avatarClasses = clsx(!isAvatarLoaded && classes.loading);
-
-  const handleAvatarLoaded = () => {
-    console.log('handleAvatarLoaded');
-    setIsAvatarLoaded(true);
   };
 
   return (
@@ -61,15 +47,7 @@ function UserDetails({ classes, username, onLogout }) {
         className={classes.userBarButton}
         onClick={event => setUserMenuElement(event.currentTarget)}
       >
-        {/* make avatar it's own comp/hook?*/}
-        {username && (
-          <Avatar
-            className={avatarClasses}
-            src={`https://api.adorable.io/avatars/36/${username}.png`}
-            onLoad={handleAvatarLoaded}
-            style={{ borderRadius: '25%' }}
-          />
-        )}
+        <UserAvatar username={username} />
         <TypoGraphy noWrap className={classes.userBarElement}>
           {username}
         </TypoGraphy>

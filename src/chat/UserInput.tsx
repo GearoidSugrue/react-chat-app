@@ -2,20 +2,19 @@ import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
 import Button from '@material-ui/core/Button';
-// import Fade from '@material-ui/core/Fade';
+import Fade from '@material-ui/core/Fade';
 import Input from '@material-ui/core/Input';
-import { withStyles } from '@material-ui/core/styles';
+import { Theme, withStyles } from '@material-ui/core/styles';
 
 import Send from '@material-ui/icons/Send';
 
 import { useAreKeysPressed } from '../hooks/KeysPressPressed.hook';
 
-const styles = theme => ({
+const styles = (theme: Theme) => ({
   userInput: {
     display: 'flex',
-    // flexDirection: 'row', // todo fix broken by ts migration
-    padding: theme.spacing(2)
-    // 'text-align': 'start' // prevents scroll bar from showing on parent container
+    padding: theme.spacing(1, 2),
+    'text-align': 'start' // prevents scroll bar from showing on parent container
   },
   textInput: {
     flex: 1
@@ -44,28 +43,30 @@ function UserInput({ classes, onSendMessage }) {
   }
 
   return (
-    <div className={classes.userInput}>
-      <Input
-        multiline
-        className={classes.textInput}
-        autoFocus={true}
-        rowsMax="4"
-        rows="1"
-        placeholder="Send a message (Shift + Enter)"
-        value={userInput}
-        onChange={event => setUserInput(event.target.value)}
-      />
-      <Button
-        variant="contained"
-        color="secondary"
-        className={classes.sendButton}
-        disabled={!userInput}
-        onClick={sendMessage}
-      >
-        Send
-        <Send className={classes.sendIcon} />
-      </Button>
-    </div>
+    <Fade in={true} timeout={600}>
+      <div className={classes.userInput}>
+        <Input
+          multiline
+          className={classes.textInput}
+          autoFocus={true}
+          rowsMax="3"
+          rows="1"
+          placeholder="Send a message (Shift + Enter)"
+          value={userInput}
+          onChange={event => setUserInput(event.target.value)}
+        />
+        <Button
+          variant="contained"
+          color="secondary"
+          className={classes.sendButton}
+          disabled={!userInput}
+          onClick={sendMessage}
+        >
+          Send
+          <Send className={classes.sendIcon} />
+        </Button>
+      </div>
+    </Fade>
   );
 }
 

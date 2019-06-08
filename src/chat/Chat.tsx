@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import FlexView from 'react-flexview';
 
+import { Divider } from '@material-ui/core';
 import Fade from '@material-ui/core/Fade';
 import { withStyles } from '@material-ui/core/styles';
 import TypoGraphy from '@material-ui/core/Typography';
@@ -63,7 +64,7 @@ function Chat({ classes, userId, username, selectedChatroom, selectedUser }) {
 
         {showChat && (
           <>
-            <FlexView column grow vAlignContent="top">
+            <FlexView column grow basis="85%">
               {messagesStatus === fetchMessagesStatus.FETCHING && (
                 <TypoGraphy color="inherit" style={{ margin: '8px' }}>
                   Loading messages...
@@ -74,9 +75,9 @@ function Chat({ classes, userId, username, selectedChatroom, selectedUser }) {
               )}
             </FlexView>
 
-            <FlexView column vAlignContent="bottom">
-              <UserInput onSendMessage={handleOnSendMessage} />
-            </FlexView>
+            <Divider />
+
+            <UserInput onSendMessage={handleOnSendMessage} />
           </>
         )}
       </>

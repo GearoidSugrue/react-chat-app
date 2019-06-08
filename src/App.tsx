@@ -21,7 +21,8 @@ import { User } from './types/User.type';
 
 const styles = theme => ({
   root: {
-    display: 'flex'
+    display: 'flex',
+    overflow: 'hidden'
   },
   appBar: {
     transition: theme.transitions.create(['margin', 'width'], {
@@ -138,7 +139,7 @@ function App({ classes }) {
   );
 
   return (
-    <FlexView column grow width="100%" height="100vh">
+    <FlexView column grow width="100%" height="100vh" className={classes.root}>
       <ChatSideDrawer
         selectedChatroom={selectedChatroom}
         selectedUser={selectedUser}

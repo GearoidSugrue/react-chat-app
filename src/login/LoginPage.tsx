@@ -1,6 +1,6 @@
 import Button from '@material-ui/core/Button';
 import Fade from '@material-ui/core/Fade';
-import { withStyles } from '@material-ui/core/styles';
+import { Theme, withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import FlexView from 'react-flexview';
@@ -8,8 +8,10 @@ import FlexView from 'react-flexview';
 import CreateUser from './CreateUser';
 import LoginUser from './LoginUser';
 
-const styles = theme => ({
-  // todo move inline css here
+const styles = (theme: Theme) => ({
+  button: {
+    margin: '8px'
+  }
 });
 
 function LoginPage({ classes, onLogin }) {
@@ -19,7 +21,7 @@ function LoginPage({ classes, onLogin }) {
     <FlexView column>
       <LoginUser onLogin={onLogin} />
       <Button
-        style={{ margin: '8px' }}
+        className={classes.button}
         color="secondary"
         variant="outlined"
         onClick={() => setIsNewUser(true)}
@@ -33,7 +35,7 @@ function LoginPage({ classes, onLogin }) {
     <FlexView column>
       <CreateUser onCreateUser={onLogin} />
       <Button
-        style={{ margin: '8px' }}
+        className={classes.button}
         color="secondary"
         variant="outlined"
         onClick={() => setIsNewUser(false)}
