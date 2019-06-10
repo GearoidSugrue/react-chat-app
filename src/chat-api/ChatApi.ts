@@ -36,9 +36,10 @@ export class ChatApi {
 
   login(user: User) {
     console.log('ChatAPI - login', { userId: user.userId });
+    const { userId, username } = user || ({} as User);
 
-    if (user.userId) {
-      this.socket.emit('login', { userId: user.userId });
+    if (userId && username) {
+      this.socket.emit('login', { userId, username });
       this.loggedInUser$.next(user);
     }
   }
