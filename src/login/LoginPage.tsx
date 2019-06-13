@@ -54,12 +54,12 @@ function LoginPage({ classes, onLogin }) {
         style={{ minWidth: '25%', minHeight: '25%', alignItems: 'stretch' }}
       >
         {!isNewUser && (
-          <Fade in={true} timeout={600}>
+          <Fade in={true} timeout={300}>
             {existingUserFragment}
           </Fade>
         )}
         {isNewUser && (
-          <Fade in={true} timeout={600}>
+          <Fade in={true} timeout={300}>
             {newUserFragment}
           </Fade>
         )}

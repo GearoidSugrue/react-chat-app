@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 
+import { Fade } from '@material-ui/core';
 import Avatar from '@material-ui/core/Avatar';
 import { Theme, withStyles } from '@material-ui/core/styles';
 
@@ -11,10 +12,13 @@ const styles = (theme: Theme) => ({
     borderRadius: '25%'
   },
   loading: {
-    background: theme.palette.primary.main
+    background: theme.palette.primary.main,
+    transition: 'background-color 1s ease' // todo investigate this vs/and Fade
   }
 });
 
+// todo add error case for img loading!
+// investigate other animations such as zoom, etc
 function UserAvatar({ classes, username }) {
   const [isAvatarLoaded, setIsAvatarLoaded] = useState(false);
 
@@ -33,11 +37,14 @@ function UserAvatar({ classes, username }) {
     <>
       {/* todo check if this works as expected  */}
       {username && (
-        <Avatar
-          className={avatarClasses}
-          src={avatarUrl}
-          onLoad={handleAvatarLoaded}
-        />
+        <Fade in={true} timeout={300}>
+          <Avatar
+            className={avatarClasses}
+            src={avatarUrl}
+            onLoad={handleAvatarLoaded}
+            onError={handleAvatarLoaded}
+          />
+        </Fade>
       )}
     </>
   );
