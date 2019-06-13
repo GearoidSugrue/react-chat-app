@@ -1,12 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
-import { Fade, OutlinedInput } from '@material-ui/core';
+import { Fade, TextField } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
 import { Theme, withStyles } from '@material-ui/core/styles';
 import TypoGraphy from '@material-ui/core/Typography';
 
@@ -26,10 +23,11 @@ const styles = (theme: Theme) => ({
   },
   usersSelectBox: {
     margin: theme.spacing(1),
-    minWidth: '120px'
+    minWidth: '120px',
+    minHeight: '56px'
   },
   usersSelect: {
-    minHeight: '56px'
+    minHeight: '19px' // + padding = 56px
   }
 });
 
@@ -61,30 +59,28 @@ function LoginUser({ classes, onLogin }) {
 
       {status === fetchUsersStatus.SUCCESS && (
         <Fade in={true} timeout={300}>
-          <FormControl className={classes.usersSelectBox} variant="outlined">
-            <InputLabel htmlFor="users-select">Users</InputLabel>
-            <Select
-              className={classes.usersSelect}
-              id="users-select"
-              autoFocus={true}
-              value={selectedUser}
-              onChange={handleUserSelected}
-              input={
-                <OutlinedInput labelWidth={42} name="users" id="users-select" />
-              }
-            >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              {users
-                .filter(user => !user.online)
-                .map(user => (
-                  <MenuItem key={user.username} value={user}>
-                    {user.username}
-                  </MenuItem>
-                ))}
-            </Select>
-          </FormControl>
+          <TextField
+            select
+            className={classes.usersSelectBox}
+            id="users-select"
+            variant="outlined"
+            label="Users"
+            autoFocus={true}
+            value={selectedUser}
+            onChange={handleUserSelected}
+            InputProps={{ classes: { input: classes.usersSelect } }}
+          >
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
+            {users
+              .filter(user => !user.online)
+              .map(user => (
+                <MenuItem key={user.username} value={user}>
+                  {user.username}
+                </MenuItem>
+              ))}
+          </TextField>
         </Fade>
       )}
 

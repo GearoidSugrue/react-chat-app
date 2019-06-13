@@ -31,7 +31,8 @@ function MessageList({ theme, classes, messages = [] }) {
   );
 
   return (
-    <Fade in={true} timeout={600}>
+    <Fade in={true} timeout={300}>
+      {/* todo investigate react-native ListView */}
       <List dense={true} className={classes.messagesList}>
         {messages.map(({ username, message }, i) => {
           return (

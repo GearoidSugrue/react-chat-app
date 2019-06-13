@@ -1,14 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
+import { TextField } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import Fade from '@material-ui/core/Fade';
-import Input from '@material-ui/core/Input';
 import { Theme, withStyles } from '@material-ui/core/styles';
-
 import Send from '@material-ui/icons/Send';
 
-import { useAreKeysPressed } from '../hooks/KeysPressPressed.hook';
+import { useAreKeysPressed } from 'src/hooks/KeysPressPressed.hook';
 
 const styles = (theme: Theme) => ({
   userInput: {
@@ -43,18 +42,22 @@ function UserInput({ classes, onSendMessage }) {
   }
 
   return (
-    <Fade in={true} timeout={600}>
+    <Fade in={true} timeout={300}>
       <div className={classes.userInput}>
-        <Input
-          multiline
+        <TextField
+          fullWidth
           className={classes.textInput}
-          autoFocus={true}
-          rowsMax="3"
+          id="user-input"
+          variant="outlined"
           rows="1"
-          placeholder="Send a message (Shift + Enter)"
+          rowsMax="3"
+          autoFocus={true}
+          multiline={true}
+          label="Send a message (Shift + Enter)"
           value={userInput}
           onChange={event => setUserInput(event.target.value)}
         />
+
         <Button
           variant="contained"
           color="secondary"
