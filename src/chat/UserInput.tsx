@@ -1,9 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
-import { TextField } from '@material-ui/core';
+import { Slide, TextField } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
-import Fade from '@material-ui/core/Fade';
 import { Theme, withStyles } from '@material-ui/core/styles';
 import Send from '@material-ui/icons/Send';
 
@@ -42,7 +41,7 @@ function UserInput({ classes, onSendMessage }) {
   }
 
   return (
-    <Fade in={true} timeout={300}>
+    <Slide mountOnEnter unmountOnExit direction="up" in={true} timeout={300}>
       <div className={classes.userInput}>
         <TextField
           fullWidth
@@ -69,7 +68,7 @@ function UserInput({ classes, onSendMessage }) {
           <Send className={classes.sendIcon} />
         </Button>
       </div>
-    </Fade>
+    </Slide>
   );
 }
 

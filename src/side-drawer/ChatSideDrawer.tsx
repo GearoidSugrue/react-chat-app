@@ -46,6 +46,7 @@ function ChatSideDrawer({
 }) {
   const { user, isLoggedIn } = useUserLogin();
   const { username } = user;
+
   const handleCreateChatroom = () => {
     console.log('Create chatroom clicked!');
   };
@@ -53,7 +54,6 @@ function ChatSideDrawer({
   const sideDrawer = (
     <div>
       <UserDetails username={username} onLogout={onLogout} />
-
       <Divider />
 
       <TypoGraphy noWrap color="inherit" className={classes.header}>
@@ -67,29 +67,40 @@ function ChatSideDrawer({
         </IconButton>
       </TypoGraphy>
 
-      <Chatrooms
-        selectedChatroom={selectedChatroom}
-        onChatroomSelected={onChatroomSelected}
-      />
-
+      {isLoggedIn && (
+        <Chatrooms
+          selectedChatroom={selectedChatroom}
+          onChatroomSelected={onChatroomSelected}
+        />
+      )}
       <Divider />
 
       <TypoGraphy noWrap color="inherit" className={classes.header}>
         DIRECT MESSAGE
       </TypoGraphy>
-      <Users selectedUser={selectedUser} onUserSelected={onUserSelected} />
+      {isLoggedIn && (
+        <Users selectedUser={selectedUser} onUserSelected={onUserSelected} />
+      )}
     </div>
   );
 
   return (
     <>
-      {/* todo investigate material ui useMediaQuery. May not change dynamically tho...*/}
+      {/* todo: investigate material ui useMediaQuery. May not change dynamically tho...*/}
       <Hidden smUp implementation="js">
+        {/* 
+          todo: investigate if triggering slide out animation can be delayed a 100ms or so. 
+          This would give the drawer a chance to start loading data and rendering and then start sliding rather than doing it all at once.
+        */}
         <Drawer
           classes={{
             paper: classes.drawer
           }}
           variant="temporary"
+          transitionDuration={{
+            enter: theme.transitions.duration.enteringScreen,
+            exit: theme.transitions.duration.leavingScreen
+          }}
           anchor={theme.direction === 'rtl' ? 'right' : 'left'}
           open={mobileDrawerOpen && isLoggedIn}
           onClose={onMobileDrawerToggle}
@@ -104,6 +115,10 @@ function ChatSideDrawer({
             paper: classes.drawer
           }}
           variant="persistent"
+          transitionDuration={{
+            enter: theme.transitions.duration.enteringScreen,
+            exit: theme.transitions.duration.leavingScreen
+          }}
           anchor={theme.direction === 'rtl' ? 'right' : 'left'}
           open={isLoggedIn}
         >

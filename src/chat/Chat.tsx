@@ -10,8 +10,8 @@ import TypoGraphy from '@material-ui/core/Typography';
 import MessageList from './MessageList';
 import UserInput from './UserInput';
 
-import { useChatApi } from '../chat-api/ChatApiContext';
-import useMessages, { fetchMessagesStatus } from '../hooks/Messages.hook';
+import { useChatApi } from 'src/chat-api/ChatApiContext';
+import useMessages, { fetchMessagesStatus } from 'src/hooks/Messages.hook';
 
 // todo: show online and offline users in a sub-toolbar?
 

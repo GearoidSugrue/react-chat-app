@@ -9,7 +9,6 @@ import { withStyles } from '@material-ui/core/styles';
 
 import { useChatApi } from 'src/chat-api/ChatApiContext';
 import useOnlineStatus from 'src/hooks/OnlineStatus.hook';
-import useUserLogin from 'src/hooks/UserLogin.hook';
 
 const styles = theme => ({
   circle: {
@@ -33,13 +32,20 @@ const styles = theme => ({
   }
 });
 
-function User({ classes, user, isSelected, onUserSelected }) {
+function User({ classes, user, loggedInUser, isSelected, onUserSelected }) {
   const chatApi = useChatApi();
-  const { user: loggedInUser } = useUserLogin(); // todo remove?
   const isLoggedInUser = user.userId === loggedInUser.userId;
   const online = useOnlineStatus(user, isLoggedInUser);
   const [unseenMessagesCount, setUnseenMessagesCount] = useState(0);
+
   const highlightText: boolean = !!unseenMessagesCount || isSelected;
+  const displayText = user.username + (isLoggedInUser ? ' (you)' : '');
+
+  const onlineIconClasses = clsx(classes.circle, online && classes.online);
+  const usernameClasses = clsx(
+    classes.username,
+    highlightText && classes.unseenMessages
+  );
 
   useEffect(
     function listenForUnseenMessages() {
@@ -61,14 +67,6 @@ function User({ classes, user, isSelected, onUserSelected }) {
     },
     [isSelected, setUnseenMessagesCount]
   );
-
-  const onlineIconClasses = clsx(classes.circle, online && classes.online);
-  const usernameClasses = clsx(
-    classes.username,
-    highlightText && classes.unseenMessages
-  );
-
-  const displayText = user.username + (isLoggedInUser ? ' (you)' : '');
 
   return (
     <ListItem button selected={isSelected} onClick={() => onUserSelected(user)}>

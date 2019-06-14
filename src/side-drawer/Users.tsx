@@ -26,6 +26,12 @@ function Users({ classes, selectedUser, onUserSelected }) {
   const loggedInUserPredicate = (user: UserType.User) =>
     user.userId !== loggedInUser.userId;
 
+  // logged in user should always be at the top of the list
+  const formattedUsers: UserType.User[] = [
+    loggedInUser,
+    ...users.filter(loggedInUserPredicate)
+  ];
+
   return (
     <>
       {usersStatus === fetchUsersStatus.FETCHING && (
@@ -34,23 +40,14 @@ function Users({ classes, selectedUser, onUserSelected }) {
           Loading users...
         </TypoGraphy>
       )}
+
       {usersStatus === fetchUsersStatus.SUCCESS && (
         <List>
-          {loggedInUser.userId && (
-            <User
-              key={loggedInUser.userId}
-              user={loggedInUser}
-              isSelected={Boolean(
-                selectedUser && selectedUser.userId === loggedInUser.userId
-              )}
-              onUserSelected={onUserSelected}
-            />
-          )}
-
-          {users.filter(loggedInUserPredicate).map(user => (
+          {formattedUsers.map(user => (
             <User
               key={user.userId}
               user={user}
+              loggedInUser={loggedInUser}
               isSelected={Boolean(
                 selectedUser && selectedUser.userId === user.userId
               )}
@@ -59,6 +56,7 @@ function Users({ classes, selectedUser, onUserSelected }) {
           ))}
         </List>
       )}
+
       {usersStatus === fetchUsersStatus.ERROR && (
         <TypoGraphy color="inherit" className={classes.errorText}>
           Error loading users!

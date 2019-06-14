@@ -33,15 +33,10 @@ const styles = (theme: Theme) => ({
 
 function LoginUser({ classes, onLogin }) {
   const [selectedUser, setSelectedUser] = useState({} as User);
+  const { users, status, retry } = useFetchUsers();
 
-  const { users, status, retry, retryCount } = useFetchUsers();
-
-  const handleUserSelected = (
-    event: React.ChangeEvent<{
-      name?: string;
-      value: unknown;
-    }>
-  ) => setSelectedUser(event.target.value as User);
+  const handleUserSelected = (event: React.ChangeEvent<{ value: any }>) =>
+    setSelectedUser(event.target.value as User);
 
   const loadingBar = (
     <Fade in={true} timeout={600}>
@@ -54,7 +49,6 @@ function LoginUser({ classes, onLogin }) {
       <TypoGraphy className={classes.loginUserElement} variant="h5">
         Login
       </TypoGraphy>
-
       {status === fetchUsersStatus.FETCHING && loadingBar}
 
       {status === fetchUsersStatus.SUCCESS && (
@@ -86,10 +80,7 @@ function LoginUser({ classes, onLogin }) {
 
       {status === fetchUsersStatus.ERROR && (
         <TypoGraphy className={classes.loginUserElement} color="inherit">
-          {retryCount < 3
-            ? 'Hmm... I failed to load users ಠ~ಠ'
-            : 'Well this is embarrassing... ⊙﹏⊙'}
-
+          Hmm... I failed to load users ಠ~ಠ
           <Button
             className={classes.loginUserElement}
             color="secondary"
@@ -100,6 +91,7 @@ function LoginUser({ classes, onLogin }) {
           </Button>
         </TypoGraphy>
       )}
+
       <Button
         className={classes.loginUserElement}
         color="secondary"

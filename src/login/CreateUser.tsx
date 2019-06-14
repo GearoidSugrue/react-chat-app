@@ -1,16 +1,9 @@
-import React, { useState } from 'react';
-
 import PropTypes from 'prop-types';
+import React, { useRef, useState } from 'react';
 
-import {
-  FormControl,
-  InputLabel,
-  OutlinedInput
-  // TextField
-} from '@material-ui/core';
+import { FormControl, InputLabel, OutlinedInput } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-// import Input from '@material-ui/core/Input';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { Theme, withStyles } from '@material-ui/core/styles';
 import TypoGraphy from '@material-ui/core/Typography';
@@ -28,20 +21,15 @@ const styles = (theme: Theme) => ({
 
 function CreateUser({ classes, onCreateUser }) {
   const [username, setUsername] = useState('');
+  const [labelWidth, setLabelWidth] = useState(0);
+  const labelRef = useRef(null);
 
-  const [labelWidth, setLabelWidth] = React.useState(0);
-  const labelRef = React.useRef(null);
-
-  React.useEffect(() => {
+  React.useEffect(function setUsernameLabelWidth() {
     setLabelWidth(labelRef.current.offsetWidth);
   }, []);
 
-  const handleUsernameChange = (
-    event: React.ChangeEvent<{
-      name?: string;
-      value: unknown;
-    }>
-  ) => setUsername(event.target.value as string);
+  const handleUsernameChange = (event: React.ChangeEvent<{ value: string }>) =>
+    setUsername(event.target.value);
 
   return (
     <>
