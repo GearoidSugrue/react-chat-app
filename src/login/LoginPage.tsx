@@ -1,6 +1,6 @@
 import Button from '@material-ui/core/Button';
 import Fade from '@material-ui/core/Fade';
-import { Theme, withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import FlexView from 'react-flexview';
@@ -8,13 +8,13 @@ import FlexView from 'react-flexview';
 import CreateUser from './CreateUser';
 import LoginUser from './LoginUser';
 
-const styles = (theme: Theme) => ({
+const styles = () => ({
   button: {
     margin: '8px'
   }
 });
 
-function LoginPage({ classes, onLogin }) {
+function LoginPage({ classes, theme, onLogin }) {
   const [isNewUser, setIsNewUser] = useState(false);
 
   const existingUserFragment = (
@@ -54,12 +54,12 @@ function LoginPage({ classes, onLogin }) {
         style={{ minWidth: '25%', minHeight: '25%', alignItems: 'stretch' }}
       >
         {!isNewUser && (
-          <Fade in={true} timeout={300}>
+          <Fade in={true} timeout={theme.transitions.duration.enteringScreen}>
             {existingUserFragment}
           </Fade>
         )}
         {isNewUser && (
-          <Fade in={true} timeout={300}>
+          <Fade in={true} timeout={theme.transitions.duration.enteringScreen}>
             {newUserFragment}
           </Fade>
         )}
@@ -69,7 +69,8 @@ function LoginPage({ classes, onLogin }) {
 }
 
 LoginPage.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(LoginPage);
+export default withStyles(styles, { withTheme: true })(LoginPage);

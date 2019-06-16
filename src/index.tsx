@@ -3,25 +3,28 @@ import ReactDOM from 'react-dom';
 
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
-import { ThemeOptions } from '@material-ui/core/styles/createMuiTheme';
 
 import App from './App';
-import * as serviceWorker from './serviceWorker';
-
 import { ChatApiProvider } from './chat-api/ChatApiContext';
+import * as serviceWorker from './serviceWorker';
+import { ChatThemeOptions } from './types/ChatTheme.type';
 
-const theme = createMuiTheme({
+const themeOptions: ChatThemeOptions = {
   palette: {
     type: 'dark',
     primary: {
-      light: '#60748b',
-      main: '#34495e',
-      dark: '#092234'
+      main: '#34495e'
     },
     secondary: {
-      light: '#6effa0',
-      main: '#2ecc71',
-      dark: '#009a44'
+      main: '#00b16a', // Jade
+      contrastText: 'white' // use white text on buttons instead of black
+    },
+    background: {
+      default: '#2e3032',
+      paper: '#3d4043'
+    },
+    action: {
+      selected: '#35393b' // overrides light grey default with a darker grey
     }
   },
   typography: {
@@ -33,12 +36,16 @@ const theme = createMuiTheme({
   },
   sideDrawer: {
     width: '240px'
+  },
+  chatColors: {
+    offline: '#2b2e30',
+    online: '#00b16a'
   }
-} as ThemeOptions);
+};
+const theme = createMuiTheme(themeOptions);
 
 ReactDOM.render(
   <MuiThemeProvider theme={theme}>
-    {/* CssBaseline kick start an elegant, consistent, and simple baseline to build upon. */}
     <CssBaseline />
     <ChatApiProvider>
       <App />

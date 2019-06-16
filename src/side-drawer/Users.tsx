@@ -1,6 +1,6 @@
 import { Button } from '@material-ui/core';
 import List from '@material-ui/core/List';
-import { withStyles } from '@material-ui/core/styles';
+import { Theme, withStyles } from '@material-ui/core/styles';
 import TypoGraphy from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -10,7 +10,7 @@ import useFetchUsers, { fetchUsersStatus } from 'src/hooks/Users.hook';
 import * as UserType from 'src/types/User.type';
 import User from './User';
 
-const styles = theme => ({
+const styles = (theme: Theme) => ({
   loading: {
     margin: theme.spacing(2)
   },

@@ -25,7 +25,7 @@ const styles = (theme: Theme) => ({
   }
 });
 
-function UserInput({ classes, onSendMessage }) {
+function UserInput({ classes, theme, onSendMessage }) {
   const [userInput, setUserInput] = useState('');
   const isValidInput = !!userInput.trimRight(); // removes trailing new lines
 
@@ -41,7 +41,13 @@ function UserInput({ classes, onSendMessage }) {
   }
 
   return (
-    <Slide mountOnEnter unmountOnExit direction="up" in={true} timeout={300}>
+    <Slide
+      mountOnEnter
+      unmountOnExit
+      direction="up"
+      in={true}
+      timeout={theme.transitions.duration.enteringScreen}
+    >
       <div className={classes.userInput}>
         <TextField
           fullWidth
@@ -73,7 +79,8 @@ function UserInput({ classes, onSendMessage }) {
 }
 
 UserInput.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(UserInput);
+export default withStyles(styles, { withTheme: true })(UserInput);

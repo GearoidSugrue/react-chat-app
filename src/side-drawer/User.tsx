@@ -9,18 +9,19 @@ import { withStyles } from '@material-ui/core/styles';
 
 import { useChatApi } from 'src/chat-api/ChatApiContext';
 import useOnlineStatus from 'src/hooks/OnlineStatus.hook';
+import { ChatTheme } from 'src/types/ChatTheme.type';
 
-const styles = theme => ({
+const styles = (theme: ChatTheme) => ({
   circle: {
     width: '12px',
     height: '12px',
     transition: 'background-color 0.5s ease',
-    background: '#bdc3c7',
+    background: theme.chatColors.offline,
     borderRadius: '50%',
     display: 'inline-block'
   },
   online: {
-    background: '#2ecc71'
+    background: theme.chatColors.online
   },
   username: {
     textOverflow: 'ellipsis',
