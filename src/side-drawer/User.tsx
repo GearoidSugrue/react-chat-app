@@ -4,8 +4,8 @@ import clsx from 'clsx';
 import PropTypes from 'prop-types';
 
 import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
 import { withStyles } from '@material-ui/core/styles';
+import TypoGraphy from '@material-ui/core/Typography';
 
 import { useChatApi } from 'src/chat-api/ChatApiContext';
 import useOnlineStatus from 'src/hooks/OnlineStatus.hook';
@@ -15,6 +15,7 @@ const styles = (theme: ChatTheme) => ({
   circle: {
     width: '12px',
     height: '12px',
+    minWidth: '12px', // adding this prevent the circle from been squished when the username is really long
     transition: 'background-color 0.5s ease',
     background: theme.chatColors.offline,
     borderRadius: '50%',
@@ -24,9 +25,7 @@ const styles = (theme: ChatTheme) => ({
     background: theme.chatColors.online
   },
   username: {
-    textOverflow: 'ellipsis',
-    overflow: 'hidden',
-    margin: theme.spacing(1, 2)
+    margin: theme.spacing(0, 1, 0, 2)
   },
   unseenMessages: {
     fontWeight: 600
@@ -73,10 +72,9 @@ function User({ classes, user, loggedInUser, isSelected, onUserSelected }) {
     <ListItem button selected={isSelected} onClick={() => onUserSelected(user)}>
       <span className={onlineIconClasses} />
 
-      <ListItemText
-        classes={{ primary: usernameClasses }}
-        primary={displayText}
-      />
+      <TypoGraphy noWrap className={usernameClasses}>
+        {displayText}
+      </TypoGraphy>
 
       {!!unseenMessagesCount && !isSelected && (
         <span className={classes.unseenMessages}>{unseenMessagesCount}</span>

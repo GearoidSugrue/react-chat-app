@@ -1,15 +1,10 @@
+import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
-import PropTypes from 'prop-types';
-
 import Button from '@material-ui/core/Button';
-// import Menu from '@material-ui/core/Menu';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import Grow from '@material-ui/core/Grow';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
-import Paper from '@material-ui/core/Paper';
-import Popper from '@material-ui/core/Popper';
+import Popover from '@material-ui/core/Popover';
 import { Theme, withStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import TypoGraphy from '@material-ui/core/Typography';
@@ -27,53 +22,68 @@ const styles = (theme: Theme) => ({
   },
   userBarElement: {
     marginLeft: theme.spacing(1)
-  },
-  userBarMenu: {
-    width: '100%'
   }
 });
 
 function UserDetails({ classes, username, onLogout }) {
   const [userMenuElement, setUserMenuElement] = useState();
+  const [menuWidth, setMenuWidth] = useState(0);
 
-  const handleLogout = () => {
+  function handleOpen(event: React.ChangeEvent<any>) {
+    setUserMenuElement(event.currentTarget);
+    setMenuWidth(event.currentTarget.scrollWidth);
+  }
+
+  function handleClose() {
+    setUserMenuElement(null);
+  }
+
+  function handleLogout() {
     setUserMenuElement(null);
     onLogout();
-  };
+  }
+
+  const open = Boolean(userMenuElement);
+  const id = open ? 'menu-popover' : null;
 
   return (
     <Toolbar disableGutters={true} className={classes.toolbar}>
       <Button
+        aria-describedby={id}
         className={classes.userBarButton}
-        onClick={event => setUserMenuElement(event.currentTarget)}
+        onClick={handleOpen}
       >
         <UserAvatar username={username} />
         <TypoGraphy noWrap className={classes.userBarElement}>
           {username}
         </TypoGraphy>
         <MoreVert className={classes.userBarElement} />
-
-        <Popper
-          transition
-          disablePortal
-          anchorEl={userMenuElement}
-          className={classes.userBarMenu}
-          open={Boolean(userMenuElement)}
-          placement="bottom-start"
-        >
-          {({ TransitionProps }) => (
-            <Grow {...TransitionProps}>
-              <Paper>
-                <ClickAwayListener onClickAway={() => setUserMenuElement(null)}>
-                  <MenuList>
-                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                  </MenuList>
-                </ClickAwayListener>
-              </Paper>
-            </Grow>
-          )}
-        </Popper>
       </Button>
+
+      <Popover
+        id={id}
+        className={classes.userBarMenu}
+        anchorEl={userMenuElement}
+        open={Boolean(userMenuElement)}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left'
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left'
+        }}
+        PaperProps={{
+          style: {
+            width: menuWidth
+          }
+        }}
+      >
+        <MenuList className={classes.userBarMenu}>
+          <MenuItem onClick={handleLogout}>Logout</MenuItem>
+        </MenuList>
+      </Popover>
     </Toolbar>
   );
 }

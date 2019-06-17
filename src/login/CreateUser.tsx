@@ -16,6 +16,9 @@ const styles = (theme: Theme) => ({
   },
   inputLabel: {
     margin: theme.spacing(1)
+  },
+  clearButton: {
+    marginRight: '-10px'
   }
 });
 
@@ -58,7 +61,10 @@ function CreateUser({ classes, onCreateUser }) {
           labelWidth={labelWidth}
           endAdornment={
             <InputAdornment position="end">
-              <IconButton onClick={() => setUsername('')}>
+              <IconButton
+                className={classes.clearButton}
+                onClick={() => setUsername('')}
+              >
                 <Clear />
               </IconButton>
             </InputAdornment>

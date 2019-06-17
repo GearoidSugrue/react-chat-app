@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Slide, TextField } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
@@ -15,29 +15,51 @@ const styles = (theme: Theme) => ({
     'text-align': 'start' // prevents scroll bar from showing on parent container
   },
   textInput: {
-    flex: 1
+    padding: theme.spacing(1)
   },
   sendButton: {
-    margin: theme.spacing(1)
+    margin: theme.spacing(1, 0, 1, 1)
   },
   sendIcon: {
     marginLeft: theme.spacing(1)
   }
 });
 
-function UserInput({ classes, theme, onSendMessage }) {
-  const [userInput, setUserInput] = useState('');
-  const isValidInput = !!userInput.trimRight(); // removes trailing new lines
-
+function UserInput({ classes, theme, recipientId, onSendMessage }) {
+  const [userInputMap, setUserInputMap] = useState({});
+  const [message, setMessage] = useState('');
   const sendKeysPressed = useAreKeysPressed(['Shift', 'Enter']);
 
-  const sendMessage = () => {
-    setUserInput('');
-    onSendMessage(userInput);
-  };
+  const isValidInput = message && !!message.trimRight(); // removes trailing new lines
 
   if (isValidInput && sendKeysPressed) {
     sendMessage();
+  }
+
+  useEffect(
+    function updateMessageOnRecipientChange() {
+      // todo try to set autoFocus back onto TextField
+      const input = userInputMap[recipientId] || '';
+      setMessage(input);
+    },
+    [recipientId]
+  );
+
+  function sendMessage() {
+    onSendMessage(message);
+    setUserInputMap({
+      ...userInputMap,
+      [recipientId]: ''
+    });
+    setMessage('');
+  }
+
+  function handleInputChange(event: React.ChangeEvent<{ value: string }>) {
+    setUserInputMap({
+      ...userInputMap,
+      [recipientId]: event.target.value
+    });
+    setMessage(event.target.value);
   }
 
   return (
@@ -51,23 +73,23 @@ function UserInput({ classes, theme, onSendMessage }) {
       <div className={classes.userInput}>
         <TextField
           fullWidth
-          className={classes.textInput}
+          margin="dense"
           id="user-input"
           variant="outlined"
           rows="1"
-          rowsMax="3"
+          rowsMax="4"
           autoFocus={true}
           multiline={true}
           label="Send a message (Shift + Enter)"
-          value={userInput}
-          onChange={event => setUserInput(event.target.value)}
+          value={message}
+          onChange={handleInputChange}
         />
 
         <Button
           variant="contained"
           color="secondary"
           className={classes.sendButton}
-          disabled={!userInput}
+          disabled={!userInputMap[recipientId]}
           onClick={sendMessage}
         >
           Send
