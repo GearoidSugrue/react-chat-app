@@ -1,9 +1,8 @@
-import Button from '@material-ui/core/Button';
-import Fade from '@material-ui/core/Fade';
-import { withStyles } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import FlexView from 'react-flexview';
+
+import { Button, Fade, withStyles } from '@material-ui/core';
 
 import CreateUser from './CreateUser';
 import LoginUser from './LoginUser';

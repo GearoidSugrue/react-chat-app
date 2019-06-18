@@ -1,16 +1,19 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
-import Fade from '@material-ui/core/Fade';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import ListItemText from '@material-ui/core/ListItemText';
-import { Theme, withStyles } from '@material-ui/core/styles';
+import {
+  Fade,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  withStyles
+} from '@material-ui/core';
 
 import UserAvatar from 'src/side-drawer/UserAvatar';
+import { ChatTheme } from 'src/types';
 
-const styles = (theme: Theme) => ({
+const styles = (theme: ChatTheme) => ({
   messagesList: {
     overflow: 'auto' // todo fix not showing scroll bar issue,
   }

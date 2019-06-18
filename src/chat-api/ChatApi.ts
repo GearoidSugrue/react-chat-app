@@ -1,9 +1,7 @@
 import { BehaviorSubject, fromEvent, Observable } from 'rxjs';
 import { filter, map, share, tap } from 'rxjs/operators';
 
-import { Message } from 'src/types/Message.type';
-import { OnlineStatusMessage } from 'src/types/OnlineStatusMessage.type';
-import { UserType } from 'src/types/User.type';
+import { Message, OnlineStatusMessage, UserType } from 'src/types';
 
 export class ChatApi {
   // todo create enums for ChatEvent

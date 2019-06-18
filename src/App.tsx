@@ -3,23 +3,23 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import FlexView from 'react-flexview';
 
-import AppBar from '@material-ui/core/AppBar';
-import IconButton from '@material-ui/core/IconButton';
-import { withStyles } from '@material-ui/core/styles';
-import Toolbar from '@material-ui/core/Toolbar';
-import TypoGraphy from '@material-ui/core/Typography';
+import {
+  AppBar,
+  IconButton,
+  Toolbar,
+  Typography,
+  withStyles
+} from '@material-ui/core';
+import { Menu } from '@material-ui/icons';
 
-import MenuIcon from '@material-ui/icons/Menu';
+import { useChatApi } from 'src/chat-api';
+import Chat from 'src/chat/Chat';
+import { useUserLogin } from 'src/hooks';
+import LoginPage from 'src/login/LoginPage';
+import ChatSideDrawer from 'src/side-drawer/ChatSideDrawer';
+import { ChatroomType, ChatTheme, UserType } from 'src/types';
 
-import { useChatApi } from './chat-api/ChatApiContext';
-import Chat from './chat/Chat';
-import useUserLogin from './hooks/UserLogin.hook';
-import LoginPage from './login/LoginPage';
-import ChatSideDrawer from './side-drawer/ChatSideDrawer';
-import { ChatroomType } from './types/Chatroom.type';
-import { UserType } from './types/User.type';
-
-const styles = theme => ({
+const styles = (theme: ChatTheme) => ({
   root: {
     display: 'flex',
     overflow: 'hidden'
@@ -156,11 +156,11 @@ function App({ classes }) {
             className={sideDrawerButtonClasses}
             onClick={handleSideDrawerToggle}
           >
-            <MenuIcon />
+            <Menu />
           </IconButton>
-          <TypoGraphy variant="h5" color="inherit" noWrap>
+          <Typography variant="h5" color="inherit" noWrap>
             {selectedChatroom.name || selectedUser.username || 'Group Chat'}
-          </TypoGraphy>
+          </Typography>
         </Toolbar>
       </AppBar>
 

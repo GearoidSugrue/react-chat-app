@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
-import { UserType } from 'src/types/User.type';
-import { useChatApi } from '../chat-api/ChatApiContext';
+import { useChatApi } from 'src/chat-api';
+import { UserType } from 'src/types';
 
-export default function useUserLogin() {
+export function useUserLogin() {
   const chatApi = useChatApi();
   const [user, setUser] = useState({} as UserType);
   const isLoggedIn = Boolean(user.userId);

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 // code based on code here here: https://codesandbox.io/s/y3qzyr3lrz
-export default function useKeysPressed() {
+export function useKeysPressed() {
   const [keysPressed, setKeyPressed] = useState(new Set([]));
 
   const keyDownHandler = ({ key }) => setKeyPressed(keysPressed.add(key));

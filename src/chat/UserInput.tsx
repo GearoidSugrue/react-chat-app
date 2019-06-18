@@ -1,14 +1,13 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
-import { Slide, TextField } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
-import { Theme, withStyles } from '@material-ui/core/styles';
-import Send from '@material-ui/icons/Send';
+import { Button, Slide, TextField, withStyles } from '@material-ui/core';
+import { Send } from '@material-ui/icons';
 
-import { useAreKeysPressed } from 'src/hooks/KeysPressPressed.hook';
+import { useAreKeysPressed } from 'src/hooks';
+import { ChatTheme } from 'src/types';
 
-const styles = (theme: Theme) => ({
+const styles = (theme: ChatTheme) => ({
   userInput: {
     display: 'flex',
     padding: theme.spacing(1, 2),

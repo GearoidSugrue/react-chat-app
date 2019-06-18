@@ -1,18 +1,21 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
-import Button from '@material-ui/core/Button';
-import MenuItem from '@material-ui/core/MenuItem';
-import MenuList from '@material-ui/core/MenuList';
-import Popover from '@material-ui/core/Popover';
-import { Theme, withStyles } from '@material-ui/core/styles';
-import Toolbar from '@material-ui/core/Toolbar';
-import TypoGraphy from '@material-ui/core/Typography';
-import MoreVert from '@material-ui/icons/MoreVert';
+import {
+  Button,
+  MenuItem,
+  MenuList,
+  Popover,
+  Toolbar,
+  Typography,
+  withStyles
+} from '@material-ui/core';
+import { MoreVert } from '@material-ui/icons';
 
+import { ChatTheme } from 'src/types';
 import UserAvatar from './UserAvatar';
 
-const styles = (theme: Theme) => ({
+const styles = (theme: ChatTheme) => ({
   toolbar: {
     padding: theme.spacing(0, 2)
   },
@@ -54,9 +57,9 @@ function UserDetails({ classes, username, onLogout }) {
         onClick={handleOpen}
       >
         <UserAvatar username={username} />
-        <TypoGraphy noWrap className={classes.userBarElement}>
+        <Typography noWrap className={classes.userBarElement}>
           {username}
-        </TypoGraphy>
+        </Typography>
         <MoreVert className={classes.userBarElement} />
       </Button>
 

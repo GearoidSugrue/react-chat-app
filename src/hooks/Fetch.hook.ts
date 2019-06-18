@@ -11,10 +11,7 @@ export const fetchStatus = {
   ERROR
 };
 
-export default function useFetch(
-  endpoint: string,
-  fetchConfig?: AxiosRequestConfig
-) {
+export function useFetch(endpoint: string, fetchConfig?: AxiosRequestConfig) {
   const [data, setData] = useState([]);
   const [status, setStatus] = useState(FETCHING);
   const [retryCount, setRetryCount] = useState(1);

@@ -1,13 +1,13 @@
 import * as React from 'react';
 import ReactDOM from 'react-dom';
 
-import CssBaseline from '@material-ui/core/CssBaseline';
+import { CssBaseline } from '@material-ui/core';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 
-import App from './App';
-import { ChatApiProvider } from './chat-api/ChatApiContext';
-import * as serviceWorker from './serviceWorker';
-import { ChatThemeOptions } from './types/ChatTheme.type';
+import App from 'src/App';
+import { ChatApiProvider } from 'src/chat-api';
+import * as serviceWorker from 'src/serviceWorker';
+import { ChatThemeOptions } from 'src/types';
 
 const themeOptions: ChatThemeOptions = {
   palette: {

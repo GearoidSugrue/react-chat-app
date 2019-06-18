@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react';
-
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
 
-import { ListItemText } from '@material-ui/core';
-import ListItem from '@material-ui/core/ListItem';
-import { withStyles } from '@material-ui/core/styles';
-import TypoGraphy from '@material-ui/core/Typography';
+import {
+  ListItem,
+  ListItemText,
+  Typography,
+  withStyles
+} from '@material-ui/core';
 
-import { useChatApi } from 'src/chat-api/ChatApiContext';
-import useOnlineStatus from 'src/hooks/OnlineStatus.hook';
-import { ChatTheme } from 'src/types/ChatTheme.type';
+import { useChatApi } from 'src/chat-api';
+import { useOnlineStatus } from 'src/hooks';
+import { ChatTheme } from 'src/types';
 
 const styles = (theme: ChatTheme) => ({
   circle: {
@@ -93,15 +94,15 @@ function User({ classes, user, loggedInUser, isSelected, onUserSelected }) {
       <span className={onlineIconClasses} />
 
       <ListItemText>
-        <TypoGraphy noWrap className={usernameClasses}>
+        <Typography noWrap className={usernameClasses}>
           {displayText}
-        </TypoGraphy>
+        </Typography>
       </ListItemText>
 
       {!!unseenMessagesCount && !isSelected && (
-        <TypoGraphy noWrap className={counterClasses}>
+        <Typography noWrap className={counterClasses}>
           {unseenMessagesCount < 99 ? unseenMessagesCount : ':D'}
-        </TypoGraphy>
+        </Typography>
       )}
     </ListItem>
   );

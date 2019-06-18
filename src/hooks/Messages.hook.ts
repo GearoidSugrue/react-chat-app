@@ -1,19 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
-import useFetch, { fetchStatus } from './Fetch.hook';
-
 import { Observable, Subscription } from 'rxjs';
-import { useChatApi } from '../chat-api/ChatApiContext';
+
+import { useChatApi } from 'src/chat-api';
+import { fetchStatus, useFetch } from 'src/hooks';
 
 export const fetchMessagesStatus = fetchStatus;
 
 // todo type this properly
 
 // fetches the message history and then adds new messages whenever they occur
-export default function useMessages({
-  userId,
-  selectedChatroom,
-  selectedUser
-}) {
+export function useMessages({ userId, selectedChatroom, selectedUser }) {
   const selectedChatroomId = selectedChatroom.chatroomId;
   const selectedUserId = selectedUser.userId;
   const [messages, setMessages] = useState([]);

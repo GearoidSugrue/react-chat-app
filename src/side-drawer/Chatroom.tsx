@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
-
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
 
-import { ListItemText } from '@material-ui/core';
-import ListItem from '@material-ui/core/ListItem';
-import { withStyles } from '@material-ui/core/styles';
-import TypoGraphy from '@material-ui/core/Typography';
+import {
+  ListItem,
+  ListItemText,
+  Typography,
+  withStyles
+} from '@material-ui/core';
 
-import { useChatApi } from 'src/chat-api/ChatApiContext';
-import { ChatroomType } from 'src/types/Chatroom.type';
-import { ChatTheme } from 'src/types/ChatTheme.type';
+import { useChatApi } from 'src/chat-api';
+import { ChatroomType, ChatTheme } from 'src/types';
 
 // tslint:disable-next-line: interface-over-type-literal
 type ChatroomClasses = {
@@ -116,7 +116,7 @@ function Chatroom({
         selected: selectedClasses
       }}
     >
-      <TypoGraphy className={classes.namePrefix}>#</TypoGraphy>
+      <Typography className={classes.namePrefix}>#</Typography>
 
       {/* <RecipientUnseenMessagesCounter
         name={chatroom.name}
@@ -127,15 +127,15 @@ function Chatroom({
       > </...> */}
 
       <ListItemText>
-        <TypoGraphy noWrap className={nameClasses}>
+        <Typography noWrap className={nameClasses}>
           {chatroom.name}
-        </TypoGraphy>
+        </Typography>
       </ListItemText>
 
       {!!unseenMessagesCount && !isSelected && (
-        <TypoGraphy noWrap className={counterClasses}>
+        <Typography noWrap className={counterClasses}>
           {unseenMessagesCount < 99 ? unseenMessagesCount : ':D'}
-        </TypoGraphy>
+        </Typography>
       )}
     </ListItem>
   );

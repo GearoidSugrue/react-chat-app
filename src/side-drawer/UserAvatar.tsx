@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
-
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
+import React, { useState } from 'react';
 
-import { Fade } from '@material-ui/core';
-import Avatar from '@material-ui/core/Avatar';
-import { Theme, withStyles } from '@material-ui/core/styles';
+import { Avatar, Fade, withStyles } from '@material-ui/core';
+import { ChatTheme } from 'src/types';
 
-const styles = (theme: Theme) => ({
+const styles = (theme: ChatTheme) => ({
   avatar: {
     borderRadius: '25%'
   },

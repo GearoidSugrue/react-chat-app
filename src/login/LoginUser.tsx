@@ -1,16 +1,19 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
-import { Fade, TextField } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
-import MenuItem from '@material-ui/core/MenuItem';
-import { Theme, withStyles } from '@material-ui/core/styles';
-import TypoGraphy from '@material-ui/core/Typography';
+import {
+  Button,
+  Fade,
+  MenuItem,
+  TextField,
+  Typography,
+  withStyles
+} from '@material-ui/core';
 
-import useFetchUsers, { fetchUsersStatus } from 'src/hooks/Users.hook';
-import { UserType } from 'src/types/User.type';
+import { fetchUsersStatus, useFetchUsers } from 'src/hooks';
+import { ChatTheme, UserType } from 'src/types';
 
-const styles = (theme: Theme) => ({
+const styles = (theme: ChatTheme) => ({
   loginUserElement: {
     margin: theme.spacing(1),
     minWidth: '300px'
@@ -27,7 +30,7 @@ const styles = (theme: Theme) => ({
     minHeight: '56px'
   },
   usersSelect: {
-    minHeight: '19px' // + padding = 56px
+    minHeight: '19px' // + padding = 56px which is the same as the min-height of it's parent
   }
 });
 
@@ -46,9 +49,9 @@ function LoginUser({ classes, onLogin }) {
 
   return (
     <>
-      <TypoGraphy className={classes.loginUserElement} variant="h5">
+      <Typography className={classes.loginUserElement} variant="h5">
         Login
-      </TypoGraphy>
+      </Typography>
       {status === fetchUsersStatus.FETCHING && loadingBar}
 
       {status === fetchUsersStatus.SUCCESS && (
@@ -79,7 +82,7 @@ function LoginUser({ classes, onLogin }) {
       )}
 
       {status === fetchUsersStatus.ERROR && (
-        <TypoGraphy className={classes.loginUserElement} color="inherit">
+        <Typography className={classes.loginUserElement} color="inherit">
           Hmm... I failed to load users ಠ~ಠ
           <Button
             className={classes.loginUserElement}
@@ -89,7 +92,7 @@ function LoginUser({ classes, onLogin }) {
           >
             Retry
           </Button>
-        </TypoGraphy>
+        </Typography>
       )}
 
       <Button

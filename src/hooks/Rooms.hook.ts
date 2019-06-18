@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import useFetch, { fetchStatus } from './Fetch.hook';
 
-import { useChatApi } from '../chat-api/ChatApiContext';
+import { useChatApi } from 'src/chat-api';
+import { fetchStatus, useFetch } from 'src/hooks';
 
 export const fetchRoomsStatus = fetchStatus;
 
 // fetches the list of rooms and then updates the list whenever changes occur
-export default function useFetchRooms() {
+export function useFetchRooms() {
   const [rooms, setRooms] = useState([]);
   const { data: fetchedRooms, ...fetch } = useFetch('/rooms');
   const chatApi = useChatApi();

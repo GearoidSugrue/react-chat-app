@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 
-import { useChatApi } from 'src/chat-api/ChatApiContext';
-import useFetch, { fetchStatus } from './Fetch.hook';
+import { useChatApi } from 'src/chat-api';
+import { fetchStatus, useFetch } from 'src/hooks';
 
 export const fetchUsersStatus = fetchStatus;
 
 // fetches the list of users and then updates the list whenever changes occur
-export default function useFetchUsers() {
+export function useFetchUsers() {
   const [users, setUsers] = useState([]);
   const { data: fetchedUsers, ...fetch } = useFetch('/users');
   const chatApi = useChatApi();
@@ -24,6 +24,7 @@ export default function useFetchUsers() {
     function subscribeToUserList() {
       console.log('chatApi in subscribe to users effect');
 
+      // todo implement this correctly!
       const usersSub = chatApi.usersUpdates$.subscribe(setUsers);
 
       return () => usersSub.unsubscribe();

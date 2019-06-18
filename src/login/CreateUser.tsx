@@ -1,15 +1,21 @@
 import PropTypes from 'prop-types';
 import React, { useRef, useState } from 'react';
 
-import { FormControl, InputLabel, OutlinedInput } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import { Theme, withStyles } from '@material-ui/core/styles';
-import TypoGraphy from '@material-ui/core/Typography';
-import Clear from '@material-ui/icons/Clear';
+import {
+  Button,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  OutlinedInput,
+  Typography,
+  withStyles
+} from '@material-ui/core';
+import { Clear } from '@material-ui/icons';
 
-const styles = (theme: Theme) => ({
+import { ChatTheme } from 'src/types';
+
+const styles = (theme: ChatTheme) => ({
   createUserElement: {
     margin: theme.spacing(1),
     minWidth: '300px'
@@ -36,13 +42,13 @@ function CreateUser({ classes, onCreateUser }) {
 
   return (
     <>
-      <TypoGraphy
+      <Typography
         className={classes.createUserElement}
         variant="h5"
         color="inherit"
       >
         Create New User
-      </TypoGraphy>
+      </Typography>
 
       <FormControl variant="outlined">
         <InputLabel

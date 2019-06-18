@@ -1,16 +1,14 @@
-import { Button } from '@material-ui/core';
-import List from '@material-ui/core/List';
-import { Theme, withStyles } from '@material-ui/core/styles';
-import TypoGraphy from '@material-ui/core/Typography';
 import PropTypes from 'prop-types';
 import React from 'react';
 
-import useUserLogin from 'src/hooks/UserLogin.hook';
-import useFetchUsers, { fetchUsersStatus } from 'src/hooks/Users.hook';
-import { UserType } from 'src/types/User.type';
+import { Button, List, Typography, withStyles } from '@material-ui/core';
+
+import { useUserLogin } from 'src/hooks';
+import { fetchUsersStatus, useFetchUsers } from 'src/hooks';
+import { ChatTheme, UserType } from 'src/types';
 import User from './User';
 
-const styles = (theme: Theme) => ({
+const styles = (theme: ChatTheme) => ({
   loading: {
     margin: theme.spacing(2)
   },
@@ -36,9 +34,9 @@ function Users({ classes, selectedUser, onUserSelected }) {
     <>
       {usersStatus === fetchUsersStatus.FETCHING && (
         // todo add loading placeholders
-        <TypoGraphy color="inherit" className={classes.loading}>
+        <Typography color="inherit" className={classes.loading}>
           Loading users...
-        </TypoGraphy>
+        </Typography>
       )}
 
       {usersStatus === fetchUsersStatus.SUCCESS && (
@@ -58,12 +56,12 @@ function Users({ classes, selectedUser, onUserSelected }) {
       )}
 
       {usersStatus === fetchUsersStatus.ERROR && (
-        <TypoGraphy color="inherit" className={classes.errorText}>
+        <Typography color="inherit" className={classes.errorText}>
           Error loading users!
           <Button color="secondary" onClick={retry}>
             Retry
           </Button>
-        </TypoGraphy>
+        </Typography>
       )}
     </>
   );
