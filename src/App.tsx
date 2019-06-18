@@ -16,8 +16,8 @@ import Chat from './chat/Chat';
 import useUserLogin from './hooks/UserLogin.hook';
 import LoginPage from './login/LoginPage';
 import ChatSideDrawer from './side-drawer/ChatSideDrawer';
-import { Chatroom } from './types/Chatroom.type';
-import { User } from './types/User.type';
+import { ChatroomType } from './types/Chatroom.type';
+import { UserType } from './types/User.type';
 
 const styles = theme => ({
   root: {
@@ -92,8 +92,8 @@ function App({ classes }) {
   const { user, isLoggedIn } = useUserLogin();
   const { username, userId } = user;
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
-  const [selectedChatroom, setChatroom] = useState({} as Chatroom);
-  const [selectedUser, setSelectedUser] = useState({} as User);
+  const [selectedChatroom, setChatroom] = useState({} as ChatroomType);
+  const [selectedUser, setSelectedUser] = useState({} as UserType);
 
   useEffect(
     function closeMobileDrawerOnSelection() {
@@ -102,26 +102,26 @@ function App({ classes }) {
     [setMobileDrawerOpen, selectedChatroom, selectedUser]
   );
 
-  function handleLogin(userLoggingIn: User) {
+  function handleLogin(userLoggingIn: UserType) {
     chatApi.login(userLoggingIn);
   }
 
   function handleLogout() {
     chatApi.logout();
-    setChatroom({} as Chatroom);
-    setSelectedUser({} as User);
+    setChatroom({} as ChatroomType);
+    setSelectedUser({} as UserType);
   }
 
-  function handleChatroomSelected(chatroom: Chatroom) {
+  function handleChatroomSelected(chatroom: ChatroomType) {
     console.log('chatroom selected', chatroom);
     setChatroom(chatroom);
-    setSelectedUser({} as User);
+    setSelectedUser({} as UserType);
   }
 
-  function handleUserSelected(newlySelectedUser: User) {
+  function handleUserSelected(newlySelectedUser: UserType) {
     console.log('handleUserSelected', newlySelectedUser);
     setSelectedUser(newlySelectedUser);
-    setChatroom({} as Chatroom);
+    setChatroom({} as ChatroomType);
   }
 
   function handleSideDrawerToggle() {

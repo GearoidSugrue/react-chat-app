@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { useChatApi } from '../chat-api/ChatApiContext';
+import { useChatApi } from 'src/chat-api/ChatApiContext';
 import useFetch, { fetchStatus } from './Fetch.hook';
 
 export const fetchUsersStatus = fetchStatus;

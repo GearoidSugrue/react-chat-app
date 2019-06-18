@@ -8,7 +8,7 @@ import { Theme, withStyles } from '@material-ui/core/styles';
 import TypoGraphy from '@material-ui/core/Typography';
 
 import useFetchUsers, { fetchUsersStatus } from 'src/hooks/Users.hook';
-import { User } from 'src/types/User.type';
+import { UserType } from 'src/types/User.type';
 
 const styles = (theme: Theme) => ({
   loginUserElement: {
@@ -32,11 +32,11 @@ const styles = (theme: Theme) => ({
 });
 
 function LoginUser({ classes, onLogin }) {
-  const [selectedUser, setSelectedUser] = useState({} as User);
+  const [selectedUser, setSelectedUser] = useState({} as UserType);
   const { users, status, retry } = useFetchUsers();
 
   const handleUserSelected = (event: React.ChangeEvent<{ value: any }>) =>
-    setSelectedUser(event.target.value as User);
+    setSelectedUser(event.target.value as UserType);
 
   const loadingBar = (
     <Fade in={true} timeout={600}>

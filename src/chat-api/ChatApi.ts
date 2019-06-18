@@ -3,12 +3,12 @@ import { filter, map, share, tap } from 'rxjs/operators';
 
 import { Message } from 'src/types/Message.type';
 import { OnlineStatusMessage } from 'src/types/OnlineStatusMessage.type';
-import { User } from 'src/types/User.type';
+import { UserType } from 'src/types/User.type';
 
 export class ChatApi {
   // todo create enums for ChatEvent
   // todo create types
-  loggedInUser$: BehaviorSubject<User>;
+  loggedInUser$: BehaviorSubject<UserType>;
 
   chatroomsUpdates$: Observable<any>;
   usersUpdates$: Observable<any>;
@@ -18,7 +18,7 @@ export class ChatApi {
   constructor(private socket) {
     console.log('socket constructor', socket);
 
-    this.loggedInUser$ = new BehaviorSubject({} as User);
+    this.loggedInUser$ = new BehaviorSubject({} as UserType);
 
     this.chatroomsUpdates$ = fromEvent(socket, 'rooms updated');
     this.usersUpdates$ = fromEvent(socket, 'users updated');
@@ -34,9 +34,9 @@ export class ChatApi {
     ) as Observable<OnlineStatusMessage>;
   }
 
-  login(user: User) {
+  login(user: UserType) {
     console.log('ChatAPI - login', { userId: user.userId });
-    const { userId, username } = user || ({} as User);
+    const { userId, username } = user || ({} as UserType);
 
     if (userId && username) {
       this.socket.emit('login', { userId, username });
@@ -47,7 +47,7 @@ export class ChatApi {
   logout() {
     console.log('ChatAPI - logout');
     this.socket.emit('logout');
-    this.loggedInUser$.next({} as User);
+    this.loggedInUser$.next({} as UserType);
   }
 
   sendMessageToChatroom({ chatroomId, userId, message }) {
@@ -98,7 +98,7 @@ export class ChatApi {
     }
   }
 
-  listenForChatroomMessages(selectedChatroomId: string): Observable<any> {
+  listenForChatroomMessages$(selectedChatroomId: string): Observable<any> {
     const correctChatroom = ({ chatroomId }: Message) =>
       chatroomId === selectedChatroomId;
     return this.messages$.pipe(filter(correctChatroom));

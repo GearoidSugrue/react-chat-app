@@ -59,7 +59,7 @@ export default function useMessages({
       let newMessageSub: Subscription;
 
       if (selectedChatroomId) {
-        newMessage$ = chatApi.listenForChatroomMessages(selectedChatroomId);
+        newMessage$ = chatApi.listenForChatroomMessages$(selectedChatroomId);
       } else if (selectedUserId) {
         newMessage$ = chatApi.listenForUserMessages({ userId, selectedUserId });
       }

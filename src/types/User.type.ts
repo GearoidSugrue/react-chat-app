@@ -1,4 +1,4 @@
-export type User = Readonly<{
+export type UserType = Readonly<{
   username: string;
   userId: string;
   online: boolean;

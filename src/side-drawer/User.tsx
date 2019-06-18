@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 
+import { ListItemText } from '@material-ui/core';
 import ListItem from '@material-ui/core/ListItem';
 import { withStyles } from '@material-ui/core/styles';
 import TypoGraphy from '@material-ui/core/Typography';
@@ -29,6 +30,13 @@ const styles = (theme: ChatTheme) => ({
   },
   unseenMessages: {
     fontWeight: 600
+  },
+  unseenMessageCounter: {
+    color: theme.chatColors.online,
+    paddingRight: '6px'
+  },
+  selected: {
+    backgroundColor: `${theme.palette.primary.main} !important`
   }
 });
 
@@ -41,9 +49,14 @@ function User({ classes, user, loggedInUser, isSelected, onUserSelected }) {
   const highlightText: boolean = !!unseenMessagesCount || isSelected;
   const displayText = user.username + (isLoggedInUser ? ' (you)' : '');
 
+  const selectedClasses = clsx(isSelected && classes.selected);
   const onlineIconClasses = clsx(classes.circle, online && classes.online);
   const usernameClasses = clsx(
     classes.username,
+    highlightText && classes.unseenMessages
+  );
+  const counterClasses = clsx(
+    classes.unseenMessageCounter,
     highlightText && classes.unseenMessages
   );
 
@@ -69,15 +82,26 @@ function User({ classes, user, loggedInUser, isSelected, onUserSelected }) {
   );
 
   return (
-    <ListItem button selected={isSelected} onClick={() => onUserSelected(user)}>
+    <ListItem
+      button
+      selected={isSelected}
+      onClick={() => onUserSelected(user)}
+      classes={{
+        selected: selectedClasses
+      }}
+    >
       <span className={onlineIconClasses} />
 
-      <TypoGraphy noWrap className={usernameClasses}>
-        {displayText}
-      </TypoGraphy>
+      <ListItemText>
+        <TypoGraphy noWrap className={usernameClasses}>
+          {displayText}
+        </TypoGraphy>
+      </ListItemText>
 
       {!!unseenMessagesCount && !isSelected && (
-        <span className={classes.unseenMessages}>{unseenMessagesCount}</span>
+        <TypoGraphy noWrap className={counterClasses}>
+          {unseenMessagesCount < 99 ? unseenMessagesCount : ':D'}
+        </TypoGraphy>
       )}
     </ListItem>
   );

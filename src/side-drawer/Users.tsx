@@ -7,7 +7,7 @@ import React from 'react';
 
 import useUserLogin from 'src/hooks/UserLogin.hook';
 import useFetchUsers, { fetchUsersStatus } from 'src/hooks/Users.hook';
-import * as UserType from 'src/types/User.type';
+import { UserType } from 'src/types/User.type';
 import User from './User';
 
 const styles = (theme: Theme) => ({
@@ -23,11 +23,11 @@ function Users({ classes, selectedUser, onUserSelected }) {
   const { users, status: usersStatus, retry } = useFetchUsers();
   const { user: loggedInUser } = useUserLogin();
 
-  const loggedInUserPredicate = (user: UserType.User) =>
+  const loggedInUserPredicate = (user: UserType) =>
     user.userId !== loggedInUser.userId;
 
   // logged in user should always be at the top of the list
-  const formattedUsers: UserType.User[] = [
+  const formattedUsers: UserType[] = [
     loggedInUser,
     ...users.filter(loggedInUserPredicate)
   ];
