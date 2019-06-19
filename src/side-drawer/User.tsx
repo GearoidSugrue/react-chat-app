@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 
 import {
   ListItem,
+  ListItemSecondaryAction,
   ListItemText,
   Typography,
   withStyles
@@ -14,6 +15,9 @@ import { useOnlineStatus } from 'src/hooks';
 import { ChatTheme } from 'src/types';
 
 const styles = (theme: ChatTheme) => ({
+  gutterPadding: {
+    paddingRight: '42px' // material ui default of 48px is just a bit too large. The name combined with ellipse is too far away from message counter.
+  },
   circle: {
     width: '12px',
     height: '12px',
@@ -33,8 +37,7 @@ const styles = (theme: ChatTheme) => ({
     fontWeight: 600
   },
   unseenMessageCounter: {
-    color: theme.chatColors.online,
-    paddingRight: '6px'
+    color: theme.chatColors.online
   },
   selected: {
     backgroundColor: `${theme.palette.primary.main} !important`
@@ -88,7 +91,8 @@ function User({ classes, user, loggedInUser, isSelected, onUserSelected }) {
       selected={isSelected}
       onClick={() => onUserSelected(user)}
       classes={{
-        selected: selectedClasses
+        selected: selectedClasses,
+        gutters: classes.gutterPadding
       }}
     >
       <span className={onlineIconClasses} />
@@ -100,9 +104,11 @@ function User({ classes, user, loggedInUser, isSelected, onUserSelected }) {
       </ListItemText>
 
       {!!unseenMessagesCount && !isSelected && (
-        <Typography noWrap className={counterClasses}>
-          {unseenMessagesCount < 99 ? unseenMessagesCount : ':D'}
-        </Typography>
+        <ListItemSecondaryAction>
+          <Typography noWrap className={counterClasses}>
+            {unseenMessagesCount < 99 ? unseenMessagesCount : ':D'}
+          </Typography>
+        </ListItemSecondaryAction>
       )}
     </ListItem>
   );

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 
 import {
   ListItem,
+  ListItemSecondaryAction,
   ListItemText,
   Typography,
   withStyles
@@ -14,11 +15,12 @@ import { ChatroomType, ChatTheme } from 'src/types';
 
 // tslint:disable-next-line: interface-over-type-literal
 type ChatroomClasses = {
-  selected: any;
+  gutterPadding: any;
   name: any;
   namePrefix: any;
   unseenMessages: any;
   unseenMessageCounter: any;
+  selected: any;
 };
 
 // tslint:disable-next-line: interface-over-type-literal
@@ -33,10 +35,11 @@ const styles = (theme: ChatTheme): ChatroomClasses => ({
   // online: {
   //   background: '#2ecc71'
   // },
-
+  gutterPadding: {
+    paddingRight: '42px' // material ui default of 48px is just a bit too large. The name combined with ellipse is too far away from message counter.
+  },
   name: {
     marginLeft: theme.spacing(2)
-    // marginRight: theme.spacing(1)
   },
   namePrefix: {
     color: '#bdc3c7', // darker: #2b2e30 // lighter: #bdc3c7'
@@ -47,8 +50,7 @@ const styles = (theme: ChatTheme): ChatroomClasses => ({
     fontWeight: 600
   },
   unseenMessageCounter: {
-    color: theme.chatColors.online,
-    paddingRight: '6px' // the text over-flow pushes the counter slightly out of view. This counters it at the cost of losing some alignment. It'll do for now!
+    color: theme.chatColors.online
   },
   selected: {
     backgroundColor: `${theme.palette.primary.main} !important`
@@ -113,7 +115,8 @@ function Chatroom({
       selected={isSelected}
       onClick={() => onChatroomSelected(chatroom)}
       classes={{
-        selected: selectedClasses
+        selected: selectedClasses,
+        gutters: classes.gutterPadding
       }}
     >
       <Typography className={classes.namePrefix}>#</Typography>
@@ -133,9 +136,11 @@ function Chatroom({
       </ListItemText>
 
       {!!unseenMessagesCount && !isSelected && (
-        <Typography noWrap className={counterClasses}>
-          {unseenMessagesCount < 99 ? unseenMessagesCount : ':D'}
-        </Typography>
+        <ListItemSecondaryAction>
+          <Typography noWrap className={counterClasses}>
+            {unseenMessagesCount < 99 ? unseenMessagesCount : ':D'}
+          </Typography>
+        </ListItemSecondaryAction>
       )}
     </ListItem>
   );
