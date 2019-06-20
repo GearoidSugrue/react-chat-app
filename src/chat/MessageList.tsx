@@ -20,6 +20,7 @@ const styles = (theme: ChatTheme) => ({
 });
 
 function MessageList({ theme, classes, messages = [] }) {
+  // todo perhaps this could use "useRef" instead?
   const [messagesEndRef, setMessagesEndRef] = useState({} as HTMLDivElement);
 
   // This effect Scrolls down to the newest message. Triggered by message change.
@@ -27,6 +28,8 @@ function MessageList({ theme, classes, messages = [] }) {
     function scrollToBottom() {
       console.log('scrollToBottom effect', messagesEndRef);
       if (messagesEndRef && messagesEndRef.scrollIntoView) {
+        // todo look into using behavior: 'auto' for first load of large lists.
+        // Maybe diff y co-ord with messageEndRef to see if we are already near the bottom or not?
         messagesEndRef.scrollIntoView({ behavior: 'smooth' });
       }
     },
@@ -34,7 +37,7 @@ function MessageList({ theme, classes, messages = [] }) {
   );
 
   return (
-    <Fade in={true} timeout={300}>
+    <Fade in={true} timeout={theme.transitions.duration.enteringScreen}>
       {/* todo investigate react-native ListView */}
       <List dense={true} className={classes.messagesList}>
         {messages.map(({ username, message }, i) => {

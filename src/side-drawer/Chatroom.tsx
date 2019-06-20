@@ -23,15 +23,7 @@ type ChatroomClasses = {
   selected: any;
 };
 
-// tslint:disable-next-line: interface-over-type-literal
-type ChatroomProps = Readonly<{
-  classes: ChatroomClasses;
-  chatroom: ChatroomType;
-  isSelected: boolean;
-  onChatroomSelected: (chatroom: ChatroomType) => void;
-}>;
-
-const styles = (theme: ChatTheme): ChatroomClasses => ({
+const styles = (theme: ChatTheme) => ({
   // online: {
   //   background: '#2ecc71'
   // },
@@ -56,6 +48,14 @@ const styles = (theme: ChatTheme): ChatroomClasses => ({
     backgroundColor: `${theme.palette.primary.main} !important`
   }
 });
+
+// tslint:disable-next-line: interface-name
+interface ChatroomProps {
+  classes: ChatroomClasses;
+  chatroom: ChatroomType;
+  isSelected: boolean;
+  onChatroomSelected: (chatroom: ChatroomType) => void;
+}
 
 /*
  * TODO: Theres a lot of over lap with the User component in here.

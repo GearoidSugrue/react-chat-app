@@ -17,7 +17,7 @@ const themeOptions: ChatThemeOptions = {
     },
     secondary: {
       main: '#00b16a', // Jade
-      contrastText: 'white' // use white text on buttons instead of black
+      contrastText: '#fff' // use white text on buttons instead of black
     },
     background: {
       default: '#2e3032',

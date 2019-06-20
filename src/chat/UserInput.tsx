@@ -1,33 +1,40 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-import { Button, Slide, TextField, withStyles } from '@material-ui/core';
+import {
+  Button,
+  createStyles,
+  Slide,
+  TextField,
+  withStyles
+} from '@material-ui/core';
 import { Send } from '@material-ui/icons';
 
 import { useAreKeysPressed } from 'src/hooks';
 import { ChatTheme } from 'src/types';
 
-const styles = (theme: ChatTheme) => ({
-  userInput: {
-    display: 'flex',
-    padding: theme.spacing(1, 2),
-    'text-align': 'start' // prevents scroll bar from showing on parent container
-  },
-  textInput: {
-    padding: theme.spacing(1)
-  },
-  sendButton: {
-    margin: theme.spacing(1, 0, 1, 1)
-  },
-  sendIcon: {
-    marginLeft: theme.spacing(1)
-  }
-});
+const styles = (theme: ChatTheme) =>
+  createStyles({
+    userInput: {
+      display: 'flex',
+      padding: theme.spacing(1, 2)
+      // todo set height 16px or 14px...
+      // 'textAlign': 'center' // prevents scroll bar from showing on parent container
+    },
+    sendButton: {
+      margin: theme.spacing(1, 0, 0.5, 1),
+      minHeight: '56px'
+    },
+    sendIcon: {
+      marginLeft: theme.spacing(1)
+    }
+  });
 
 function UserInput({ classes, theme, recipientId, onSendMessage }) {
   const [userInputMap, setUserInputMap] = useState({});
   const [message, setMessage] = useState('');
   const sendKeysPressed = useAreKeysPressed(['Shift', 'Enter']);
+  const inputRef = useRef(null);
 
   const isValidInput = message && !!message.trimRight(); // removes trailing new lines
 
@@ -40,8 +47,12 @@ function UserInput({ classes, theme, recipientId, onSendMessage }) {
       // todo try to set autoFocus back onto TextField
       const input = userInputMap[recipientId] || '';
       setMessage(input);
+
+      if (inputRef && inputRef.current) {
+        inputRef.current.focus();
+      }
     },
-    [recipientId]
+    [recipientId, inputRef]
   );
 
   function sendMessage() {
@@ -72,6 +83,7 @@ function UserInput({ classes, theme, recipientId, onSendMessage }) {
       <div className={classes.userInput}>
         <TextField
           fullWidth
+          inputRef={inputRef}
           margin="dense"
           id="user-input"
           variant="outlined"

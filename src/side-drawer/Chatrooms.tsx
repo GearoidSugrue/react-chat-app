@@ -1,18 +1,29 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 
-import { Button } from '@material-ui/core';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import { withStyles } from '@material-ui/core/styles';
-import TypoGraphy from '@material-ui/core/Typography';
+import {
+  Button,
+  List,
+  ListItem,
+  Typography,
+  withStyles
+} from '@material-ui/core';
+import { AddCircle } from '@material-ui/icons';
 
-import useFetchRooms, { fetchRoomsStatus } from '../hooks/Rooms.hook';
+import { fetchRoomsStatus, useFetchRooms } from 'src/hooks';
+import { ChatTheme } from 'src/types';
+import BrowseChatroomsDialog from './browse-chatrooms/BrowseChatroomsDialog';
+import Chatroom from './Chatroom';
 
-const styles = theme => ({
-  chatroomList: {
-    // todo check gutter prop on List
-    padding: 0
+const styles = (theme: ChatTheme) => ({
+  addChatroomCircle: {
+    fontSize: '14px',
+    // the add circle svg size is based on font-size and is slightly shifted to the right, this helps counter it
+    marginLeft: '-1px'
+  },
+  joinChatroom: {
+    // the add circle svg size is based on font-size which is throwing off the Join Chatroom text, this is to counter it
+    marginLeft: theme.spacing(2) - 1
   },
   loading: {
     margin: theme.spacing(2)
@@ -22,39 +33,66 @@ const styles = theme => ({
   }
 });
 
-function Chatrooms({ classes, selectedChatroom, onChatroomSelected }) {
+function Chatrooms({
+  classes,
+  selectedChatroom,
+  onChatroomSelected
+  // onBrowseChatrooms
+}) {
   const { rooms, status: roomsStatus, retry } = useFetchRooms();
+  const [openBrowseDialog, setOpenBrowseDialog] = useState(false);
+
+  function onBrowseChatrooms() {
+    console.log('Browse Chatrooms clicked');
+    setOpenBrowseDialog(true);
+  }
+
+  function onCloseBrowseDialog() {
+    setOpenBrowseDialog(false);
+  }
 
   return (
     <>
       {roomsStatus === fetchRoomsStatus.FETCHING && (
         // todo add loading placeholders
-        <TypoGraphy color="inherit" className={classes.loading}>
+        <Typography color="inherit" className={classes.loading}>
           Loading rooms...
-        </TypoGraphy>
+        </Typography>
       )}
+
       {roomsStatus === fetchRoomsStatus.SUCCESS && (
         <List className={classes.chatroomList}>
-          {rooms.map(room => (
-            <ListItem
-              button
-              key={room.chatroomId}
-              selected={selectedChatroom.chatroomId === room.chatroomId}
-              onClick={() => onChatroomSelected(room)}
-            >
-              <TypoGraphy noWrap>{room.name}</TypoGraphy>
-            </ListItem>
+          {rooms.map(chatroom => (
+            <Chatroom
+              key={chatroom.chatroomId}
+              chatroom={chatroom}
+              isSelected={selectedChatroom.chatroomId === chatroom.chatroomId}
+              onChatroomSelected={onChatroomSelected}
+            />
           ))}
+
+          <ListItem button key="join-chatroom" onClick={onBrowseChatrooms}>
+            <AddCircle className={classes.addChatroomCircle} />
+            <Typography noWrap className={classes.joinChatroom}>
+              Browse Chatrooms
+            </Typography>
+          </ListItem>
         </List>
       )}
+
       {roomsStatus === fetchRoomsStatus.ERROR && (
-        <TypoGraphy color="inherit" className={classes.errorText}>
+        <Typography color="inherit" className={classes.errorText}>
           Error loading rooms!
           <Button color="secondary" onClick={retry}>
             Retry
           </Button>
-        </TypoGraphy>
+        </Typography>
       )}
+
+      <BrowseChatroomsDialog
+        open={openBrowseDialog}
+        onCancel={onCloseBrowseDialog}
+      />
     </>
   );
 }

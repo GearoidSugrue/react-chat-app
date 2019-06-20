@@ -47,14 +47,6 @@ function ChatSideDrawer({
   const { user, isLoggedIn } = useUserLogin();
   const { username } = user;
 
-  const onBrowseChatrooms = () => {
-    console.log(
-      'Browse Chatrooms clicked',
-      theme.transitions.duration.enteringScreen,
-      theme.transitions.duration.leavingScreen
-    );
-  };
-
   const sideDrawer = (
     <div>
       <UserDetails username={username} onLogout={onLogout} />
@@ -70,7 +62,6 @@ function ChatSideDrawer({
           <Chatrooms
             selectedChatroom={selectedChatroom}
             onChatroomSelected={onChatroomSelected}
-            onBrowseChatrooms={onBrowseChatrooms}
           />
         </>
       )}
