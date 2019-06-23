@@ -10,8 +10,8 @@ import {
 } from '@material-ui/core';
 import { AddCircle } from '@material-ui/icons';
 
-import { fetchRoomsStatus, useFetchRooms } from 'src/hooks';
-import { ChatTheme } from 'src/types';
+import { fetchRoomsStatus, useFetchRooms, useUserLogin } from 'src/hooks';
+import { ChatroomType, ChatTheme } from 'src/types';
 import BrowseChatroomsDialog from './browse-chatrooms/BrowseChatroomsDialog';
 import Chatroom from './Chatroom';
 
@@ -37,8 +37,15 @@ const styles = (theme: ChatTheme) => ({
 });
 
 function Chatrooms({ classes, selectedChatroom, onChatroomSelected }) {
-  const { rooms, status: roomsStatus, retry } = useFetchRooms();
+  const { user } = useUserLogin();
+  const { rooms, status: roomsStatus, retry } = useFetchRooms(
+    userRoomsPredicate
+  );
   const [joinChatroomsOpen, setJoinChatroomsOpen] = useState(false);
+
+  function userRoomsPredicate({ memberIds = [] }: ChatroomType): boolean {
+    return memberIds.includes(user.userId);
+  }
 
   function handleOpenJoinChatrooms() {
     setJoinChatroomsOpen(true);
@@ -91,10 +98,12 @@ function Chatrooms({ classes, selectedChatroom, onChatroomSelected }) {
         </Typography>
       )}
 
-      <BrowseChatroomsDialog
-        open={joinChatroomsOpen}
-        onCancel={handleCloseJoinChatrooms}
-      />
+      {joinChatroomsOpen && (
+        <BrowseChatroomsDialog
+          open={joinChatroomsOpen}
+          onCancel={handleCloseJoinChatrooms}
+        />
+      )}
     </>
   );
 }

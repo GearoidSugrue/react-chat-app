@@ -12,7 +12,7 @@ import {
   withStyles
 } from '@material-ui/core';
 
-import { useFetchRooms } from 'src/hooks';
+import { useFetchRooms, useUserLogin } from 'src/hooks';
 import SearchableSelect, {
   SearchableOption
 } from 'src/searchable-select/SearchableSelect';
@@ -20,16 +20,23 @@ import { ChatroomType, ChatTheme } from 'src/types';
 
 const styles = (theme: ChatTheme) => createStyles({});
 
+function createSearchableRoom(room: ChatroomType): SearchableOption {
+  return {
+    value: room.chatroomId,
+    label: room.name
+  };
+}
+
 function BrowseChatroomDialog({ open, onCancel, fullScreen }) {
-  const { rooms } = useFetchRooms();
+  const { user } = useUserLogin();
+  const { rooms } = useFetchRooms(nonUserRoomsPredicate);
   const [selectedRooms, setSelectedRooms] = useState([]);
 
-  const searchableRooms: SearchableOption[] = rooms.map(
-    (room: ChatroomType) => ({
-      value: room.chatroomId,
-      label: room.name
-    })
-  );
+  const searchableRooms: SearchableOption[] = rooms.map(createSearchableRoom);
+
+  function nonUserRoomsPredicate({ memberIds = [] }: ChatroomType): boolean {
+    return !memberIds.includes(user.userId);
+  }
 
   function handleSelectedRoomsChange(updatedRooms: SearchableOption[]) {
     setSelectedRooms(updatedRooms || []);

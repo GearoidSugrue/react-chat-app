@@ -49,13 +49,6 @@ const styles = (theme: ChatTheme) =>
     },
     chipFocused: {
       backgroundColor: emphasize(theme.palette.grey[700], 0.08)
-      // )
-      // backgroundColor: emphasize(
-      //   theme.palette.type === 'light'
-      //     ? theme.palette.grey[300]
-      //     : theme.palette.grey[700],
-      //   0.08
-      // )
     },
     noOptionsMessage: {
       padding: theme.spacing(1, 2)
