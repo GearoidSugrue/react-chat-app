@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
 import {
+  createStyles,
   ListItem,
   ListItemSecondaryAction,
   ListItemText,
@@ -23,31 +24,32 @@ type ChatroomClasses = {
   selected: any;
 };
 
-const styles = (theme: ChatTheme) => ({
-  // online: {
-  //   background: '#2ecc71'
-  // },
-  gutterPadding: {
-    paddingRight: '42px' // material ui default of 48px is just a bit too large. The name combined with ellipse is too far away from message counter.
-  },
-  name: {
-    marginLeft: theme.spacing(2)
-  },
-  namePrefix: {
-    color: '#bdc3c7', // darker: #2b2e30 // lighter: #bdc3c7'
-    fontWeight: 500,
-    margin: '0 1px'
-  },
-  unseenMessages: {
-    fontWeight: 600
-  },
-  unseenMessageCounter: {
-    color: theme.chatColors.online
-  },
-  selected: {
-    backgroundColor: `${theme.palette.primary.main} !important`
-  }
-});
+const styles = (theme: ChatTheme) =>
+  createStyles({
+    // online: {
+    //   background: '#2ecc71'
+    // },
+    gutterPadding: {
+      paddingRight: '42px' // material ui default of 48px is just a bit too large. The name combined with ellipse is too far away from message counter.
+    },
+    name: {
+      marginLeft: theme.spacing(2)
+    },
+    namePrefix: {
+      color: '#bdc3c7', // darker: #2b2e30 // lighter: #bdc3c7'
+      fontWeight: 500,
+      margin: '0 1px'
+    },
+    unseenMessages: {
+      fontWeight: 600
+    },
+    unseenMessageCounter: {
+      color: theme.chatColors.online
+    },
+    selected: {
+      backgroundColor: `${theme.palette.primary.main} !important`
+    }
+  });
 
 // tslint:disable-next-line: interface-name
 interface ChatroomProps {

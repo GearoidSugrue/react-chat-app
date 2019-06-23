@@ -1,38 +1,42 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useState } from 'react';
 
 import {
   Divider,
   Drawer,
   Hidden,
+  IconButton,
   Typography,
   withStyles
 } from '@material-ui/core';
+import { AddCircleOutline } from '@material-ui/icons';
 
 import { useUserLogin } from 'src/hooks';
 import { ChatTheme } from 'src/types';
 import Chatrooms from './Chatrooms';
+import CreateChatroom from './create-chatroom/CreateChatroom';
 import UserDetails from './UserDetails';
 import Users from './Users';
 
 const styles = (theme: ChatTheme) => ({
-  joinChatroomButton: {
-    margin: theme.spacing(1, 2)
+  sideDrawerFragment: {
+    padding: theme.spacing(2, 0, 1, 0)
+  },
+  chatroomsHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    fontWeight: 500,
+    padding: theme.spacing(1, 2)
+  },
+  directMessageHeader: {
+    fontWeight: 500,
+    padding: theme.spacing(1, 2)
   },
   drawer: {
     width: theme.sideDrawer.width
-  },
-  header: {
-    fontWeight: 500,
-    padding: theme.spacing(1, 2)
   }
 });
 
-/**
- * ChatSideDrawer uses inversion of control to provide the user details, chatrooms and users.
- * This pushes complexity out to the parent component but it simplifies this one.
- * ChatSideDrawer is already complicated enough with it's different screen size shenanigans so it's a worthwhile trade.
- */
 function ChatSideDrawer({
   classes,
   theme,
@@ -46,15 +50,23 @@ function ChatSideDrawer({
 }) {
   const { user, isLoggedIn } = useUserLogin();
   const { username } = user;
+  const [createChatroomOpen, setCreateChatroomOpen] = useState(false);
 
-  const sideDrawer = (
-    <div>
-      <UserDetails username={username} onLogout={onLogout} />
-      <Divider />
+  function handleOpenCreateChatroom() {
+    setCreateChatroomOpen(true);
+  }
 
-      {/* todo stop being lazy and do upper-case transform in css */}
-      <Typography noWrap color="inherit" className={classes.header}>
-        CHATROOMS
+  function handleCloseCreateChatroom() {
+    setCreateChatroomOpen(false);
+  }
+
+  const chatroomsFragment = (
+    <div className={classes.sideDrawerFragment}>
+      <Typography noWrap color="inherit" className={classes.chatroomsHeader}>
+        Chatrooms
+        <IconButton edge="end" size="small" onClick={handleOpenCreateChatroom}>
+          <AddCircleOutline fontSize="small" />
+        </IconButton>
       </Typography>
 
       {isLoggedIn && (
@@ -65,13 +77,38 @@ function ChatSideDrawer({
           />
         </>
       )}
-      <Divider />
+    </div>
+  );
 
-      <Typography noWrap color="inherit" className={classes.header}>
-        DIRECT MESSAGE
+  const usersFragment = (
+    <div className={classes.sideDrawerFragment}>
+      <Typography
+        noWrap
+        color="inherit"
+        className={classes.directMessageHeader}
+      >
+        Direct Message
       </Typography>
       {isLoggedIn && (
         <Users selectedUser={selectedUser} onUserSelected={onUserSelected} />
+      )}
+    </div>
+  );
+
+  const sideDrawerFragment = (
+    <div>
+      <UserDetails username={username} onLogout={onLogout} />
+      <Divider />
+
+      {chatroomsFragment}
+      <Divider />
+      {usersFragment}
+
+      {createChatroomOpen && (
+        <CreateChatroom
+          open={createChatroomOpen}
+          onClose={handleCloseCreateChatroom}
+        />
       )}
     </div>
   );
@@ -97,7 +134,7 @@ function ChatSideDrawer({
           open={mobileDrawerOpen && isLoggedIn}
           onClose={onMobileDrawerToggle}
         >
-          {sideDrawer}
+          {sideDrawerFragment}
         </Drawer>
       </Hidden>
 
@@ -114,7 +151,7 @@ function ChatSideDrawer({
           anchor={theme.direction === 'rtl' ? 'right' : 'left'}
           open={isLoggedIn}
         >
-          {sideDrawer}
+          {sideDrawerFragment}
         </Drawer>
       </Hidden>
     </>

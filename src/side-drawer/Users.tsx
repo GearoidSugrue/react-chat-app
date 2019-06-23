@@ -40,7 +40,7 @@ function Users({ classes, selectedUser, onUserSelected }) {
       )}
 
       {usersStatus === fetchUsersStatus.SUCCESS && (
-        <List>
+        <List disablePadding={true}>
           {formattedUsers.map(user => (
             <User
               key={user.userId}

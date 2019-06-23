@@ -13,14 +13,16 @@ import {
 } from '@material-ui/core';
 
 import { useFetchRooms } from 'src/hooks';
+import SearchableSelect, {
+  SearchableOption
+} from 'src/searchable-select/SearchableSelect';
 import { ChatroomType, ChatTheme } from 'src/types';
-import SearchableSelect, { SearchableOption } from './SearchableSelect';
 
 const styles = (theme: ChatTheme) => createStyles({});
 
 function BrowseChatroomDialog({ open, onCancel, fullScreen }) {
   const { rooms } = useFetchRooms();
-  const [selectedRooms, setSelectedRooms] = useState();
+  const [selectedRooms, setSelectedRooms] = useState([]);
 
   const searchableRooms: SearchableOption[] = rooms.map(
     (room: ChatroomType) => ({
@@ -30,7 +32,7 @@ function BrowseChatroomDialog({ open, onCancel, fullScreen }) {
   );
 
   function handleSelectedRoomsChange(updatedRooms: SearchableOption[]) {
-    setSelectedRooms(updatedRooms);
+    setSelectedRooms(updatedRooms || []);
   }
 
   return (
@@ -53,7 +55,7 @@ function BrowseChatroomDialog({ open, onCancel, fullScreen }) {
           Cancel
         </Button>
         <Button variant="contained" onClick={onCancel} color="secondary">
-          Join
+          Join {selectedRooms.length > 1 ? 'Chatrooms' : 'Chatroom'}
         </Button>
       </DialogActions>
     </Dialog>

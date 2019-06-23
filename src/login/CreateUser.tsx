@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import {
   Button,
@@ -33,7 +33,7 @@ function CreateUser({ classes, onCreateUser }) {
   const [labelWidth, setLabelWidth] = useState(0);
   const labelRef = useRef(null);
 
-  React.useEffect(function setUsernameLabelWidth() {
+  useEffect(function setUsernameLabelWidth() {
     setLabelWidth(labelRef.current.offsetWidth);
   }, []);
 
@@ -68,6 +68,7 @@ function CreateUser({ classes, onCreateUser }) {
           endAdornment={
             <InputAdornment position="end">
               <IconButton
+                edge="end"
                 className={classes.clearButton}
                 onClick={() => setUsername('')}
               >

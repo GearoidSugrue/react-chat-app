@@ -254,6 +254,7 @@ function SearchableSelect({
           // shrink: true
         }
       }}
+      maxMenuHeight={220}
       options={options}
       components={materialComponents}
       placeholder=""

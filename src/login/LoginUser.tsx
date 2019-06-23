@@ -34,15 +34,21 @@ const styles = (theme: ChatTheme) => ({
   }
 });
 
-function LoginUser({ classes, onLogin }) {
+function LoginUser({ classes, theme, onLogin }) {
   const [selectedUser, setSelectedUser] = useState({} as UserType);
   const { users, status, retry } = useFetchUsers();
 
-  const handleUserSelected = (event: React.ChangeEvent<{ value: any }>) =>
-    setSelectedUser(event.target.value as UserType);
+  function handleUserSelected(event: React.ChangeEvent<{ value: any }>) {
+    const user: UserType = event.target.value;
+    setSelectedUser(user);
+  }
+
+  function handleLogin() {
+    onLogin(selectedUser);
+  }
 
   const loadingBar = (
-    <Fade in={true} timeout={600}>
+    <Fade in={true} timeout={theme.transitions.duration.enteringScreen}>
       <div className={classes.loading} />
     </Fade>
   );
@@ -55,7 +61,7 @@ function LoginUser({ classes, onLogin }) {
       {status === fetchUsersStatus.FETCHING && loadingBar}
 
       {status === fetchUsersStatus.SUCCESS && (
-        <Fade in={true} timeout={300}>
+        <Fade in={true} timeout={theme.transitions.duration.enteringScreen}>
           <TextField
             select
             className={classes.usersSelectBox}
@@ -73,7 +79,7 @@ function LoginUser({ classes, onLogin }) {
             {users
               .filter(user => !user.online)
               .map(user => (
-                <MenuItem key={user.username} value={user}>
+                <MenuItem key={user.username} value={user as any}>
                   {user.username}
                 </MenuItem>
               ))}
@@ -100,7 +106,7 @@ function LoginUser({ classes, onLogin }) {
         color="secondary"
         variant="contained"
         disabled={!selectedUser.userId}
-        onClick={() => onLogin(selectedUser)}
+        onClick={handleLogin}
       >
         Login
       </Button>
@@ -109,7 +115,8 @@ function LoginUser({ classes, onLogin }) {
 }
 
 LoginUser.propTypes = {
-  classes: PropTypes.object.isRequired
+  classes: PropTypes.object.isRequired,
+  theme: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(LoginUser);
+export default withStyles(styles, { withTheme: true })(LoginUser);

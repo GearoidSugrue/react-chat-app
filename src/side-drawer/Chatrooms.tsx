@@ -16,12 +16,15 @@ import BrowseChatroomsDialog from './browse-chatrooms/BrowseChatroomsDialog';
 import Chatroom from './Chatroom';
 
 const styles = (theme: ChatTheme) => ({
-  addChatroomCircle: {
+  joinChatroomsButton: {
+    padding: theme.spacing(1.5, 2)
+  },
+  joinChatroomsCircle: {
     fontSize: '14px',
     // the add circle svg size is based on font-size and is slightly shifted to the right, this helps counter it
     marginLeft: '-1px'
   },
-  joinChatroom: {
+  joinChatroomsText: {
     // the add circle svg size is based on font-size which is throwing off the Join Chatroom text, this is to counter it
     marginLeft: theme.spacing(2) - 1
   },
@@ -33,22 +36,16 @@ const styles = (theme: ChatTheme) => ({
   }
 });
 
-function Chatrooms({
-  classes,
-  selectedChatroom,
-  onChatroomSelected
-  // onBrowseChatrooms
-}) {
+function Chatrooms({ classes, selectedChatroom, onChatroomSelected }) {
   const { rooms, status: roomsStatus, retry } = useFetchRooms();
-  const [openBrowseDialog, setOpenBrowseDialog] = useState(false);
+  const [joinChatroomsOpen, setJoinChatroomsOpen] = useState(false);
 
-  function onBrowseChatrooms() {
-    console.log('Browse Chatrooms clicked');
-    setOpenBrowseDialog(true);
+  function handleOpenJoinChatrooms() {
+    setJoinChatroomsOpen(true);
   }
 
-  function onCloseBrowseDialog() {
-    setOpenBrowseDialog(false);
+  function handleCloseJoinChatrooms() {
+    setJoinChatroomsOpen(false);
   }
 
   return (
@@ -61,7 +58,7 @@ function Chatrooms({
       )}
 
       {roomsStatus === fetchRoomsStatus.SUCCESS && (
-        <List className={classes.chatroomList}>
+        <List disablePadding={true}>
           {rooms.map(chatroom => (
             <Chatroom
               key={chatroom.chatroomId}
@@ -71,10 +68,15 @@ function Chatrooms({
             />
           ))}
 
-          <ListItem button key="join-chatroom" onClick={onBrowseChatrooms}>
-            <AddCircle className={classes.addChatroomCircle} />
-            <Typography noWrap className={classes.joinChatroom}>
-              Browse Chatrooms
+          <ListItem
+            button
+            key="join-chatroom"
+            className={classes.joinChatroomsButton}
+            onClick={handleOpenJoinChatrooms}
+          >
+            <AddCircle className={classes.joinChatroomsCircle} />
+            <Typography noWrap className={classes.joinChatroomsText}>
+              Join Chatrooms
             </Typography>
           </ListItem>
         </List>
@@ -90,8 +92,8 @@ function Chatrooms({
       )}
 
       <BrowseChatroomsDialog
-        open={openBrowseDialog}
-        onCancel={onCloseBrowseDialog}
+        open={joinChatroomsOpen}
+        onCancel={handleCloseJoinChatrooms}
       />
     </>
   );
