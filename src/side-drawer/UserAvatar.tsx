@@ -10,7 +10,7 @@ const styles = (theme: ChatTheme) => ({
     borderRadius: '25%'
   },
   loading: {
-    background: theme.palette.primary.main,
+    background: theme.palette.primary.light,
     transition: 'background-color 1s ease' // todo investigate this vs/and Fade
   }
 });

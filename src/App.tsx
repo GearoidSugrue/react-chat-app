@@ -159,7 +159,9 @@ function App({ classes }) {
             <Menu />
           </IconButton>
           <Typography variant="h5" color="inherit" noWrap>
-            {selectedChatroom.name || selectedUser.username || 'Group Chat'}
+            {selectedChatroom.name
+              ? `#${selectedChatroom.name}`
+              : selectedUser.username || 'Group Chat'}
           </Typography>
         </Toolbar>
       </AppBar>

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 
 import {
   Button,
+  createStyles,
   Fade,
   MenuItem,
   TextField,
@@ -13,26 +14,35 @@ import {
 import { fetchUsersStatus, useFetchUsers } from 'src/hooks';
 import { ChatTheme, UserType } from 'src/types';
 
-const styles = (theme: ChatTheme) => ({
-  loginUserElement: {
-    margin: theme.spacing(1),
-    minWidth: '300px'
-  },
-  loading: {
-    background: theme.palette.primary.main,
-    minHeight: '56px',
-    margin: theme.spacing(1),
-    borderRadius: theme.spacing(1)
-  },
-  usersSelectBox: {
-    margin: theme.spacing(1),
-    minWidth: '120px',
-    minHeight: '56px'
-  },
-  usersSelect: {
-    minHeight: '19px' // + padding = 56px which is the same as the min-height of it's parent
-  }
-});
+const styles = (theme: ChatTheme) =>
+  createStyles({
+    loginUserElement: {
+      margin: theme.spacing(1),
+      minWidth: '300px'
+    },
+    loadUsersFailedContainer: {
+      margin: theme.spacing(1),
+      minHeight: '56px',
+      minWidth: '300px'
+    },
+    retryButton: {
+      marginLeft: theme.spacing(1)
+    },
+    loading: {
+      background: theme.palette.primary.light,
+      minHeight: '56px',
+      margin: theme.spacing(1),
+      borderRadius: theme.spacing(0.5)
+    },
+    usersSelectBox: {
+      margin: theme.spacing(1),
+      minWidth: '120px',
+      minHeight: '56px'
+    },
+    usersSelect: {
+      minHeight: '19px' // + padding = 56px which is the same as the min-height of it's parent
+    }
+  });
 
 function LoginUser({ classes, theme, onLogin }) {
   const [selectedUser, setSelectedUser] = useState({} as UserType);
@@ -88,10 +98,13 @@ function LoginUser({ classes, theme, onLogin }) {
       )}
 
       {status === fetchUsersStatus.ERROR && (
-        <Typography className={classes.loginUserElement} color="inherit">
-          Hmm... I failed to load users ಠ~ಠ
+        <Typography
+          className={classes.loadUsersFailedContainer}
+          color="inherit"
+        >
+          Failed to load users
           <Button
-            className={classes.loginUserElement}
+            className={classes.retryButton}
             color="secondary"
             disabled={status === fetchUsersStatus.FETCHING}
             onClick={retry}
