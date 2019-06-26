@@ -22,7 +22,7 @@ export function useFetchRooms(
         : fetchedRooms;
       setRooms(filteredRooms);
     },
-    [setRooms, roomFilterPredicate, fetchedRooms]
+    [setRooms, fetchedRooms]
   );
 
   useEffect(

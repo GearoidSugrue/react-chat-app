@@ -56,7 +56,7 @@ function UserInput({ classes, theme, recipientId, onSendMessage }) {
   );
 
   function sendMessage() {
-    onSendMessage(message);
+    onSendMessage(message.trimRight());
     setUserInputMap({
       ...userInputMap,
       [recipientId]: ''
