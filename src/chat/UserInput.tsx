@@ -48,10 +48,10 @@ function UserInput({ classes, theme, recipientId, onTyping, onSendMessage }) {
 
   useEffect(
     function updateMessageOnRecipientChange() {
-      // todo try to set autoFocus back onto TextField
+      setIsTyping(false);
+
       const input = userInputMap[recipientId] || '';
       setMessage(input);
-      setIsTyping(false);
 
       if (inputRef && inputRef.current) {
         inputRef.current.focus();
@@ -80,22 +80,22 @@ function UserInput({ classes, theme, recipientId, onTyping, onSendMessage }) {
   );
 
   function sendMessage() {
+    setIsTyping(false);
     onSendMessage(message.trimRight());
     setUserInputMap({
       ...userInputMap,
       [recipientId]: ''
     });
     setMessage('');
-    setIsTyping(false);
   }
 
   function handleInputChange(event: React.ChangeEvent<{ value: string }>) {
+    setIsTyping(true);
     setUserInputMap({
       ...userInputMap,
       [recipientId]: event.target.value
     });
     setMessage(event.target.value);
-    setIsTyping(true);
   }
 
   return (
