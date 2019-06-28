@@ -30,9 +30,13 @@ const styles = (theme: ChatTheme) =>
     }
   });
 
-function UserInput({ classes, theme, recipientId, onSendMessage }) {
+const TYPING_TIMEOUT = 2000;
+
+function UserInput({ classes, theme, recipientId, onTyping, onSendMessage }) {
   const [userInputMap, setUserInputMap] = useState({});
   const [message, setMessage] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+
   const sendKeysPressed = useAreKeysPressed(['Shift', 'Enter']);
   const inputRef = useRef(null);
 
@@ -47,12 +51,32 @@ function UserInput({ classes, theme, recipientId, onSendMessage }) {
       // todo try to set autoFocus back onto TextField
       const input = userInputMap[recipientId] || '';
       setMessage(input);
+      setIsTyping(false);
 
       if (inputRef && inputRef.current) {
         inputRef.current.focus();
       }
     },
     [recipientId, inputRef]
+  );
+
+  useEffect(
+    function emitTypingChange() {
+      onTyping(isTyping);
+    },
+    [isTyping]
+  );
+
+  useEffect(
+    function setTyping() {
+      console.log('in setTyping effect');
+      const typingTimeout = setTimeout(
+        () => setIsTyping(false),
+        TYPING_TIMEOUT
+      );
+      return () => clearTimeout(typingTimeout);
+    },
+    [message, setIsTyping]
   );
 
   function sendMessage() {
@@ -62,6 +86,7 @@ function UserInput({ classes, theme, recipientId, onSendMessage }) {
       [recipientId]: ''
     });
     setMessage('');
+    setIsTyping(false);
   }
 
   function handleInputChange(event: React.ChangeEvent<{ value: string }>) {
@@ -70,6 +95,7 @@ function UserInput({ classes, theme, recipientId, onSendMessage }) {
       [recipientId]: event.target.value
     });
     setMessage(event.target.value);
+    setIsTyping(true);
   }
 
   return (

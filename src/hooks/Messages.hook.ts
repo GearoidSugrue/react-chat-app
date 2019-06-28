@@ -3,6 +3,7 @@ import { Observable, Subscription } from 'rxjs';
 
 import { useChatApi } from 'src/chat-api';
 import { fetchStatus, useFetch } from 'src/hooks';
+import { Message } from 'src/types';
 
 export const fetchMessagesStatus = fetchStatus;
 
@@ -51,7 +52,7 @@ export function useMessages({ userId, selectedChatroom, selectedUser }) {
   useEffect(
     function subscribeToNewMessages() {
       console.log('messages hook - subscribeToNewMessages', { selectedUserId });
-      let newMessage$: Observable<any>; // todo add Message type
+      let newMessage$: Observable<Message>;
       let newMessageSub: Subscription;
 
       if (selectedChatroomId) {

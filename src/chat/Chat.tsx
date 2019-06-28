@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import FlexView from 'react-flexview';
 
 import { Divider, Fade, Typography, withStyles } from '@material-ui/core';
 
 import { useChatApi } from 'src/chat-api';
-import { fetchMessagesStatus, useMessages } from 'src/hooks';
+import { fetchMessagesStatus, useIsUserTyping, useMessages } from 'src/hooks';
 import { ChatTheme } from 'src/types';
 import MessageList from './MessageList';
 import UserInput from './UserInput';
@@ -24,7 +24,6 @@ const styles = (theme: ChatTheme) => ({
 });
 
 function Chat({ classes, userId, username, selectedChatroom, selectedUser }) {
-  console.log('Chat:', { userId, selectedChatroom, selectedUser });
   const chatApi = useChatApi();
   const { messages, status: messagesStatus } = useMessages({
     userId,
@@ -32,6 +31,59 @@ function Chat({ classes, userId, username, selectedChatroom, selectedUser }) {
     selectedUser
   });
   const recipientId = selectedChatroom.chatroomId || selectedUser.userId;
+
+  const [participantsIds, setParticipantsIds] = useState([]);
+
+  useEffect(
+    function updateParticipantsOnChange() {
+      if (selectedChatroom.chatroomId) {
+        return setParticipantsIds(selectedChatroom.memberIds);
+      } else if (selectedUser.userId) {
+        return setParticipantsIds([selectedUser.userId]);
+      }
+    },
+    [selectedChatroom, selectedUser, setParticipantsIds]
+  );
+
+  useEffect(
+    function clearTypingUsers() {
+      // todo this might not be needed
+      return function setThisUserNotTyping() {
+        if (selectedChatroom.chatroomId) {
+          chatApi.sendTypingInChatroomChange(
+            selectedChatroom.chatroomId,
+            false
+          );
+        } else if (selectedUser.userId) {
+          chatApi.sendTypingDirectChange(selectedUser.userId, false);
+        }
+      };
+    },
+    [selectedChatroom, selectedUser]
+  );
+
+  // tslint:disable-next-line: no-shadowed-variable
+  function TypingUserFragment({ userId, chatroomId, loggedInUser }) {
+    const { isTyping, name } = useIsUserTyping(
+      userId,
+      loggedInUser,
+      chatroomId
+    );
+
+    return (
+      <>
+        {isTyping && (
+          <Fade in={true}>
+            <span>{name} is typing...</span>
+          </Fade>
+        )}
+
+        {/* <Fade in={isTyping}>
+          <Typography>{name} is typing...</Typography>
+        </Fade> */}
+      </>
+    );
+  }
 
   function handleOnSendMessage(message: string) {
     if (selectedChatroom.chatroomId) {
@@ -45,6 +97,14 @@ function Chat({ classes, userId, username, selectedChatroom, selectedUser }) {
         message,
         toUserId: selectedUser.userId
       });
+    }
+  }
+
+  function handleTypingChange(typing: boolean) {
+    if (selectedChatroom.chatroomId) {
+      chatApi.sendTypingInChatroomChange(selectedChatroom.chatroomId, typing);
+    } else if (selectedUser.userId) {
+      chatApi.sendTypingDirectChange(selectedUser.userId, typing);
     }
   }
 
@@ -72,8 +132,21 @@ function Chat({ classes, userId, username, selectedChatroom, selectedUser }) {
 
             <Divider />
 
+            <>
+              <Typography>
+                {participantsIds.map(id => (
+                  <TypingUserFragment
+                    key={id}
+                    userId={id}
+                    chatroomId={selectedChatroom.chatroomId}
+                    loggedInUser={userId}
+                  />
+                ))}
+              </Typography>
+            </>
             <UserInput
               recipientId={recipientId}
+              onTyping={handleTypingChange}
               onSendMessage={handleOnSendMessage}
             />
           </>

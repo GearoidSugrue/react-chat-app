@@ -1,7 +1,20 @@
 import { BehaviorSubject, fromEvent, Observable } from 'rxjs';
 import { filter, map, share, tap } from 'rxjs/operators';
 
-import { Message, OnlineStatusMessage, UserType } from 'src/types';
+import {
+  Message,
+  OnlineStatusMessage,
+  TypingChange,
+  UserType
+} from 'src/types';
+
+export enum ChatEvent {
+  ONLINE_STATUS_CHANGE = 'online status change',
+  NEW_USER = 'users updated',
+  NEW_CHATROOM = 'rooms updated',
+  CHATROOM_TYPING_CHANGE = 'typing in chatroom change',
+  DIRECT_TYPING_CHANGE = 'direct typing change'
+}
 
 export class ChatApi {
   // todo create enums for ChatEvent
@@ -12,6 +25,9 @@ export class ChatApi {
   usersUpdates$: Observable<any>;
   messages$: Observable<Message>;
   onlineStatusUpdates$: Observable<OnlineStatusMessage>;
+
+  chatroomTypingUpdate$: Observable<TypingChange>;
+  directTypingUpdate$: Observable<TypingChange>;
 
   constructor(private socket) {
     console.log('socket constructor', socket);
@@ -26,10 +42,33 @@ export class ChatApi {
       tap(message => console.log('New message received:', message)),
       share()
     ) as Observable<Message>;
+
     this.onlineStatusUpdates$ = fromEvent(socket, 'online status change').pipe(
-      tap(user => console.log('User online status change...', user)),
+      tap((user: UserType) =>
+        console.log('User online status change...', user)
+      ),
       share()
     ) as Observable<OnlineStatusMessage>;
+
+    this.chatroomTypingUpdate$ = fromEvent(
+      socket,
+      ChatEvent.CHATROOM_TYPING_CHANGE
+    ).pipe(
+      tap((typingUpdate: TypingChange) =>
+        console.log('chatroom typing update...', typingUpdate)
+      ),
+      share()
+    ) as Observable<TypingChange>;
+
+    this.directTypingUpdate$ = fromEvent(
+      socket,
+      ChatEvent.DIRECT_TYPING_CHANGE
+    ).pipe(
+      tap((typingUpdate: TypingChange) =>
+        console.log('direct typing update...', typingUpdate)
+      ),
+      share()
+    ) as Observable<TypingChange>;
   }
 
   login(user: UserType) {
@@ -69,18 +108,26 @@ export class ChatApi {
     this.socket.emit('new message to user', { toUserId, message });
   }
 
-  // todo rework needed here?
-  joinChatroom({ chatroomId, userId }) {
-    console.log('joinChatroom', { chatroomId, userId });
+  sendTypingInChatroomChange(toChatroomId: string, typing: boolean) {
+    console.log('ChatAPI - sendTypingInChatroomChange', {
+      toChatroomId,
+      typing
+    });
+    this.socket.emit('typing in chatroom', {
+      toChatroomId,
+      typing
+    });
+  }
 
-    const validJoin = userId && chatroomId;
-
-    if (validJoin) {
-      this.socket.emit('join chatroom', {
-        chatroomId,
-        userId
-      });
-    }
+  sendTypingDirectChange(toUserId: string, typing: boolean) {
+    console.log('ChatAPI - sendTypingDirectChange', {
+      toUserId,
+      typing
+    });
+    this.socket.emit('typing direct', {
+      toUserId,
+      typing
+    });
   }
 
   leaveChatroom({ chatroomId, userId }) {
@@ -147,5 +194,29 @@ export class ChatApi {
       filter(correctUser),
       map(user => user.online)
     );
+  }
+
+  listenForChatroomTypingChange$(chatroomId: string): Observable<TypingChange> {
+    const correctChatroomId = (typingUpdate: TypingChange) =>
+      typingUpdate.toChatroomId === chatroomId;
+
+    return this.chatroomTypingUpdate$.pipe(filter(correctChatroomId));
+  }
+
+  listenForDirectTypingChange$(userId: string): Observable<TypingChange> {
+    const correctUserId = (typingUpdate: TypingChange) =>
+      typingUpdate.userId === userId;
+
+    return this.directTypingUpdate$.pipe(filter(correctUserId));
+  }
+
+  listenForDirectTypingChange2$(
+    fromUserId: string,
+    toUserId: string
+  ): Observable<TypingChange> {
+    const correctUser = (typingUpdate: TypingChange) =>
+      typingUpdate.userId === fromUserId && typingUpdate.toUserId === toUserId;
+
+    return this.directTypingUpdate$.pipe(filter(correctUser));
   }
 }

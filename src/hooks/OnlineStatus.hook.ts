@@ -7,7 +7,7 @@ import { OnlineStatusMessage } from 'src/types';
 export function useOnlineStatus(
   { userId, online }: OnlineStatusMessage,
   initialOnlineStatus?: boolean
-) {
+): boolean {
   const chatApi: ChatApi = useChatApi();
   const [onlineStatus, setOnlineStatus] = useState(
     Boolean(online || initialOnlineStatus)
