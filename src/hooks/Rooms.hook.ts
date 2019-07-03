@@ -8,7 +8,7 @@ export const fetchRoomsStatus = fetchStatus;
 
 // fetches the list of rooms and then updates the list whenever changes occur
 export function useFetchRooms(
-  roomFilterPredicate?: (room: ChatroomType) => boolean
+  roomFilterPredicate?: (room: ChatroomType) => boolean // todo delete this if it's not gonna be used
 ) {
   const [rooms, setRooms] = useState([]);
   const { data: fetchedRooms, ...fetch } = useFetch('/rooms');
@@ -26,14 +26,23 @@ export function useFetchRooms(
   );
 
   useEffect(
-    function subscribeToChatroomsList() {
-      console.log('chatApi in subscribe to rooms effect');
+    function subscribeToNewChatrooms() {
+      console.log('chatApi in subscribe to new chatrooms effect');
 
-      const chatroomsSub = chatApi.chatroomsUpdates$.subscribe(setRooms);
+      function addRoom(newChatroom: ChatroomType) {
+        const alreadyHasRoom: boolean = Boolean(
+          rooms.find(room => room.chatroomId === newChatroom.chatroomId)
+        );
+        if (!alreadyHasRoom) {
+          setRooms([...rooms, newChatroom]);
+        }
+      }
+
+      const chatroomsSub = chatApi.newChatroom$.subscribe(addRoom);
 
       return () => chatroomsSub.unsubscribe();
     },
-    [chatApi, setRooms]
+    [chatApi, rooms, setRooms]
   );
 
   return {

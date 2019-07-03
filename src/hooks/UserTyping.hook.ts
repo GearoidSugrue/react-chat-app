@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Observable, Subscription } from 'rxjs';
-import { filter } from 'rxjs/operators';
 
 import { useChatApi } from 'src/chat-api';
 import { TypingChange } from 'src/types';
@@ -36,14 +35,12 @@ export function useIsUserTyping(
       let typingUpdateSub: Subscription;
 
       if (toChatroomId) {
-        const correctUser = (typingUpdate: TypingChange) =>
-          typingUpdate.userId === userId;
-
-        typingUpdate$ = chatApi
-          .listenForChatroomTypingChange$(toChatroomId)
-          .pipe(filter(correctUser));
+        typingUpdate$ = chatApi.listenForChatroomTypingChange$(
+          userId,
+          toChatroomId
+        );
       } else {
-        typingUpdate$ = chatApi.listenForDirectTypingChange2$(
+        typingUpdate$ = chatApi.listenForDirectTypingChange$(
           userId,
           loggedInUserId
         );

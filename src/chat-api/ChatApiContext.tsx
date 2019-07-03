@@ -5,7 +5,7 @@ import openSocket from 'socket.io-client';
 
 import { ChatApi } from './ChatApi';
 
-const chatApiInstance = new ChatApi(openSocket('http://localhost:3001'));
+const chatApiInstance = new ChatApi(openSocket('http://raspberrypi.local')); // todo add dynamic env configs. http://localhost:3001'
 export const ChatApiContext = createContext(chatApiInstance);
 
 // chatApi can be provided if a different chatApi is wanted for some part of the app. Not really needed but ehh...

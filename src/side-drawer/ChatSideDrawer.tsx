@@ -6,12 +6,14 @@ import {
   Drawer,
   Hidden,
   IconButton,
+  Snackbar,
   Typography,
   withStyles
 } from '@material-ui/core';
 import { AddCircleOutline } from '@material-ui/icons';
 
 import { useUserLogin } from 'src/hooks';
+import SnackbarContentWrapper from 'src/shared/SnackbarContentWrapper';
 import { ChatTheme } from 'src/types';
 import Chatrooms from './Chatrooms';
 import CreateChatroom from './create-chatroom/CreateChatroom';
@@ -51,13 +53,26 @@ function ChatSideDrawer({
   const { user, isLoggedIn } = useUserLogin();
   const { username } = user;
   const [createChatroomOpen, setCreateChatroomOpen] = useState(false);
+  const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
 
   function handleOpenCreateChatroom() {
     setCreateChatroomOpen(true);
   }
 
-  function handleCloseCreateChatroom() {
+  function handleCloseCreateChatroom({ success }) {
     setCreateChatroomOpen(false);
+
+    if (success) {
+      setShowSuccessSnackbar(true);
+    }
+  }
+
+  function handleCloseSnackbar(event, reason) {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setShowSuccessSnackbar(false);
   }
 
   const chatroomsFragment = (
@@ -113,6 +128,24 @@ function ChatSideDrawer({
     </div>
   );
 
+  const createChatroomSuccessSnackbar = (
+    <Snackbar
+      anchorOrigin={{
+        vertical: 'bottom',
+        horizontal: 'center'
+      }}
+      open={showSuccessSnackbar}
+      autoHideDuration={3000}
+      onClose={handleCloseSnackbar}
+    >
+      <SnackbarContentWrapper
+        variant="success"
+        message="Chatroom created!"
+        onClose={handleCloseSnackbar}
+      />
+    </Snackbar>
+  );
+
   return (
     <>
       {/* todo: investigate material ui useMediaQuery. May not change dynamically tho...*/}
@@ -154,6 +187,7 @@ function ChatSideDrawer({
           {sideDrawerFragment}
         </Drawer>
       </Hidden>
+      {createChatroomSuccessSnackbar}
     </>
   );
 }

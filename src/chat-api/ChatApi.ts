@@ -1,7 +1,9 @@
+import axios, { AxiosRequestConfig } from 'axios';
 import { BehaviorSubject, fromEvent, Observable } from 'rxjs';
 import { filter, map, share, tap } from 'rxjs/operators';
 
 import {
+  ChatroomType,
   Message,
   OnlineStatusMessage,
   TypingChange,
@@ -11,17 +13,22 @@ import {
 export enum ChatEvent {
   ONLINE_STATUS_CHANGE = 'online status change',
   NEW_USER = 'users updated',
-  NEW_CHATROOM = 'rooms updated',
+  NEW_CHATROOM = 'new chatroom',
   CHATROOM_TYPING_CHANGE = 'typing in chatroom change',
   DIRECT_TYPING_CHANGE = 'direct typing change'
 }
 
+export enum SendChatEvent {
+  MESSAGE_TO_CHATROOM = 'new message to chatroom',
+  MESSAGE_TO_USER = 'new message to user',
+  TYPING_IN_CHATROOM = 'typing in chatroom',
+  TYPING_DIRECT = 'typing direct'
+}
+
 export class ChatApi {
-  // todo create enums for ChatEvent
-  // todo create types
   loggedInUser$: BehaviorSubject<UserType>;
 
-  chatroomsUpdates$: Observable<any>;
+  newChatroom$: Observable<ChatroomType>;
   usersUpdates$: Observable<any>;
   messages$: Observable<Message>;
   onlineStatusUpdates$: Observable<OnlineStatusMessage>;
@@ -34,16 +41,25 @@ export class ChatApi {
 
     this.loggedInUser$ = new BehaviorSubject({} as UserType);
 
-    this.chatroomsUpdates$ = fromEvent(socket, 'rooms updated');
-    this.usersUpdates$ = fromEvent(socket, 'users updated');
+    this.newChatroom$ = fromEvent<ChatroomType>(
+      socket,
+      ChatEvent.NEW_CHATROOM
+    ).pipe(
+      tap(chatroom => console.log('New chatroom received:', chatroom)),
+      share()
+    );
+    this.usersUpdates$ = fromEvent(socket, ChatEvent.NEW_USER);
     // this.newUsers$ = fromEvent(socket, 'new users');
 
-    this.messages$ = fromEvent(socket, 'message').pipe(
+    this.messages$ = fromEvent<Message>(socket, 'message').pipe(
       tap(message => console.log('New message received:', message)),
       share()
-    ) as Observable<Message>;
+    );
 
-    this.onlineStatusUpdates$ = fromEvent(socket, 'online status change').pipe(
+    this.onlineStatusUpdates$ = fromEvent(
+      socket,
+      ChatEvent.ONLINE_STATUS_CHANGE
+    ).pipe(
       tap((user: UserType) =>
         console.log('User online status change...', user)
       ),
@@ -87,13 +103,39 @@ export class ChatApi {
     this.loggedInUser$.next({} as UserType);
   }
 
+  async createChatroom(
+    chatroomName: string,
+    memberIds: string[],
+    userId: string
+  ): Promise<ChatroomType> {
+    try {
+      const createRoomConfig: AxiosRequestConfig = {
+        url: `http://raspberrypi.local/rooms`,
+        // url: `http://localhost:3001/rooms`,
+        method: 'POST',
+        data: {
+          memberIds,
+          name: chatroomName
+        },
+        headers: {
+          RequesterUserId: userId
+        }
+      };
+      const result = await axios(createRoomConfig);
+      return result.data;
+    } catch (error) {
+      console.error('Error occurred creating room', error);
+      throw error;
+    }
+  }
+
   sendMessageToChatroom({ chatroomId, userId, message }) {
     console.log('ChatAPI - sendMessageToChatroom', {
       chatroomId,
       userId,
       message
     });
-    this.socket.emit('new message to chatroom', {
+    this.socket.emit(SendChatEvent.MESSAGE_TO_CHATROOM, {
       chatroomId,
       userId,
       message
@@ -105,7 +147,7 @@ export class ChatApi {
       toUserId,
       message
     });
-    this.socket.emit('new message to user', { toUserId, message });
+    this.socket.emit(SendChatEvent.MESSAGE_TO_USER, { toUserId, message });
   }
 
   sendTypingInChatroomChange(toChatroomId: string, typing: boolean) {
@@ -113,7 +155,7 @@ export class ChatApi {
       toChatroomId,
       typing
     });
-    this.socket.emit('typing in chatroom', {
+    this.socket.emit(SendChatEvent.TYPING_IN_CHATROOM, {
       toChatroomId,
       typing
     });
@@ -124,23 +166,10 @@ export class ChatApi {
       toUserId,
       typing
     });
-    this.socket.emit('typing direct', {
+    this.socket.emit(SendChatEvent.TYPING_DIRECT, {
       toUserId,
       typing
     });
-  }
-
-  leaveChatroom({ chatroomId, userId }) {
-    console.log('leaveChatroom', { chatroomId, userId });
-
-    const validLeave = userId && chatroomId;
-
-    if (validLeave) {
-      this.socket.emit('leave chatroom', {
-        chatroomId,
-        userId
-      });
-    }
   }
 
   listenForChatroomMessages$(selectedChatroomId: string): Observable<any> {
@@ -168,9 +197,14 @@ export class ChatApi {
   ): Observable<Message> {
     console.log('listenForUserMessages', { loggedInUserId, fromUserId });
     const isFromCorrectUser = (message: Message) =>
-      message.userId === fromUserId && message.toUserId === loggedInUserId;
+      message.userId === fromUserId;
+    const isToLoggedInUser = (message: Message) =>
+      message.toUserId === loggedInUserId;
 
-    return this.messages$.pipe(filter(isFromCorrectUser));
+    const filterMessage = (message: Message) =>
+      isFromCorrectUser(message) && isToLoggedInUser(message);
+
+    return this.messages$.pipe(filter(filterMessage));
   }
 
   chatroomNotifications$({ chatroomId }) {
@@ -196,21 +230,18 @@ export class ChatApi {
     );
   }
 
-  listenForChatroomTypingChange$(chatroomId: string): Observable<TypingChange> {
-    const correctChatroomId = (typingUpdate: TypingChange) =>
-      typingUpdate.toChatroomId === chatroomId;
+  listenForChatroomTypingChange$(
+    fromUserId: string,
+    toChatroomId: string
+  ): Observable<TypingChange> {
+    const correctUserAndChatroom = (typingUpdate: TypingChange) =>
+      typingUpdate.toChatroomId === toChatroomId &&
+      typingUpdate.userId === fromUserId;
 
-    return this.chatroomTypingUpdate$.pipe(filter(correctChatroomId));
+    return this.chatroomTypingUpdate$.pipe(filter(correctUserAndChatroom));
   }
 
-  listenForDirectTypingChange$(userId: string): Observable<TypingChange> {
-    const correctUserId = (typingUpdate: TypingChange) =>
-      typingUpdate.userId === userId;
-
-    return this.directTypingUpdate$.pipe(filter(correctUserId));
-  }
-
-  listenForDirectTypingChange2$(
+  listenForDirectTypingChange$(
     fromUserId: string,
     toUserId: string
   ): Observable<TypingChange> {

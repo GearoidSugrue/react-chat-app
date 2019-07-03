@@ -2,31 +2,30 @@ import React, { useState } from 'react';
 
 import {
   Button,
+  CircularProgress,
   createStyles,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Fade,
   IconButton,
   InputAdornment,
   TextField,
   withMobileDialog,
   withStyles
 } from '@material-ui/core';
-import { Clear } from '@material-ui/icons';
+import { Clear, Error } from '@material-ui/icons';
 
-import { fetchUsersStatus, useFetchUsers } from 'src/hooks';
+import { useChatApi } from 'src/chat-api';
+import { fetchUsersStatus, useFetchUsers, useUserLogin } from 'src/hooks';
 import SearchableSelect, {
   SearchableOption
 } from 'src/searchable-select/SearchableSelect';
 import { ChatTheme, UserType } from 'src/types';
 
 const MAX_CHATROOM_NAME_LENGTH = 22;
-
-function hasUpperCase(text: string) {
-  return text !== text.toLowerCase();
-}
 
 function hasSpaces(text: string) {
   return text.includes(' ');
@@ -43,14 +42,34 @@ const styles = (theme: ChatTheme) =>
     },
     createChatroomElement: {
       margin: theme.spacing(2, 0)
+    },
+    error: {
+      backgroundColor: theme.palette.error.dark
+    },
+    createButtonWrapper: {
+      margin: theme.spacing(1),
+      position: 'relative'
+    },
+    buttonPending: {
+      color: theme.palette.secondary.main,
+      position: 'absolute',
+      top: '50%',
+      left: '50%',
+      marginTop: -12,
+      marginLeft: -12
     }
   });
 
-function CreateChatroom({ classes, open, fullScreen, onClose }) {
+function CreateChatroom({ classes, theme, open, fullScreen, onClose }) {
+  const chatApi = useChatApi();
+  const { user: loggedInUser } = useUserLogin();
   const { users, status: usersStatus } = useFetchUsers();
   const [chatroomName, setChatroomName] = useState('');
   const [nameErrorText, setNameErrorText] = useState('');
   const [selectedUsers, setSelectedUsers] = useState([]);
+
+  const [createPending, setCreatePending] = useState(false);
+  const [createError, setCreateError] = useState(false);
 
   const searchableUsers: SearchableOption[] = users.map((user: UserType) => ({
     value: user.userId,
@@ -67,16 +86,10 @@ function CreateChatroom({ classes, open, fullScreen, onClose }) {
       errorText = `Must be shorter than ${MAX_CHATROOM_NAME_LENGTH} characters`;
     }
 
-    if (hasUpperCase(name)) {
-      const currentErrorText = errorText ? `${errorText}. ` : '';
-      errorText = `${currentErrorText}Must not contain uppercase characters`;
-    }
-
     if (hasSpaces(name) || hasPeriods(name)) {
       const currentErrorText = errorText ? `${errorText}. ` : '';
       errorText = `${currentErrorText}Must not contain spaces or periods`;
     }
-
     setNameErrorText(errorText);
     setChatroomName(name);
   }
@@ -85,13 +98,25 @@ function CreateChatroom({ classes, open, fullScreen, onClose }) {
     setChatroomName('');
   }
 
-  function handleSelectedUsersChange(updatedRooms: SearchableOption[]) {
-    setSelectedUsers(updatedRooms);
+  function handleSelectedUsersChange(updatedUsers: SearchableOption[]) {
+    setSelectedUsers(updatedUsers || []);
   }
 
-  function handleCreateChatroom() {
-    // todo implement
-    onClose();
+  async function handleCreateChatroom() {
+    setCreatePending(true);
+
+    const memberIds = selectedUsers.map((user: SearchableOption) => user.value);
+    const newChatroom = await chatApi
+      .createChatroom(chatroomName, memberIds, loggedInUser.userId)
+      .catch(err => undefined);
+
+    setCreatePending(false);
+
+    if (newChatroom) {
+      onClose({ success: true });
+    } else {
+      setCreateError(true);
+    }
   }
 
   const chatroomNameFragment = (
@@ -105,7 +130,7 @@ function CreateChatroom({ classes, open, fullScreen, onClose }) {
       label="Name"
       helperText={
         nameErrorText ||
-        'Name must be lowercase, without spaces or periods, and be shorter than 22 characters'
+        'Name must not have spaces or periods, and be shorter than 22 characters'
       }
       value={chatroomName}
       error={Boolean(nameErrorText)}
@@ -120,6 +145,27 @@ function CreateChatroom({ classes, open, fullScreen, onClose }) {
             >
               <Clear />
             </IconButton>
+          </InputAdornment>
+        )
+      }}
+    />
+  );
+
+  const createErrorFragment = (
+    <TextField
+      fullWidth
+      className={classes.createChatroomElement}
+      error={true}
+      variant="outlined"
+      value="Error: Failed to created chatroom!"
+      inputProps={{
+        readOnly: true,
+        disabled: true
+      }}
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position="start">
+            <Error color="error" />
           </InputAdornment>
         )
       }}
@@ -149,6 +195,15 @@ function CreateChatroom({ classes, open, fullScreen, onClose }) {
                 onSelectedOptionsChange={handleSelectedUsersChange}
               />
             </div>
+
+            {createError && (
+              <Fade
+                in={true}
+                timeout={theme.transitions.duration.enteringScreen}
+              >
+                {createErrorFragment}
+              </Fade>
+            )}
           </>
         )}
       </DialogContent>
@@ -156,14 +211,19 @@ function CreateChatroom({ classes, open, fullScreen, onClose }) {
         <Button variant="outlined" onClick={onClose} color="secondary">
           Cancel
         </Button>
-        <Button
-          variant="contained"
-          disabled={!chatroomName || Boolean(nameErrorText)}
-          onClick={handleCreateChatroom}
-          color="secondary"
-        >
-          Create Chatroom
-        </Button>
+        <div className={classes.createButtonWrapper}>
+          <Button
+            variant="contained"
+            disabled={!chatroomName || Boolean(nameErrorText) || createPending}
+            onClick={handleCreateChatroom}
+            color="secondary"
+          >
+            {createError ? 'Retry' : 'Create Chatroom'}
+          </Button>
+          {createPending && (
+            <CircularProgress size={24} className={classes.buttonPending} />
+          )}
+        </div>
       </DialogActions>
     </Dialog>
   );

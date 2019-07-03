@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core';
 
 import UserAvatar from 'src/side-drawer/UserAvatar';
-import { ChatTheme } from 'src/types';
+import { ChatTheme, Message } from 'src/types';
 
 const styles = (theme: ChatTheme) => ({
   messagesList: {
@@ -19,7 +19,7 @@ const styles = (theme: ChatTheme) => ({
   }
 });
 
-function MessageList({ theme, classes, messages = [] }) {
+function MessageList({ theme, classes, messages = [] as Message[] }) {
   // todo perhaps this could use "useRef" instead?
   const [messagesEndRef, setMessagesEndRef] = useState({} as HTMLDivElement);
 
@@ -40,7 +40,7 @@ function MessageList({ theme, classes, messages = [] }) {
     <Fade in={true} timeout={theme.transitions.duration.enteringScreen}>
       {/* todo investigate react-native ListView */}
       <List dense={true} className={classes.messagesList}>
-        {messages.map(({ username, message }, i) => {
+        {messages.map(({ username, message, timestamp }, i) => {
           return (
             <ListItem
               className={classes.message}
@@ -50,7 +50,10 @@ function MessageList({ theme, classes, messages = [] }) {
               <ListItemAvatar>
                 <UserAvatar username={username} />
               </ListItemAvatar>
-              <ListItemText primary={username} secondary={message} />
+              <ListItemText
+                primary={`${username} - ${timestamp}`}
+                secondary={message}
+              />
             </ListItem>
           );
         })}

@@ -12,6 +12,7 @@ export interface ChatTheme extends Theme {
   chatColors: {
     offline: string;
     online: string;
+    success: string;
   };
 }
 
@@ -23,5 +24,6 @@ export interface ChatThemeOptions extends ThemeOptions {
   chatColors: {
     offline: string;
     online: string;
+    success: string;
   };
 }

@@ -13,11 +13,15 @@ const themeOptions: ChatThemeOptions = {
   palette: {
     type: 'dark',
     primary: {
-      main: '#34495e'
+      main: '#34495e' // Navy-blue
     },
     secondary: {
       main: '#00b16a', // Jade
       contrastText: '#fff' // use white text on buttons instead of black
+    },
+    error: {
+      main: '#e74c3c', // Alizarin
+      contrastText: '#fff' // White
     },
     background: {
       default: '#2e3032',
@@ -38,8 +42,9 @@ const themeOptions: ChatThemeOptions = {
     width: '240px'
   },
   chatColors: {
-    offline: '#2b2e30',
-    online: '#00b16a'
+    offline: '#2b2e30', // Dark-gray
+    online: '#00b16a', // Jade
+    success: '#00b16a' // Jade
   }
 };
 const theme = createMuiTheme(themeOptions);
