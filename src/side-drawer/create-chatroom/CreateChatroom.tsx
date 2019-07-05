@@ -125,6 +125,7 @@ function CreateChatroom({ classes, theme, open, fullScreen, onClose }) {
       required
       id="outlined-chatroom-name"
       className={classes.createChatroomElement}
+      autoComplete="off"
       margin="normal"
       variant="outlined"
       label="Name"

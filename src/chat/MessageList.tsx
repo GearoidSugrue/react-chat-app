@@ -1,3 +1,4 @@
+import { format } from 'date-fns';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
@@ -18,6 +19,8 @@ const styles = (theme: ChatTheme) => ({
     overflow: 'auto' // todo fix not showing scroll bar issue,
   }
 });
+
+const DATE_FORMAT = 'MMMM Do, YYYY - HH:mm A'; // e.g. June 10th, 2019 - 14:18 PM
 
 function MessageList({ theme, classes, messages = [] as Message[] }) {
   // todo perhaps this could use "useRef" instead?
@@ -51,7 +54,7 @@ function MessageList({ theme, classes, messages = [] as Message[] }) {
                 <UserAvatar username={username} />
               </ListItemAvatar>
               <ListItemText
-                primary={`${username} - ${timestamp}`}
+                primary={`${username} - ${format(timestamp, DATE_FORMAT)}`}
                 secondary={message}
               />
             </ListItem>

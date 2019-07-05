@@ -28,7 +28,7 @@ export function useFetch(endpoint: string, fetchConfig?: AxiosRequestConfig) {
 
         try {
           const result = await axios({
-            url: `http://raspberrypi.local${endpoint}`, // todo add dynamic env config. // url: `http://localhost:3001${endpoint}`,
+            url: `http://${process.env.REACT_APP_API_HOST}${endpoint}`,
             ...fetchConfig
           });
           setData(result.data);

@@ -26,6 +26,8 @@ export enum SendChatEvent {
 }
 
 export class ChatApi {
+  HOST: string = process.env.REACT_APP_API_HOST;
+
   loggedInUser$: BehaviorSubject<UserType>;
 
   newChatroom$: Observable<ChatroomType>;
@@ -110,8 +112,7 @@ export class ChatApi {
   ): Promise<ChatroomType> {
     try {
       const createRoomConfig: AxiosRequestConfig = {
-        url: `http://raspberrypi.local/rooms`,
-        // url: `http://localhost:3001/rooms`,
+        url: `http://${this.HOST}/rooms`,
         method: 'POST',
         data: {
           memberIds,
@@ -205,18 +206,6 @@ export class ChatApi {
       isFromCorrectUser(message) && isToLoggedInUser(message);
 
     return this.messages$.pipe(filter(filterMessage));
-  }
-
-  chatroomNotifications$({ chatroomId }) {
-    console.log('chatroomNotifications', { chatroomId });
-    const correctChatroom = newMessage => newMessage.chatroomId === chatroomId;
-    return this.messages$.pipe(filter(correctChatroom));
-  }
-
-  userNotifications$({ fromUserId }) {
-    console.log('userNotifications', { fromUserId });
-    const correctUser = newMessage => newMessage.fromUserId === fromUserId;
-    return this.messages$.pipe(filter(correctUser));
   }
 
   userOnlineStatus$({ userId }): Observable<boolean> {
