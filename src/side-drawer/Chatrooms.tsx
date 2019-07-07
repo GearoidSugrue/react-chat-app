@@ -102,6 +102,7 @@ function Chatrooms({ classes, selectedChatroom, onChatroomSelected }) {
         <BrowseChatroomsDialog
           open={joinChatroomsOpen}
           onCancel={handleCloseJoinChatrooms}
+          onClose={handleCloseJoinChatrooms}
         />
       )}
     </>

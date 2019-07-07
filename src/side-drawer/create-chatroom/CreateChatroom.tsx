@@ -2,27 +2,27 @@ import React, { useState } from 'react';
 
 import {
   Button,
-  CircularProgress,
   createStyles,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Fade,
   IconButton,
   InputAdornment,
   TextField,
   withMobileDialog,
   withStyles
 } from '@material-ui/core';
-import { Clear, Error } from '@material-ui/icons';
+import { Clear } from '@material-ui/icons';
 
 import { useChatApi } from 'src/chat-api';
 import { fetchUsersStatus, useFetchUsers, useUserLogin } from 'src/hooks';
 import SearchableSelect, {
   SearchableOption
 } from 'src/searchable-select/SearchableSelect';
+import ErrorMessage from 'src/shared/ErrorMessage';
+import PendingButton from 'src/shared/PendingButton';
 import { ChatTheme, UserType } from 'src/types';
 
 const MAX_CHATROOM_NAME_LENGTH = 22;
@@ -104,18 +104,18 @@ function CreateChatroom({ classes, theme, open, fullScreen, onClose }) {
 
   async function handleCreateChatroom() {
     setCreatePending(true);
-
     const memberIds = selectedUsers.map((user: SearchableOption) => user.value);
-    const newChatroom = await chatApi
-      .createChatroom(chatroomName, memberIds, loggedInUser.userId)
-      .catch(err => undefined);
-
-    setCreatePending(false);
-
-    if (newChatroom) {
+    try {
+      await chatApi.createChatroom(
+        chatroomName,
+        memberIds,
+        loggedInUser.userId
+      );
       onClose({ success: true });
-    } else {
+    } catch (err) {
       setCreateError(true);
+    } finally {
+      setCreatePending(false);
     }
   }
 
@@ -152,25 +152,15 @@ function CreateChatroom({ classes, theme, open, fullScreen, onClose }) {
     />
   );
 
-  const createErrorFragment = (
-    <TextField
-      fullWidth
-      className={classes.createChatroomElement}
-      error={true}
-      variant="outlined"
-      value="Error: Failed to created chatroom!"
-      inputProps={{
-        readOnly: true,
-        disabled: true
-      }}
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">
-            <Error color="error" />
-          </InputAdornment>
-        )
-      }}
-    />
+  const createButtonFragment = (
+    <Button
+      variant="contained"
+      disabled={!chatroomName || Boolean(nameErrorText) || createPending}
+      onClick={handleCreateChatroom}
+      color="secondary"
+    >
+      {createError ? 'Retry' : 'Create Chatroom'}
+    </Button>
   );
 
   return (
@@ -197,14 +187,10 @@ function CreateChatroom({ classes, theme, open, fullScreen, onClose }) {
               />
             </div>
 
-            {createError && (
-              <Fade
-                in={true}
-                timeout={theme.transitions.duration.enteringScreen}
-              >
-                {createErrorFragment}
-              </Fade>
-            )}
+            <ErrorMessage
+              errorMessage="Error: Failed to created chatroom!"
+              showError={createError}
+            />
           </>
         )}
       </DialogContent>
@@ -212,19 +198,7 @@ function CreateChatroom({ classes, theme, open, fullScreen, onClose }) {
         <Button variant="outlined" onClick={onClose} color="secondary">
           Cancel
         </Button>
-        <div className={classes.createButtonWrapper}>
-          <Button
-            variant="contained"
-            disabled={!chatroomName || Boolean(nameErrorText) || createPending}
-            onClick={handleCreateChatroom}
-            color="secondary"
-          >
-            {createError ? 'Retry' : 'Create Chatroom'}
-          </Button>
-          {createPending && (
-            <CircularProgress size={24} className={classes.buttonPending} />
-          )}
-        </div>
+        <PendingButton button={createButtonFragment} pending={createPending} />
       </DialogActions>
     </Dialog>
   );

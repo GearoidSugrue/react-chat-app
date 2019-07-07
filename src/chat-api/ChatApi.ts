@@ -130,6 +130,26 @@ export class ChatApi {
     }
   }
 
+  async joinChatrooms(chatroomIds: string[], userId: string): Promise<void> {
+    try {
+      const joinRoomConfig: AxiosRequestConfig = {
+        url: `http://${this.HOST}/users/${userId}/rooms`,
+        method: 'PUT',
+        data: {
+          chatroomIds
+        },
+        headers: {
+          RequesterUserId: userId
+        }
+      };
+      const result = await axios(joinRoomConfig);
+      return result.data;
+    } catch (error) {
+      console.error('Error occurred joining rooms', chatroomIds, error);
+      throw error;
+    }
+  }
+
   sendMessageToChatroom({ chatroomId, userId, message }) {
     console.log('ChatAPI - sendMessageToChatroom', {
       chatroomId,
