@@ -59,22 +59,31 @@ function User({
   onUserSelected
 }: UserProps) {
   const chatApi = useChatApi();
-  const isLoggedInUser = user.userId === loggedInUser.userId;
-  const online = useOnlineStatus(user, isLoggedInUser);
+  const online = useOnlineStatus(user);
   const [unseenMessagesCount, setUnseenMessagesCount] = useState(0);
-
-  const highlightText: boolean = !!unseenMessagesCount || isSelected;
-  const displayText = user.username + (isLoggedInUser ? ' (you)' : '');
+  const [displayText, setDisplayText] = useState(user.username);
+  const isHighlighted: boolean = !!unseenMessagesCount || isSelected;
 
   const selectedClasses = clsx(isSelected && classes.selected);
   const onlineIconClasses = clsx(classes.circle, online && classes.online);
   const usernameClasses = clsx(
     classes.username,
-    highlightText && classes.unseenMessages
+    isHighlighted && classes.unseenMessages
   );
   const counterClasses = clsx(
     classes.unseenMessageCounter,
-    highlightText && classes.unseenMessages
+    isHighlighted && classes.unseenMessages
+  );
+
+  useEffect(
+    function markLoggedInUser() {
+      const isLoggedInUser = user.userId === loggedInUser.userId;
+
+      if (isLoggedInUser) {
+        setDisplayText(`${user.username} (you)`);
+      }
+    },
+    [setDisplayText]
   );
 
   useEffect(
@@ -126,4 +135,4 @@ function User({
     </ListItem>
   );
 }
-export default withStyles(styles, { withTheme: true })(User);
+export default withStyles(styles)(User);

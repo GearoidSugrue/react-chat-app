@@ -29,9 +29,12 @@ function Users({ classes, selectedUser, onUserSelected }: UsersProps) {
   const loggedInUserPredicate = (user: UserType) =>
     user.userId !== loggedInUser.userId;
 
-  // logged in user should always be at the top of the list
+  // logged in user should always be at the top of the list and is always online
   const formattedUsers: UserType[] = [
-    loggedInUser,
+    {
+      ...loggedInUser,
+      online: true
+    },
     ...users.filter(loggedInUserPredicate)
   ];
 
