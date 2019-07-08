@@ -9,6 +9,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Fade,
   IconButton,
   Typography,
   withMobileDialog,
@@ -23,9 +24,26 @@ import SearchableSelect, {
 } from 'src/searchable-select/SearchableSelect';
 import ErrorMessage from 'src/shared/ErrorMessage';
 import PendingButton from 'src/shared/PendingButton';
-import { ChatroomType } from 'src/types';
+import { ChatroomType, ChatTheme } from 'src/types';
 
-const styles = () => createStyles({});
+const styles = (theme: ChatTheme) =>
+  createStyles({
+    browseChatroomElement: {
+      margin: theme.spacing(2, 0)
+    },
+    loading: {
+      background: theme.palette.primary.light,
+      minHeight: '64px',
+      margin: theme.spacing(2, 0),
+      borderRadius: theme.spacing(0.5)
+    },
+    loadingFailedContainer: {
+      minHeight: '64px'
+    },
+    retryButton: {
+      marginLeft: theme.spacing(1)
+    }
+  });
 
 function createSearchableRoom(room: ChatroomType): SearchableOption {
   return {
@@ -35,6 +53,8 @@ function createSearchableRoom(room: ChatroomType): SearchableOption {
 }
 
 type BrowseChatroomDialogProps = Readonly<{
+  classes: any;
+  theme: ChatTheme;
   open: boolean;
   fullScreen: boolean;
   onClose: () => void;
@@ -45,6 +65,8 @@ type BrowseChatroomDialogProps = Readonly<{
  * @param BrowseChatroomDialogProps
  */
 function BrowseChatroomDialog({
+  classes,
+  theme,
   open,
   fullScreen,
   onClose
@@ -52,7 +74,9 @@ function BrowseChatroomDialog({
   const chatApi = useChatApi();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const { user } = useUserLogin();
-  const { rooms, status: roomsStatus } = useFetchRooms(nonUserRoomsPredicate);
+  const { rooms, status: roomsStatus, retry: retryRooms } = useFetchRooms(
+    nonUserRoomsPredicate
+  );
   const [selectedRooms, setSelectedRooms] = useState([]);
   const [joinButtonText, setJoinButtonText] = useState('Join Chatroom');
 
@@ -131,6 +155,28 @@ function BrowseChatroomDialog({
     </Button>
   );
 
+  const loadingRoomsFragment = (
+    <Fade in={true} timeout={theme.transitions.duration.enteringScreen}>
+      <div className={classes.loading} />
+    </Fade>
+  );
+
+  const loadingRoomsErrorFragment = (
+    <Fade in={true} timeout={theme.transitions.duration.enteringScreen}>
+      <Typography className={classes.loadingFailedContainer} color="inherit">
+        Failed to load chatrooms!
+        <Button
+          className={classes.retryButton}
+          color="secondary"
+          disabled={status === fetchRoomsStatus.FETCHING}
+          onClick={retryRooms}
+        >
+          Retry
+        </Button>
+      </Typography>
+    </Fade>
+  );
+
   return (
     <Dialog fullWidth fullScreen={fullScreen} open={open} onClose={onClose}>
       <DialogTitle id="browse-dialog-title">Join Chatrooms</DialogTitle>
@@ -139,22 +185,25 @@ function BrowseChatroomDialog({
           Select a Chatroom below. Start typing to narrow down the chatrooms.
         </DialogContentText>
 
-        {roomsStatus === fetchRoomsStatus.FETCHING && 'Loading chatrooms...'}
+        <div className={classes.browseChatroomElement}>
+          {roomsStatus === fetchRoomsStatus.FETCHING && loadingRoomsFragment}
 
-        {roomsStatus === fetchRoomsStatus.SUCCESS && (
-          <>
+          {roomsStatus === fetchRoomsStatus.SUCCESS && (
             <SearchableSelect
               label="Chatrooms *"
               options={searchableRooms}
               selectedOptions={selectedRooms}
               onSelectedOptionsChange={handleSelectedRoomsChange}
             />
-            <ErrorMessage
-              errorMessage="Error: Failed to join chatrooms!"
-              showError={joinError}
-            />
-          </>
-        )}
+          )}
+
+          {roomsStatus === fetchRoomsStatus.ERROR && loadingRoomsErrorFragment}
+
+          <ErrorMessage
+            errorMessage="Error: Failed to join chatrooms!"
+            showError={joinError}
+          />
+        </div>
       </DialogContent>
 
       <DialogActions>

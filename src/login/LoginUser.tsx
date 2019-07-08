@@ -66,7 +66,7 @@ function LoginUser({ classes, theme, onLogin }: LoginUserProps) {
     onLogin(selectedUser);
   }
 
-  const loadingBar = (
+  const loadingBarFragment = (
     <Fade in={true} timeout={theme.transitions.duration.enteringScreen}>
       <div className={classes.loading} />
     </Fade>
@@ -77,7 +77,7 @@ function LoginUser({ classes, theme, onLogin }: LoginUserProps) {
       <Typography className={classes.loginUserElement} variant="h5">
         Login
       </Typography>
-      {status === fetchUsersStatus.FETCHING && loadingBar}
+      {status === fetchUsersStatus.FETCHING && loadingBarFragment}
 
       {status === fetchUsersStatus.SUCCESS && (
         <Fade in={true} timeout={theme.transitions.duration.enteringScreen}>
@@ -111,7 +111,7 @@ function LoginUser({ classes, theme, onLogin }: LoginUserProps) {
           className={classes.loadUsersFailedContainer}
           color="inherit"
         >
-          Failed to load users
+          Failed to load users!
           <Button
             className={classes.retryButton}
             color="secondary"

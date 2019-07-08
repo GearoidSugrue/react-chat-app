@@ -9,6 +9,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Fade,
   IconButton,
   InputAdornment,
   TextField,
@@ -59,11 +60,24 @@ const styles = (theme: ChatTheme) =>
       left: '50%',
       marginTop: -12,
       marginLeft: -12
+    },
+    loading: {
+      background: theme.palette.primary.light,
+      minHeight: '64px',
+      margin: theme.spacing(2, 0),
+      borderRadius: theme.spacing(0.5)
+    },
+    loadingFailedContainer: {
+      minHeight: '64px'
+    },
+    retryButton: {
+      marginLeft: theme.spacing(1)
     }
   });
 
 type CreateChatroomProps = Readonly<{
   classes: any;
+  theme: ChatTheme;
   open: boolean;
   fullScreen: boolean;
   onChatroomCreate: () => void;
@@ -76,6 +90,7 @@ type CreateChatroomProps = Readonly<{
  */
 function CreateChatroomDialog({
   classes,
+  theme,
   open,
   fullScreen,
   onChatroomCreate,
@@ -84,7 +99,7 @@ function CreateChatroomDialog({
   const chatApi = useChatApi();
   const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const { user: loggedInUser } = useUserLogin();
-  const { users, status: usersStatus } = useFetchUsers();
+  const { users, status: usersStatus, retry: retryUsers } = useFetchUsers();
   const [chatroomName, setChatroomName] = useState('');
   const [nameErrorText, setNameErrorText] = useState('');
   const [selectedUsers, setSelectedUsers] = useState([]);
@@ -203,6 +218,28 @@ function CreateChatroomDialog({
     </Button>
   );
 
+  const loadingUsersFragment = (
+    <Fade in={true} timeout={theme.transitions.duration.enteringScreen}>
+      <div className={classes.loading} />
+    </Fade>
+  );
+
+  const loadingUsersErrorFragment = (
+    <Fade in={true} timeout={theme.transitions.duration.enteringScreen}>
+      <Typography className={classes.loadingFailedContainer} color="inherit">
+        Failed to load users!
+        <Button
+          className={classes.retryButton}
+          color="secondary"
+          disabled={status === fetchUsersStatus.FETCHING}
+          onClick={retryUsers}
+        >
+          Retry
+        </Button>
+      </Typography>
+    </Fade>
+  );
+
   return (
     <Dialog fullWidth fullScreen={fullScreen} open={open} onClose={onCancel}>
       <DialogTitle id="browse-dialog-title">Create Chatroom</DialogTitle>
@@ -212,27 +249,27 @@ function CreateChatroomDialog({
           chatroom.
         </DialogContentText>
 
-        {usersStatus === fetchUsersStatus.FETCHING && 'Loading users...'}
+        {chatroomNameFragment}
 
-        {usersStatus === fetchUsersStatus.SUCCESS && (
-          <>
-            {chatroomNameFragment}
+        <div className={classes.createChatroomElement}>
+          {usersStatus === fetchUsersStatus.FETCHING && loadingUsersFragment}
 
-            <div className={classes.createChatroomElement}>
-              <SearchableSelect
-                label="Add users to chatroom (Optional)"
-                options={searchableUsers}
-                selectedOptions={selectedUsers}
-                onSelectedOptionsChange={handleSelectedUsersChange}
-              />
-            </div>
-
-            <ErrorMessage
-              errorMessage="Error: Failed to created chatroom!"
-              showError={createError}
+          {usersStatus === fetchUsersStatus.SUCCESS && (
+            <SearchableSelect
+              label="Add users to chatroom (Optional)"
+              options={searchableUsers}
+              selectedOptions={selectedUsers}
+              onSelectedOptionsChange={handleSelectedUsersChange}
             />
-          </>
-        )}
+          )}
+
+          {usersStatus === fetchUsersStatus.ERROR && loadingUsersErrorFragment}
+        </div>
+
+        <ErrorMessage
+          errorMessage="Error: Failed to created chatroom!"
+          showError={createError}
+        />
       </DialogContent>
       <DialogActions>
         <Button variant="outlined" onClick={onCancel} color="secondary">
@@ -245,5 +282,5 @@ function CreateChatroomDialog({
 }
 
 export default withMobileDialog({ breakpoint: 'xs' })(
-  withStyles(styles)(CreateChatroomDialog)
+  withStyles(styles, { withTheme: true })(CreateChatroomDialog)
 );
