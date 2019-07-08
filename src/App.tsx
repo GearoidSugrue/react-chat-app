@@ -1,4 +1,5 @@
 import clsx from 'clsx';
+import { SnackbarProvider } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import FlexView from 'react-flexview';
 
@@ -9,6 +10,7 @@ import {
   Typography,
   withStyles
 } from '@material-ui/core';
+import { amber } from '@material-ui/core/colors';
 import { Menu } from '@material-ui/icons';
 
 import { useChatApi } from 'src/chat-api';
@@ -83,6 +85,22 @@ const styles = (theme: ChatTheme) => ({
     [theme.breakpoints.up('sm')]: {
       marginLeft: theme.sideDrawer.width
     }
+  },
+  snackbarSuccess: {
+    backgroundColor: theme.chatColors.success,
+    color: theme.palette.secondary.contrastText
+  },
+  snackbarError: {
+    backgroundColor: theme.palette.error.dark,
+    color: theme.palette.secondary.contrastText
+  },
+  snackbarWarning: {
+    backgroundColor: amber[700], // TODO add this to ChatTheme
+    color: theme.palette.secondary.contrastText
+  },
+  snackbarInfo: {
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.primary.contrastText
   }
 });
 
@@ -148,45 +166,62 @@ function App({ classes }: AppProps) {
   );
 
   return (
-    <FlexView column grow width="100%" height="100vh" className={classes.root}>
-      <ChatSideDrawer
-        selectedChatroom={selectedChatroom}
-        selectedUser={selectedUser}
-        mobileDrawerOpen={mobileDrawerOpen}
-        onLogout={handleLogout}
-        onChatroomSelected={handleChatroomSelected}
-        onUserSelected={handleUserSelected}
-        onMobileDrawerToggle={handleSideDrawerToggle}
-      />
+    <SnackbarProvider
+      maxSnack={1}
+      autoHideDuration={3000}
+      classes={{
+        variantSuccess: classes.snackbarSuccess,
+        variantError: classes.snackbarError,
+        variantWarning: classes.snackbarWarning,
+        variantInfo: classes.snackbarInfo
+      }}
+    >
+      <FlexView
+        column
+        grow
+        width="100%"
+        height="100vh"
+        className={classes.root}
+      >
+        <ChatSideDrawer
+          selectedChatroom={selectedChatroom}
+          selectedUser={selectedUser}
+          mobileDrawerOpen={mobileDrawerOpen}
+          onLogout={handleLogout}
+          onChatroomSelected={handleChatroomSelected}
+          onUserSelected={handleUserSelected}
+          onMobileDrawerToggle={handleSideDrawerToggle}
+        />
 
-      <AppBar position="relative" className={appBarClasses}>
-        <Toolbar>
-          <IconButton
-            className={sideDrawerButtonClasses}
-            onClick={handleSideDrawerToggle}
-          >
-            <Menu />
-          </IconButton>
-          <Typography variant="h5" color="inherit" noWrap>
-            {selectedChatroom.name
-              ? `# ${selectedChatroom.name}`
-              : selectedUser.username || 'Group Chat'}
-          </Typography>
-        </Toolbar>
-      </AppBar>
+        <AppBar position="relative" className={appBarClasses}>
+          <Toolbar>
+            <IconButton
+              className={sideDrawerButtonClasses}
+              onClick={handleSideDrawerToggle}
+            >
+              <Menu />
+            </IconButton>
+            <Typography variant="h5" color="inherit" noWrap>
+              {selectedChatroom.name
+                ? `# ${selectedChatroom.name}`
+                : selectedUser.username || 'Group Chat'}
+            </Typography>
+          </Toolbar>
+        </AppBar>
 
-      <FlexView column grow className={mainContentClasses}>
-        {isLoggedIn && (
-          <Chat
-            userId={userId}
-            username={username}
-            selectedChatroom={selectedChatroom}
-            selectedUser={selectedUser}
-          />
-        )}
-        {!isLoggedIn && <LoginPage onLogin={handleLogin} />}
+        <FlexView column grow className={mainContentClasses}>
+          {isLoggedIn && (
+            <Chat
+              userId={userId}
+              username={username}
+              selectedChatroom={selectedChatroom}
+              selectedUser={selectedUser}
+            />
+          )}
+          {!isLoggedIn && <LoginPage onLogin={handleLogin} />}
+        </FlexView>
       </FlexView>
-    </FlexView>
+    </SnackbarProvider>
   );
 }
 

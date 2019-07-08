@@ -17,7 +17,7 @@ const themeOptions: ChatThemeOptions = {
     },
     secondary: {
       main: '#00b16a', // Jade
-      contrastText: '#fff' // use white text on buttons instead of black
+      contrastText: '#fff' // uses white text on buttons
     },
     error: {
       main: '#e74c3c', // Alizarin

@@ -6,14 +6,12 @@ import {
   Drawer,
   Hidden,
   IconButton,
-  Snackbar,
   Typography,
   withStyles
 } from '@material-ui/core';
 import { AddCircleOutline } from '@material-ui/icons';
 
 import { useUserLogin } from 'src/hooks';
-import SnackbarContentWrapper from 'src/shared/SnackbarContentWrapper';
 import { ChatroomType, ChatTheme, UserType } from 'src/types';
 import Chatrooms from './Chatrooms';
 import CreateChatroomDialog from './create-chatroom/CreateChatroomDialog';
@@ -71,7 +69,6 @@ function ChatSideDrawer({
   const { user, isLoggedIn } = useUserLogin();
   const { username } = user;
   const [createChatroomOpen, setCreateChatroomOpen] = useState(false);
-  const [showSuccessSnackbar, setShowSuccessSnackbar] = useState(false);
 
   function handleOpenCreateChatroom() {
     setCreateChatroomOpen(true);
@@ -79,19 +76,10 @@ function ChatSideDrawer({
 
   function handleChatroomCreated() {
     setCreateChatroomOpen(false);
-    setShowSuccessSnackbar(true);
   }
 
   function handleCancelCreateChatroom() {
     setCreateChatroomOpen(false);
-  }
-
-  function handleCloseSnackbar(event: any, reason?: string) {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setShowSuccessSnackbar(false);
   }
 
   const chatroomsFragment = (
@@ -148,24 +136,6 @@ function ChatSideDrawer({
     </div>
   );
 
-  const createChatroomSuccessSnackbar = (
-    <Snackbar
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'center'
-      }}
-      open={showSuccessSnackbar}
-      autoHideDuration={3000}
-      onClose={handleCloseSnackbar}
-    >
-      <SnackbarContentWrapper
-        variant="success"
-        message="Chatroom created!"
-        onClose={handleCloseSnackbar}
-      />
-    </Snackbar>
-  );
-
   return (
     <>
       {/* todo: investigate material ui useMediaQuery. May not change dynamically tho...*/}
@@ -207,7 +177,6 @@ function ChatSideDrawer({
           {sideDrawerFragment}
         </Drawer>
       </Hidden>
-      {createChatroomSuccessSnackbar}
     </>
   );
 }

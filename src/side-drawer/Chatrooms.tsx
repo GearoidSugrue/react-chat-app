@@ -62,7 +62,6 @@ function Chatrooms({
   }
 
   function handleOpenJoinChatrooms() {
-    // TODO show join chatrooms success snackbar
     setJoinChatroomsOpen(true);
   }
 
@@ -116,7 +115,6 @@ function Chatrooms({
       {joinChatroomsOpen && (
         <BrowseChatroomsDialog
           open={joinChatroomsOpen}
-          onCancel={handleCloseJoinChatrooms}
           onClose={handleCloseJoinChatrooms}
         />
       )}

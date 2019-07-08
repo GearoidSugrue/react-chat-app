@@ -1,3 +1,4 @@
+import { OptionsObject, useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
 
 import {
@@ -8,9 +9,12 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  IconButton,
+  Typography,
   withMobileDialog,
   withStyles
 } from '@material-ui/core';
+import { Close } from '@material-ui/icons';
 
 import { useChatApi } from 'src/chat-api';
 import { fetchRoomsStatus, useFetchRooms, useUserLogin } from 'src/hooks';
@@ -34,7 +38,6 @@ type BrowseChatroomDialogProps = Readonly<{
   open: boolean;
   fullScreen: boolean;
   onClose: () => void;
-  onCancel: () => void;
 }>;
 
 /**
@@ -44,10 +47,10 @@ type BrowseChatroomDialogProps = Readonly<{
 function BrowseChatroomDialog({
   open,
   fullScreen,
-  onClose,
-  onCancel
+  onClose
 }: BrowseChatroomDialogProps) {
   const chatApi = useChatApi();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const { user } = useUserLogin();
   const { rooms, status: roomsStatus } = useFetchRooms(nonUserRoomsPredicate);
   const [selectedRooms, setSelectedRooms] = useState([]);
@@ -85,14 +88,35 @@ function BrowseChatroomDialog({
       (room: SearchableOption) => room.value
     );
     try {
-      const result = await chatApi.joinChatrooms(chatroomIds, user.userId);
-      console.log('Join chatroom results:', result);
+      await chatApi.joinChatrooms(chatroomIds, user.userId);
+      showJoinSuccessSnackbar(chatroomIds);
+      setJoinPending(false);
       onClose();
     } catch (err) {
       setJoinError(true);
-    } finally {
       setJoinPending(false);
     }
+  }
+
+  function showJoinSuccessSnackbar(chatroomIds: string[]) {
+    const message =
+      chatroomIds.length > 1 ? 'Joined Chatrooms!' : 'Joined Chatroom!';
+
+    const closeFragment = (snackbarKey: OptionsObject['key']) => (
+      <IconButton key="close" onClick={() => closeSnackbar(snackbarKey)}>
+        <Close />
+      </IconButton>
+    );
+    const messageFragment = <Typography>{message}</Typography>;
+    const snackbarConfig: OptionsObject = {
+      variant: 'success',
+      action: closeFragment,
+      anchorOrigin: {
+        vertical: 'bottom',
+        horizontal: 'center'
+      }
+    };
+    enqueueSnackbar(messageFragment, snackbarConfig);
   }
 
   // TODO type this properly
@@ -108,7 +132,7 @@ function BrowseChatroomDialog({
   );
 
   return (
-    <Dialog fullWidth fullScreen={fullScreen} open={open} onClose={onCancel}>
+    <Dialog fullWidth fullScreen={fullScreen} open={open} onClose={onClose}>
       <DialogTitle id="browse-dialog-title">Join Chatrooms</DialogTitle>
       <DialogContent>
         <DialogContentText>
@@ -134,7 +158,7 @@ function BrowseChatroomDialog({
       </DialogContent>
 
       <DialogActions>
-        <Button variant="outlined" onClick={onCancel} color="secondary">
+        <Button variant="outlined" onClick={onClose} color="secondary">
           Cancel
         </Button>
 

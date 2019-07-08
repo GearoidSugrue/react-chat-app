@@ -133,7 +133,10 @@ export class ChatApi {
     }
   }
 
-  async joinChatrooms(chatroomIds: string[], userId: string): Promise<void> {
+  async joinChatrooms(
+    chatroomIds: string[],
+    userId: string
+  ): Promise<string[]> {
     try {
       const joinRoomConfig: AxiosRequestConfig = {
         url: `http://${this.HOST}/users/${userId}/rooms`,
@@ -145,8 +148,8 @@ export class ChatApi {
           RequesterUserId: userId
         }
       };
-      const result = await axios(joinRoomConfig);
-      return result.data;
+      await axios(joinRoomConfig);
+      return chatroomIds;
     } catch (error) {
       console.error('Error occurred joining rooms', chatroomIds, error);
       throw error;

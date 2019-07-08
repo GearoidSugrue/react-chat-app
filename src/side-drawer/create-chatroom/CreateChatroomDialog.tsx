@@ -1,3 +1,4 @@
+import { OptionsObject, useSnackbar } from 'notistack';
 import React, { useState } from 'react';
 
 import {
@@ -11,10 +12,11 @@ import {
   IconButton,
   InputAdornment,
   TextField,
+  Typography,
   withMobileDialog,
   withStyles
 } from '@material-ui/core';
-import { Clear } from '@material-ui/icons';
+import { Clear, Close } from '@material-ui/icons';
 
 import { useChatApi } from 'src/chat-api';
 import { fetchUsersStatus, useFetchUsers, useUserLogin } from 'src/hooks';
@@ -68,8 +70,6 @@ type CreateChatroomProps = Readonly<{
   onCancel: () => void;
 }>;
 
-// ! Error "Warning: Can't perform a React state update on an unmounted component" is being thrown by this dialog on successfully close.
-
 /**
  * Dialog for creating new Chatrooms and adding users to it.
  * @param CreateChatroomProps
@@ -82,6 +82,7 @@ function CreateChatroomDialog({
   onCancel
 }: CreateChatroomProps) {
   const chatApi = useChatApi();
+  const { enqueueSnackbar, closeSnackbar } = useSnackbar();
   const { user: loggedInUser } = useUserLogin();
   const { users, status: usersStatus } = useFetchUsers();
   const [chatroomName, setChatroomName] = useState('');
@@ -131,12 +132,31 @@ function CreateChatroomDialog({
         memberIds,
         loggedInUser.userId
       );
+      showCreateSuccessSnackbar();
+      setCreatePending(false);
       onChatroomCreate();
     } catch (err) {
       setCreateError(true);
-    } finally {
       setCreatePending(false);
     }
+  }
+
+  function showCreateSuccessSnackbar() {
+    const closeAction = (snackbarKey: string) => (
+      <IconButton key="close" onClick={() => closeSnackbar(snackbarKey)}>
+        <Close />
+      </IconButton>
+    );
+    const messageFragment = <Typography>Created Chatroom!</Typography>;
+    const snackbarConfig: OptionsObject = {
+      variant: 'success',
+      action: closeAction,
+      anchorOrigin: {
+        vertical: 'bottom',
+        horizontal: 'center'
+      }
+    };
+    enqueueSnackbar(messageFragment, snackbarConfig);
   }
 
   const chatroomNameFragment = (
