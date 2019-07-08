@@ -60,7 +60,21 @@ const styles = (theme: ChatTheme) =>
     }
   });
 
-function CreateChatroom({ classes, theme, open, fullScreen, onClose }) {
+type CreateChatroomProps = Readonly<{
+  classes: any;
+  open: boolean;
+  fullScreen: boolean;
+  onChatroomCreate: () => void;
+  onCancel: () => void;
+}>;
+
+function CreateChatroom({
+  classes,
+  open,
+  fullScreen,
+  onChatroomCreate,
+  onCancel
+}: CreateChatroomProps) {
   const chatApi = useChatApi();
   const { user: loggedInUser } = useUserLogin();
   const { users, status: usersStatus } = useFetchUsers();
@@ -111,7 +125,7 @@ function CreateChatroom({ classes, theme, open, fullScreen, onClose }) {
         memberIds,
         loggedInUser.userId
       );
-      onClose({ success: true });
+      onChatroomCreate();
     } catch (err) {
       setCreateError(true);
     } finally {
@@ -164,7 +178,7 @@ function CreateChatroom({ classes, theme, open, fullScreen, onClose }) {
   );
 
   return (
-    <Dialog fullWidth fullScreen={fullScreen} open={open} onClose={onClose}>
+    <Dialog fullWidth fullScreen={fullScreen} open={open} onClose={onCancel}>
       <DialogTitle id="browse-dialog-title">Create Chatroom</DialogTitle>
       <DialogContent>
         <DialogContentText>
@@ -195,7 +209,7 @@ function CreateChatroom({ classes, theme, open, fullScreen, onClose }) {
         )}
       </DialogContent>
       <DialogActions>
-        <Button variant="outlined" onClick={onClose} color="secondary">
+        <Button variant="outlined" onClick={onCancel} color="secondary">
           Cancel
         </Button>
         <PendingButton button={createButtonFragment} pending={createPending} />

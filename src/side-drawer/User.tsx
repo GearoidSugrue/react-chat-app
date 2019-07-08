@@ -1,5 +1,4 @@
 import clsx from 'clsx';
-import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
 import {
@@ -12,7 +11,7 @@ import {
 
 import { useChatApi } from 'src/chat-api';
 import { useOnlineStatus } from 'src/hooks';
-import { ChatTheme } from 'src/types';
+import { ChatTheme, UserType } from 'src/types';
 
 const styles = (theme: ChatTheme) => ({
   gutterPadding: {
@@ -44,7 +43,21 @@ const styles = (theme: ChatTheme) => ({
   }
 });
 
-function User({ classes, user, loggedInUser, isSelected, onUserSelected }) {
+type UserProps = Readonly<{
+  classes: any;
+  user: UserType;
+  loggedInUser: UserType;
+  isSelected: boolean;
+  onUserSelected: (user: UserType) => void;
+}>;
+
+function User({
+  classes,
+  user,
+  loggedInUser,
+  isSelected,
+  onUserSelected
+}: UserProps) {
   const chatApi = useChatApi();
   const isLoggedInUser = user.userId === loggedInUser.userId;
   const online = useOnlineStatus(user, isLoggedInUser);
@@ -113,10 +126,4 @@ function User({ classes, user, loggedInUser, isSelected, onUserSelected }) {
     </ListItem>
   );
 }
-
-User.propTypes = {
-  classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired
-};
-
 export default withStyles(styles, { withTheme: true })(User);

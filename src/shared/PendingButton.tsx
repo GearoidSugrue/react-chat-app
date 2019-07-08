@@ -20,8 +20,13 @@ const styles = (theme: ChatTheme) =>
     }
   });
 
-// TODO implement types/interfaces
-function PendingButton({ classes, button, pending }) {
+type PendingButtonProps = Readonly<{
+  classes: any;
+  button: any; // TODO: Look at material-ui and React component composition for better way to do this
+  pending: boolean;
+}>;
+
+function PendingButton({ classes, button, pending }: PendingButtonProps) {
   return (
     <div className={classes.createButtonWrapper}>
       {button}

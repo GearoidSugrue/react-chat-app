@@ -3,7 +3,13 @@ import { useEffect, useState } from 'react';
 import { ChatApi, useChatApi } from 'src/chat-api';
 import { OnlineStatusMessage } from 'src/types';
 
-// after providing an initial online status this hook will be notified if the user's online status changes
+// TODO initialOnlineStatus and { online } are really the same thing. Refactor so only one is needed.
+/**
+ * A hook that listens for changes in a user's online status.
+ *
+ * @param onlineStatusUpdate - the userId of the user to listen for and their current online status
+ * @param initialOnlineStatus - the user's current online status
+ */
 export function useOnlineStatus(
   { userId, online }: OnlineStatusMessage,
   initialOnlineStatus?: boolean

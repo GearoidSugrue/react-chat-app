@@ -1,5 +1,4 @@
 import clsx from 'clsx';
-import PropTypes from 'prop-types';
 import React from 'react';
 
 import {
@@ -40,7 +39,6 @@ const styles = (theme: ChatTheme) =>
       fontSize: 20
     },
     iconVariant: {
-      // opacity: 0.9,
       marginRight: theme.spacing(1)
     },
     message: {
@@ -48,25 +46,47 @@ const styles = (theme: ChatTheme) =>
       alignItems: 'center'
     },
     snackbarContainer: {
-      // margin: theme.spacing(1)
       fontSize: '16px'
     }
   });
 
+type SnackbarContentWrapperProps = Readonly<{
+  classes: any;
+  variant: keyof typeof variantIcon;
+  message: string;
+  action?: any; // TODO find proper type for this
+  onClose: (event: any, reason?: string) => void;
+}>;
+
 function SnackbarContentWrapper({
   classes,
-  message,
-  onClose,
   variant,
+  message,
   action,
+  onClose,
   ...other
-}) {
+}: SnackbarContentWrapperProps) {
   const Icon = variantIcon[variant];
 
   const snackbarContentClasses = clsx(
     classes[variant],
     classes.snackbarContainer
   );
+
+  const closeIconButton = (
+    <IconButton
+      key="close"
+      aria-label="Close"
+      color="inherit"
+      onClick={onClose}
+    >
+      <Close className={classes.icon} />
+    </IconButton>
+  );
+
+  const snackbarActions = action
+    ? [action, closeIconButton]
+    : [closeIconButton];
 
   return (
     <SnackbarContent
@@ -78,28 +98,10 @@ function SnackbarContentWrapper({
           {message}
         </span>
       }
-      action={[
-        action,
-        <IconButton
-          key="close"
-          aria-label="Close"
-          color="inherit"
-          onClick={onClose}
-        >
-          <Close className={classes.icon} />
-        </IconButton>
-      ]}
+      action={snackbarActions}
       {...other}
     />
   );
 }
-
-SnackbarContentWrapper.propTypes = {
-  classes: PropTypes.object.isRequired,
-  className: PropTypes.string,
-  message: PropTypes.node,
-  onClose: PropTypes.func,
-  variant: PropTypes.oneOf(['success', 'warning', 'error', 'info']).isRequired
-};
 
 export default withStyles(styles, { withTheme: true })(SnackbarContentWrapper);

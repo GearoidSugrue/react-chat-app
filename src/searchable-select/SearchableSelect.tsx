@@ -2,6 +2,7 @@
  * This file is a wrapper around react-select and is a modified version
  * of material-ui's searchable select example: https://github.com/mui-org/material-ui/blob/master/docs/src/pages/components/autocomplete/IntegrationReactSelect.js
  */
+import clsx from 'clsx';
 import React from 'react';
 
 import Select, { createFilter } from 'react-select';
@@ -21,7 +22,6 @@ import {
 } from '@material-ui/core';
 import { emphasize } from '@material-ui/core/styles';
 import { ArrowDropDown, Cancel, Clear } from '@material-ui/icons';
-import clsx from 'clsx';
 
 import { ChatTheme } from 'src/types';
 
@@ -209,7 +209,6 @@ const filterConfig: FilterConfig = {
   trim: true
 };
 
-// tslint:disable-next-line: interface-over-type-literal
 export type SearchableOption = {
   label: string;
   value: string;

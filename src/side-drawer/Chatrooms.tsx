@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
 import {
@@ -36,7 +35,17 @@ const styles = (theme: ChatTheme) => ({
   }
 });
 
-function Chatrooms({ classes, selectedChatroom, onChatroomSelected }) {
+type ChatroomsProps = Readonly<{
+  classes: any;
+  selectedChatroom: ChatroomType;
+  onChatroomSelected: (chatroom: ChatroomType) => void;
+}>;
+
+function Chatrooms({
+  classes,
+  selectedChatroom,
+  onChatroomSelected
+}: ChatroomsProps) {
   const { user } = useUserLogin();
   const { rooms, status: roomsStatus, retry } = useFetchRooms(
     userRoomsPredicate
@@ -48,6 +57,7 @@ function Chatrooms({ classes, selectedChatroom, onChatroomSelected }) {
   }
 
   function handleOpenJoinChatrooms() {
+    // TODO show join chatrooms success snackbar
     setJoinChatroomsOpen(true);
   }
 
@@ -58,7 +68,7 @@ function Chatrooms({ classes, selectedChatroom, onChatroomSelected }) {
   return (
     <>
       {roomsStatus === fetchRoomsStatus.FETCHING && (
-        // todo add loading placeholders
+        // TODO add loading placeholders
         <Typography color="inherit" className={classes.loading}>
           Loading rooms...
         </Typography>
@@ -108,10 +118,5 @@ function Chatrooms({ classes, selectedChatroom, onChatroomSelected }) {
     </>
   );
 }
-
-Chatrooms.propTypes = {
-  classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired
-};
 
 export default withStyles(styles, { withTheme: true })(Chatrooms);

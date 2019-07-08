@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core';
 
 import { useChatApi } from 'src/chat-api';
-import { useFetchRooms, useUserLogin } from 'src/hooks';
+import { fetchRoomsStatus, useFetchRooms, useUserLogin } from 'src/hooks';
 import SearchableSelect, {
   SearchableOption
 } from 'src/searchable-select/SearchableSelect';
@@ -30,10 +30,22 @@ function createSearchableRoom(room: ChatroomType): SearchableOption {
   };
 }
 
-function BrowseChatroomDialog({ open, fullScreen, onClose, onCancel }) {
+type BrowseChatroomDialogProps = Readonly<{
+  open: boolean;
+  fullScreen: boolean;
+  onClose: () => void;
+  onCancel: () => void;
+}>;
+
+function BrowseChatroomDialog({
+  open,
+  fullScreen,
+  onClose,
+  onCancel
+}: BrowseChatroomDialogProps) {
   const chatApi = useChatApi();
   const { user } = useUserLogin();
-  const { rooms } = useFetchRooms(nonUserRoomsPredicate);
+  const { rooms, status: roomsStatus } = useFetchRooms(nonUserRoomsPredicate);
   const [selectedRooms, setSelectedRooms] = useState([]);
   const [joinButtonText, setJoinButtonText] = useState('Join Chatroom');
 
@@ -79,7 +91,8 @@ function BrowseChatroomDialog({ open, fullScreen, onClose, onCancel }) {
     }
   }
 
-  const joinButtonFragment = (
+  // TODO type this properly
+  const joinButtonFragment: any = (
     <Button
       variant="contained"
       disabled={!selectedRooms.length || joinPending}
@@ -98,17 +111,22 @@ function BrowseChatroomDialog({ open, fullScreen, onClose, onCancel }) {
           Select a Chatroom below. Start typing to narrow down the chatrooms.
         </DialogContentText>
 
-        <SearchableSelect
-          label="Chatrooms"
-          options={searchableRooms}
-          selectedOptions={selectedRooms}
-          onSelectedOptionsChange={handleSelectedRoomsChange}
-        />
+        {roomsStatus === fetchRoomsStatus.FETCHING && 'Loading chatrooms...'}
 
-        <ErrorMessage
-          errorMessage="Error: Failed to join chatrooms!"
-          showError={joinError}
-        />
+        {roomsStatus === fetchRoomsStatus.SUCCESS && (
+          <>
+            <SearchableSelect
+              label="Chatrooms *"
+              options={searchableRooms}
+              selectedOptions={selectedRooms}
+              onSelectedOptionsChange={handleSelectedRoomsChange}
+            />
+            <ErrorMessage
+              errorMessage="Error: Failed to join chatrooms!"
+              showError={joinError}
+            />
+          </>
+        )}
       </DialogContent>
 
       <DialogActions>

@@ -1,5 +1,4 @@
 import { format } from 'date-fns';
-import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
 import {
@@ -16,14 +15,20 @@ import { ChatTheme, Message } from 'src/types';
 
 const styles = (theme: ChatTheme) => ({
   messagesList: {
-    overflow: 'auto' // todo fix not showing scroll bar issue,
+    overflow: 'auto' // TODO fix not showing scroll bar issue,
   }
 });
 
 const DATE_FORMAT = 'MMMM Do, YYYY - HH:mm A'; // e.g. June 10th, 2019 - 14:18 PM
 
-function MessageList({ theme, classes, messages = [] as Message[] }) {
-  // todo perhaps this could use "useRef" instead?
+type MessageListProps = {
+  classes: any;
+  theme: ChatTheme;
+  messages?: Message[];
+};
+
+function MessageList({ theme, classes, messages = [] }: MessageListProps) {
+  // TODO perhaps this could use "useRef" instead?
   const [messagesEndRef, setMessagesEndRef] = useState({} as HTMLDivElement);
 
   // This effect Scrolls down to the newest message. Triggered by message change.
@@ -31,7 +36,7 @@ function MessageList({ theme, classes, messages = [] as Message[] }) {
     function scrollToBottom() {
       console.log('scrollToBottom effect', messagesEndRef);
       if (messagesEndRef && messagesEndRef.scrollIntoView) {
-        // todo look into using behavior: 'auto' for first load of large lists.
+        // TODO look into using behavior: 'auto' for first load of large lists.
         // Maybe diff y co-ord with messageEndRef to see if we are already near the bottom or not?
         messagesEndRef.scrollIntoView({ behavior: 'smooth' });
       }
@@ -68,10 +73,5 @@ function MessageList({ theme, classes, messages = [] as Message[] }) {
     </Fade>
   );
 }
-
-MessageList.propTypes = {
-  classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired
-};
 
 export default withStyles(styles, { withTheme: true })(MessageList);

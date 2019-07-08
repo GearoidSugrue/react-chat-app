@@ -18,8 +18,19 @@ const styles = (theme: ChatTheme) =>
     }
   });
 
-// TODO implement types/interfaces
-function ErrorMessage({ classes, theme, errorMessage, showError }) {
+type ErrorMessageProps = Readonly<{
+  classes: any;
+  theme: ChatTheme;
+  errorMessage: string;
+  showError: boolean;
+}>;
+
+function ErrorMessage({
+  classes,
+  theme,
+  errorMessage,
+  showError
+}: ErrorMessageProps) {
   return (
     <>
       {showError && (

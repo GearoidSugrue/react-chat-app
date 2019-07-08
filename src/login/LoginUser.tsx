@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
 import {
@@ -44,7 +43,13 @@ const styles = (theme: ChatTheme) =>
     }
   });
 
-function LoginUser({ classes, theme, onLogin }) {
+type LoginUserProps = Readonly<{
+  classes: any;
+  theme: ChatTheme;
+  onLogin: (user: UserType) => void;
+}>;
+
+function LoginUser({ classes, theme, onLogin }: LoginUserProps) {
   const [selectedUser, setSelectedUser] = useState({} as UserType);
   const { users, status, retry } = useFetchUsers();
 
@@ -126,10 +131,5 @@ function LoginUser({ classes, theme, onLogin }) {
     </>
   );
 }
-
-LoginUser.propTypes = {
-  classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired
-};
 
 export default withStyles(styles, { withTheme: true })(LoginUser);

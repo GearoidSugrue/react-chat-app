@@ -7,19 +7,18 @@ import { OnlineStatusMessage, UserType } from 'src/types';
 export const fetchUsersStatus = fetchStatus;
 
 // fetches the list of users and then updates the list whenever changes occur
-
-// todo: remove filter predicate if it's not used
+// TODO: remove filter predicate if it's not used
 export function useFetchUsers(
   usersFilterPredicate?: (user: UserType) => boolean,
   userIds?: string[]
 ) {
   const [users, setUsers] = useState<UserType[]>([]);
 
-  // todo: if !!userIds, load just them instead of all users
+  // TODO: if !!userIds, load just them instead of all users
   const { data: fetchedUsers, ...fetch } = useFetch('/users');
   const chatApi = useChatApi();
 
-  // todo: add effect that runs on 'userIds' change that re-fetches users
+  // ? maybe add effect that runs on 'userIds' change that re-fetches users
 
   useEffect(
     function setLoadedUsers() {
@@ -61,7 +60,7 @@ export function useFetchUsers(
     function subscribeToUserList() {
       console.log('chatApi in subscribe to new users effect');
 
-      // todo implement this correctly! Listen for new users!
+      // TODO implement this correctly! Listen for new users!
       const usersSub = chatApi.usersUpdates$.subscribe(setUsers);
 
       return () => usersSub.unsubscribe();

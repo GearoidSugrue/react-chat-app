@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
 
-// code based on code here here: https://codesandbox.io/s/y3qzyr3lrz
-export function useKeysPressed() {
+/**
+ * Returns the keys pressed.
+ * Modified version of this code: https://codesandbox.io/s/y3qzyr3lrz
+ */
+export function useKeysPressed(): Set<string> {
   const [keysPressed, setKeyPressed] = useState(new Set([]));
 
   const keyDownHandler = ({ key }) => setKeyPressed(keysPressed.add(key));
@@ -24,7 +27,11 @@ export function useKeysPressed() {
   return keysPressed;
 }
 
-export function useAreKeysPressed(keys = []) {
+/**
+ * Returns true if all of the provided keys are pressed.
+ * @param keys array of keys to check e.g. ['Shift', 'Enter']
+ */
+export function useAreKeysPressed(keys = []): boolean {
   const requiredKeys = new Set(keys);
   const keysPressed = useKeysPressed();
 

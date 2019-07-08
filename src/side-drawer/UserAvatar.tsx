@@ -1,8 +1,8 @@
 import clsx from 'clsx';
-import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
 import { Avatar, Fade, withStyles } from '@material-ui/core';
+
 import { ChatTheme } from 'src/types';
 
 const styles = (theme: ChatTheme) => ({
@@ -11,13 +11,19 @@ const styles = (theme: ChatTheme) => ({
   },
   loading: {
     background: theme.palette.primary.light,
-    transition: 'background-color 1s ease' // todo investigate this vs/and Fade
+    transition: 'background-color 1s ease' // TODO investigate this vs/and Fade
   }
 });
 
-// todo add error case for img loading!
-// investigate other animations such as zoom, etc
-function UserAvatar({ classes, username }) {
+type UserAvatarProps = Readonly<{
+  classes: any;
+  username: string;
+}>;
+
+// ? move to shared components
+// TODO add error case for img loading!
+// TODO investigate other animations such as zoom, etc
+function UserAvatar({ classes, username }: UserAvatarProps) {
   const [isAvatarLoaded, setIsAvatarLoaded] = useState(false);
 
   const avatarClasses = clsx(
@@ -47,10 +53,5 @@ function UserAvatar({ classes, username }) {
     </>
   );
 }
-
-UserAvatar.propTypes = {
-  classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired
-};
 
 export default withStyles(styles, { withTheme: true })(UserAvatar);

@@ -8,7 +8,7 @@ export const fetchRoomsStatus = fetchStatus;
 
 // fetches the list of rooms and then updates the list whenever changes occur
 export function useFetchRooms(
-  roomFilterPredicate?: (room: ChatroomType) => boolean // todo delete this if it's not gonna be used
+  roomFilterPredicate?: (room: ChatroomType) => boolean // TODO delete this if it's not gonna be used
 ) {
   const [rooms, setRooms] = useState([]);
   const { data: fetchedRooms, ...fetch } = useFetch('/rooms');

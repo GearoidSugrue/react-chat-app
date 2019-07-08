@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import FlexView from 'react-flexview';
 
@@ -6,24 +5,22 @@ import { Divider, Fade, Typography, withStyles } from '@material-ui/core';
 
 import { useChatApi } from 'src/chat-api';
 import { fetchMessagesStatus, useIsUserTyping, useMessages } from 'src/hooks';
-import { ChatTheme } from 'src/types';
+import { ChatroomType, ChatTheme, UserType } from 'src/types';
 import MessageList from './MessageList';
 import UserInput from './UserInput';
 
-// todo: show online and offline users in a sub-toolbar?
+// TODO: show online and offline users in a sub-toolbar?
 
-const styles = (theme: ChatTheme) => ({
-  messagesList: {
-    marginBottom: '14px',
-    maxHeight: '100%', // todo check this works!
-    overflow: 'auto' // todo fix not showing scroll bar issue
-  },
-  message: {
-    padding: theme.spacing(0, 0, 1, 0)
-  }
-});
+const styles = (theme: ChatTheme) => ({});
 
-function Chat({ classes, userId, username, selectedChatroom, selectedUser }) {
+type ChatProps = Readonly<{
+  userId: string;
+  username: string;
+  selectedChatroom: ChatroomType;
+  selectedUser: UserType;
+}>;
+
+function Chat({ userId, username, selectedChatroom, selectedUser }: ChatProps) {
   const chatApi = useChatApi();
   const { messages, status: messagesStatus } = useMessages({
     userId,
@@ -47,7 +44,7 @@ function Chat({ classes, userId, username, selectedChatroom, selectedUser }) {
 
   useEffect(
     function clearTypingUsers() {
-      // todo this might not be needed
+      // TODO this might not be needed
       return function setThisUserNotTyping() {
         if (selectedChatroom.chatroomId) {
           chatApi.sendTypingInChatroomChange(
@@ -70,6 +67,7 @@ function Chat({ classes, userId, username, selectedChatroom, selectedUser }) {
       chatroomId
     );
 
+    // TODO implement nicer looking UI for showing what users are typing
     return (
       <>
         {isTyping && (
@@ -77,10 +75,6 @@ function Chat({ classes, userId, username, selectedChatroom, selectedUser }) {
             <span>{name} is typing...</span>
           </Fade>
         )}
-
-        {/* <Fade in={isTyping}>
-          <Typography>{name} is typing...</Typography>
-        </Fade> */}
       </>
     );
   }
@@ -155,9 +149,5 @@ function Chat({ classes, userId, username, selectedChatroom, selectedUser }) {
     </Fade>
   );
 }
-
-Chat.propTypes = {
-  classes: PropTypes.object.isRequired
-};
 
 export default withStyles(styles)(Chat);

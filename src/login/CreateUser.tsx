@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
 
 import {
@@ -28,7 +27,12 @@ const styles = (theme: ChatTheme) => ({
   }
 });
 
-function CreateUser({ classes, onCreateUser }) {
+type CreateUserProps = Readonly<{
+  classes: any;
+  onCreateUser: ({ username }) => void;
+}>;
+
+function CreateUser({ classes, onCreateUser }: CreateUserProps) {
   const [username, setUsername] = useState('');
   const [labelWidth, setLabelWidth] = useState(0);
   const labelRef = useRef(null);
@@ -37,8 +41,17 @@ function CreateUser({ classes, onCreateUser }) {
     setLabelWidth(labelRef.current.offsetWidth);
   }, []);
 
-  const handleUsernameChange = (event: React.ChangeEvent<{ value: string }>) =>
+  function handleUsernameChange(event: React.ChangeEvent<{ value: string }>) {
     setUsername(event.target.value);
+  }
+
+  function handleClearUsername() {
+    setUsername('');
+  }
+
+  function handleCreateUser() {
+    onCreateUser({ username });
+  }
 
   return (
     <>
@@ -70,7 +83,7 @@ function CreateUser({ classes, onCreateUser }) {
               <IconButton
                 edge="end"
                 className={classes.clearButton}
-                onClick={() => setUsername('')}
+                onClick={handleClearUsername}
               >
                 <Clear />
               </IconButton>
@@ -84,17 +97,12 @@ function CreateUser({ classes, onCreateUser }) {
         color="secondary"
         variant="contained"
         disabled={!username}
-        onClick={() => onCreateUser({ username })}
+        onClick={handleCreateUser}
       >
         Create User
       </Button>
     </>
   );
 }
-
-CreateUser.propTypes = {
-  classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired
-};
 
 export default withStyles(styles, { withTheme: true })(CreateUser);

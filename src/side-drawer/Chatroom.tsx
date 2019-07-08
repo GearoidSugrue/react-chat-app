@@ -1,5 +1,4 @@
 import clsx from 'clsx';
-import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 
 import {
@@ -14,7 +13,6 @@ import {
 import { useChatApi } from 'src/chat-api';
 import { ChatroomType, ChatTheme } from 'src/types';
 
-// tslint:disable-next-line: interface-over-type-literal
 type ChatroomClasses = {
   gutterPadding: any;
   name: any;
@@ -51,19 +49,18 @@ const styles = (theme: ChatTheme) =>
     }
   });
 
-// tslint:disable-next-line: interface-name
-interface ChatroomProps {
+type ChatroomProps = {
   classes: ChatroomClasses;
   chatroom: ChatroomType;
   isSelected: boolean;
   onChatroomSelected: (chatroom: ChatroomType) => void;
-}
+};
 
 /*
- * TODO: Theres a lot of over lap with the User component in here.
+ * // TODO Theres a lot of over lap with the User component in here. Try to simplifiy it
  * There's is difference in what chatApi method to call.
  * Perhaps if the the resulting unseenMessagesSub get provided to a new external comp.
- * that subscribes to it in an effect and the increment along with hightlighting text,
+ * that subscribes to it in an effect and the increment along with highlighting text,
  * the counter, css and html
  */
 function Chatroom({
@@ -88,7 +85,7 @@ function Chatroom({
   );
 
   useEffect(
-    // todo info: createUnseenMessagesListener or something like that
+    // TODO info: createUnseenMessagesListener or something like that
     function listenForUnseenMessages() {
       function incrementUnseenMessages() {
         setUnseenMessagesCount(unseenMessagesCount + 1);
@@ -123,7 +120,9 @@ function Chatroom({
     >
       <Typography className={classes.namePrefix}>#</Typography>
 
-      {/* <RecipientUnseenMessagesCounter
+      {/* 
+      // TODO unseen message logic is almost a dupelicate of user unseen messages - investigate if a pattern can be extracted and abstracted  
+      <RecipientUnseenMessagesCounter
         name={chatroom.name}
         isSelected={isSelected}
         unseenMessages$={ 
@@ -148,9 +147,4 @@ function Chatroom({
   );
 }
 
-Chatroom.propTypes = {
-  classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired
-};
-
-export default withStyles(styles, { withTheme: true })(Chatroom as Chatroom);
+export default withStyles(styles, { withTheme: true })(Chatroom);

@@ -43,7 +43,7 @@ export function useFetch(endpoint: string, fetchConfig?: AxiosRequestConfig) {
         fetchData();
       }
     },
-    [setStatus, setData, endpoint, fetchConfig, retryCount] // todo check if setStatus, setData, are needed
+    [endpoint, fetchConfig, retryCount, setStatus, setData]
   );
 
   return { data, status, retry, retryCount };

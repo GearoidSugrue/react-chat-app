@@ -3,14 +3,24 @@ import { Observable, Subscription } from 'rxjs';
 
 import { useChatApi } from 'src/chat-api';
 import { fetchStatus, useFetch } from 'src/hooks';
-import { Message } from 'src/types';
+import { ChatroomType, Message, UserType } from 'src/types';
 
 export const fetchMessagesStatus = fetchStatus;
 
-// todo type this properly
+type UseMessagesProps = {
+  userId: string;
+  selectedChatroom: ChatroomType;
+  selectedUser: UserType;
+};
 
-// fetches the message history and then adds new messages whenever they occur
-export function useMessages({ userId, selectedChatroom, selectedUser }) {
+/**
+ *  Fetches messages and listens for new messages
+ */
+export function useMessages({
+  userId,
+  selectedChatroom,
+  selectedUser
+}: UseMessagesProps) {
   const selectedChatroomId = selectedChatroom.chatroomId;
   const selectedUserId = selectedUser.userId;
   const [messages, setMessages] = useState([]);
@@ -44,7 +54,7 @@ export function useMessages({ userId, selectedChatroom, selectedUser }) {
     function setLoadedMessages() {
       console.log('messages hook - setLoadedMessages effect', fetchedMessages);
       setMessages(fetchedMessages);
-      return () => setMessages([]); // todo is this needed?
+      return () => setMessages([]); // ? is this needed?
     },
     [setMessages, fetchedMessages]
   );

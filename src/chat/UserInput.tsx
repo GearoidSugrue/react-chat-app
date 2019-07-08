@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React, { useEffect, useRef, useState } from 'react';
 
 import {
@@ -18,7 +17,7 @@ const styles = (theme: ChatTheme) =>
     userInput: {
       display: 'flex',
       padding: theme.spacing(1, 2)
-      // todo set height 16px or 14px...
+      // TODO set height 16px or 14px...
       // 'textAlign': 'center' // prevents scroll bar from showing on parent container
     },
     sendButton: {
@@ -32,7 +31,21 @@ const styles = (theme: ChatTheme) =>
 
 const TYPING_TIMEOUT = 2000;
 
-function UserInput({ classes, theme, recipientId, onTyping, onSendMessage }) {
+type UserInputProps = {
+  classes: any;
+  theme: ChatTheme;
+  recipientId: string;
+  onTyping: (isTyping: boolean) => void;
+  onSendMessage: (message: string) => void;
+};
+
+function UserInput({
+  classes,
+  theme,
+  recipientId,
+  onTyping,
+  onSendMessage
+}: UserInputProps) {
   const [userInputMap, setUserInputMap] = useState({});
   const [message, setMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -136,10 +149,5 @@ function UserInput({ classes, theme, recipientId, onTyping, onSendMessage }) {
     </Slide>
   );
 }
-
-UserInput.propTypes = {
-  classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired
-};
 
 export default withStyles(styles, { withTheme: true })(UserInput);

@@ -1,9 +1,9 @@
-import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import FlexView from 'react-flexview';
 
 import { Button, Fade, withStyles } from '@material-ui/core';
 
+import { ChatTheme, UserType } from 'src/types';
 import CreateUser from './CreateUser';
 import LoginUser from './LoginUser';
 
@@ -13,7 +13,13 @@ const styles = () => ({
   }
 });
 
-function LoginPage({ classes, theme, onLogin }) {
+type LoginPageProps = {
+  classes: any;
+  theme: ChatTheme;
+  onLogin: (user: UserType) => void;
+};
+
+function LoginPage({ classes, theme, onLogin }: LoginPageProps) {
   const [isNewUser, setIsNewUser] = useState(false);
 
   const existingUserFragment = (
@@ -66,10 +72,5 @@ function LoginPage({ classes, theme, onLogin }) {
     </FlexView>
   );
 }
-
-LoginPage.propTypes = {
-  classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired
-};
 
 export default withStyles(styles, { withTheme: true })(LoginPage);

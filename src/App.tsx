@@ -1,5 +1,4 @@
 import clsx from 'clsx';
-import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import FlexView from 'react-flexview';
 
@@ -57,7 +56,7 @@ const styles = (theme: ChatTheme) => ({
   hide: {
     display: 'none'
   },
-  // todo delete if scrolling works as expected
+  // TODO delete if scrolling works as expected
   // drawerHeader: {
   //   display: 'flex',
   //   alignItems: 'center',
@@ -87,7 +86,11 @@ const styles = (theme: ChatTheme) => ({
   }
 });
 
-function App({ classes }) {
+type AppProps = {
+  classes: any;
+};
+
+function App({ classes }: AppProps) {
   const chatApi = useChatApi();
   const { user, isLoggedIn } = useUserLogin();
   const { username, userId } = user;
@@ -180,10 +183,5 @@ function App({ classes }) {
     </FlexView>
   );
 }
-
-App.propTypes = {
-  classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired
-};
 
 export default withStyles(styles, { withTheme: true })(App);

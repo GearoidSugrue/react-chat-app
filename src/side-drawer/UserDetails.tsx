@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
 import {
@@ -28,7 +27,13 @@ const styles = (theme: ChatTheme) => ({
   }
 });
 
-function UserDetails({ classes, username, onLogout }) {
+type UserDetailsProps = Readonly<{
+  classes: any;
+  username: string;
+  onLogout: () => void;
+}>;
+
+function UserDetails({ classes, username, onLogout }: UserDetailsProps) {
   const [userMenuElement, setUserMenuElement] = useState();
   const [menuWidth, setMenuWidth] = useState(0);
 
@@ -90,10 +95,5 @@ function UserDetails({ classes, username, onLogout }) {
     </Toolbar>
   );
 }
-
-UserDetails.propTypes = {
-  classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired
-};
 
 export default withStyles(styles, { withTheme: true })(UserDetails);

@@ -1,7 +1,7 @@
-import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 
 import {
+  createStyles,
   Divider,
   Drawer,
   Hidden,
@@ -14,30 +14,43 @@ import { AddCircleOutline } from '@material-ui/icons';
 
 import { useUserLogin } from 'src/hooks';
 import SnackbarContentWrapper from 'src/shared/SnackbarContentWrapper';
-import { ChatTheme } from 'src/types';
+import { ChatroomType, ChatTheme, UserType } from 'src/types';
 import Chatrooms from './Chatrooms';
 import CreateChatroom from './create-chatroom/CreateChatroom';
 import UserDetails from './UserDetails';
 import Users from './Users';
 
-const styles = (theme: ChatTheme) => ({
-  sideDrawerFragment: {
-    padding: theme.spacing(2, 0, 1, 0)
-  },
-  chatroomsHeader: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    fontWeight: 500,
-    padding: theme.spacing(1, 2)
-  },
-  directMessageHeader: {
-    fontWeight: 500,
-    padding: theme.spacing(1, 2)
-  },
-  drawer: {
-    width: theme.sideDrawer.width
-  }
-});
+const styles = (theme: ChatTheme) =>
+  createStyles({
+    sideDrawerFragment: {
+      padding: theme.spacing(2, 0, 1, 0)
+    },
+    chatroomsHeader: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      fontWeight: 500,
+      padding: theme.spacing(1, 2)
+    },
+    directMessageHeader: {
+      fontWeight: 500,
+      padding: theme.spacing(1, 2)
+    },
+    drawer: {
+      width: theme.sideDrawer.width
+    }
+  });
+
+type ChatSideDrawerProps = Readonly<{
+  classes: any;
+  theme: ChatTheme;
+  selectedChatroom: ChatroomType;
+  selectedUser: UserType;
+  mobileDrawerOpen: boolean;
+  onLogout: () => void;
+  onChatroomSelected: (chatroom: ChatroomType) => void;
+  onUserSelected: (user: UserType) => void;
+  onMobileDrawerToggle: () => void;
+}>;
 
 function ChatSideDrawer({
   classes,
@@ -49,7 +62,7 @@ function ChatSideDrawer({
   onChatroomSelected,
   onUserSelected,
   onMobileDrawerToggle
-}) {
+}: ChatSideDrawerProps) {
   const { user, isLoggedIn } = useUserLogin();
   const { username } = user;
   const [createChatroomOpen, setCreateChatroomOpen] = useState(false);
@@ -59,15 +72,16 @@ function ChatSideDrawer({
     setCreateChatroomOpen(true);
   }
 
-  function handleCloseCreateChatroom({ success }) {
+  function handleChatroomCreated() {
     setCreateChatroomOpen(false);
-
-    if (success) {
-      setShowSuccessSnackbar(true);
-    }
+    setShowSuccessSnackbar(true);
   }
 
-  function handleCloseSnackbar(event, reason) {
+  function handleCancelCreateChatroom() {
+    setCreateChatroomOpen(false);
+  }
+
+  function handleCloseSnackbar(event: any, reason?: string) {
     if (reason === 'clickaway') {
       return;
     }
@@ -122,7 +136,8 @@ function ChatSideDrawer({
       {createChatroomOpen && (
         <CreateChatroom
           open={createChatroomOpen}
-          onClose={handleCloseCreateChatroom}
+          onChatroomCreate={handleChatroomCreated}
+          onCancel={handleCancelCreateChatroom}
         />
       )}
     </div>
@@ -191,10 +206,5 @@ function ChatSideDrawer({
     </>
   );
 }
-
-ChatSideDrawer.propTypes = {
-  classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired
-};
 
 export default withStyles(styles, { withTheme: true })(ChatSideDrawer);

@@ -7,14 +7,16 @@
   ],
   "jsRules": {},
   "rules": {
+    "interface-name": [true, "never-prefix"],
+    "interface-over-type-literal": false,
+    "member-access": false, // start without having to write public, private modifiers
     "no-console": [false], // allowing console log until a proper logger is implemented
     "object-literal-sort-keys": false,
     "react-hooks-nesting": "error",
-    "jsx-wrap-multiline": false,
-
-    "member-access": false, // start without having to write public, private modifiers
+    "jsx-boolean-value": false, // allow someProp instead of someProp={true}
     "jsx-no-lambda": false, // lambdas in render are bad for performance but this can be annoying during prototyping
-    "jsx-boolean-value": false // allow someProp instead of someProp={true}
+
+    "jsx-wrap-multiline": false
   },
   "rulesDirectory": [],
   "linterOptions": {

@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import React from 'react';
 
 import { Button, List, Typography, withStyles } from '@material-ui/core';
@@ -17,7 +16,13 @@ const styles = (theme: ChatTheme) => ({
   }
 });
 
-function Users({ classes, selectedUser, onUserSelected }) {
+type UsersProps = Readonly<{
+  classes: any;
+  selectedUser: UserType;
+  onUserSelected: (user: UserType) => void;
+}>;
+
+function Users({ classes, selectedUser, onUserSelected }: UsersProps) {
   const { users, status: usersStatus, retry } = useFetchUsers();
   const { user: loggedInUser } = useUserLogin();
 
@@ -33,7 +38,7 @@ function Users({ classes, selectedUser, onUserSelected }) {
   return (
     <>
       {usersStatus === fetchUsersStatus.FETCHING && (
-        // todo add loading placeholders
+        // TODO add loading placeholders
         <Typography color="inherit" className={classes.loading}>
           Loading users...
         </Typography>
@@ -66,10 +71,5 @@ function Users({ classes, selectedUser, onUserSelected }) {
     </>
   );
 }
-
-Users.propTypes = {
-  classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired
-};
 
 export default withStyles(styles, { withTheme: true })(Users);
