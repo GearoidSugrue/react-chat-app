@@ -10,10 +10,10 @@ import {
   withStyles
 } from '@material-ui/core';
 
-import UserAvatar from 'src/side-drawer/UserAvatar';
+import UserAvatar from 'src/shared/UserAvatar';
 import { ChatTheme, Message } from 'src/types';
 
-const styles = (theme: ChatTheme) => ({
+const styles = () => ({
   messagesList: {
     overflow: 'auto'
   }

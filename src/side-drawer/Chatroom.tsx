@@ -22,11 +22,10 @@ type ChatroomClasses = {
   selected: any;
 };
 
+// ? is it worth changing the color of the # prefix to green if a user is online?
+
 const styles = (theme: ChatTheme) =>
   createStyles({
-    // online: {
-    //   background: '#2ecc71'
-    // },
     gutterPadding: {
       paddingRight: '42px' // material ui default of 48px is just a bit too large. The name combined with ellipse is too far away from message counter.
     },

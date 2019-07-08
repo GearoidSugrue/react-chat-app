@@ -5,13 +5,13 @@ import { Divider, Fade, Typography, withStyles } from '@material-ui/core';
 
 import { useChatApi } from 'src/chat-api';
 import { fetchMessagesStatus, useIsUserTyping, useMessages } from 'src/hooks';
-import { ChatroomType, ChatTheme, UserType } from 'src/types';
+import { ChatroomType, UserType } from 'src/types';
 import MessageList from './MessageList';
 import UserInput from './UserInput';
 
 // TODO: show online and offline users in a sub-toolbar?
 
-const styles = (theme: ChatTheme) => ({});
+const styles = () => ({});
 
 type ChatProps = Readonly<{
   userId: string;

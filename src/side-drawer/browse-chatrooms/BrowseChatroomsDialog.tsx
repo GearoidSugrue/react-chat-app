@@ -19,9 +19,9 @@ import SearchableSelect, {
 } from 'src/searchable-select/SearchableSelect';
 import ErrorMessage from 'src/shared/ErrorMessage';
 import PendingButton from 'src/shared/PendingButton';
-import { ChatroomType, ChatTheme } from 'src/types';
+import { ChatroomType } from 'src/types';
 
-const styles = (theme: ChatTheme) => createStyles({});
+const styles = () => createStyles({});
 
 function createSearchableRoom(room: ChatroomType): SearchableOption {
   return {

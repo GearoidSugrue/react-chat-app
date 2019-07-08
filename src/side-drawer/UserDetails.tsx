@@ -11,8 +11,8 @@ import {
 } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
 
+import UserAvatar from 'src/shared/UserAvatar';
 import { ChatTheme } from 'src/types';
-import UserAvatar from './UserAvatar';
 
 const styles = (theme: ChatTheme) => ({
   toolbar: {

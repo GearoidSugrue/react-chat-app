@@ -74,7 +74,7 @@ type CreateChatroomProps = Readonly<{
  * Dialog for creating new Chatrooms and adding users to it.
  * @param CreateChatroomProps
  */
-function CreateChatroom({
+function CreateChatroomDialog({
   classes,
   open,
   fullScreen,
@@ -225,5 +225,5 @@ function CreateChatroom({
 }
 
 export default withMobileDialog({ breakpoint: 'xs' })(
-  withStyles(styles)(CreateChatroom)
+  withStyles(styles)(CreateChatroomDialog)
 );

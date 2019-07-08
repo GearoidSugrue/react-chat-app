@@ -16,7 +16,7 @@ import { useUserLogin } from 'src/hooks';
 import SnackbarContentWrapper from 'src/shared/SnackbarContentWrapper';
 import { ChatroomType, ChatTheme, UserType } from 'src/types';
 import Chatrooms from './Chatrooms';
-import CreateChatroom from './create-chatroom/CreateChatroom';
+import CreateChatroomDialog from './create-chatroom/CreateChatroomDialog';
 import UserDetails from './UserDetails';
 import Users from './Users';
 
@@ -139,7 +139,7 @@ function ChatSideDrawer({
       {usersFragment}
 
       {createChatroomOpen && (
-        <CreateChatroom
+        <CreateChatroomDialog
           open={createChatroomOpen}
           onChatroomCreate={handleChatroomCreated}
           onCancel={handleCancelCreateChatroom}
