@@ -57,11 +57,18 @@ type ChatroomProps = {
 };
 
 /*
- * // TODO Theres a lot of over lap with the User component in here. Try to simplifiy it
- * There's is difference in what chatApi method to call.
+ * // TODO Theres a lot of over lap with the User component in here. Try simplify it.
+ * There is difference in what chatApi method to call.
  * Perhaps if the the resulting unseenMessagesSub get provided to a new external comp.
  * that subscribes to it in an effect and the increment along with highlighting text,
  * the counter, css and html
+ */
+
+/**
+ * Displays the chatroom's name post-fixed with the number of unseen messages.
+ * If it's selected then it is highlighted.
+ * If it's not selected then it will listen for new messages and increment the unseen messages counter.
+ * @param ChatroomProps
  */
 function Chatroom({
   classes,
@@ -121,7 +128,7 @@ function Chatroom({
       <Typography className={classes.namePrefix}>#</Typography>
 
       {/* 
-      // TODO unseen message logic is almost a dupelicate of user unseen messages - investigate if a pattern can be extracted and abstracted  
+      // TODO unseen message logic is almost a duplicate of user unseen messages - investigate if a pattern can be extracted and abstracted  
       <RecipientUnseenMessagesCounter
         name={chatroom.name}
         isSelected={isSelected}

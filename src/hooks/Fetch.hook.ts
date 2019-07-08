@@ -11,12 +11,17 @@ export const fetchStatus = {
   ERROR
 };
 
+/**
+ * A hook that wraps axios fetch. It provides useful status info and retry functionality.
+ * @param endpoint - endpoint to fetch data from
+ * @param fetchConfig (Optional) - extra AxiosRequestConfig to apply to the fetch
+ */
 export function useFetch(endpoint: string, fetchConfig?: AxiosRequestConfig) {
   const [data, setData] = useState([]);
   const [status, setStatus] = useState(FETCHING);
   const [retryCount, setRetryCount] = useState(1);
 
-  // I created this to enable the parent component to retry loading users if an error occurs
+  // kinda hacky way to trigger reload - changing retry count triggers the loadData effect again
   const retry = () => setRetryCount(retryCount + 1);
 
   useEffect(

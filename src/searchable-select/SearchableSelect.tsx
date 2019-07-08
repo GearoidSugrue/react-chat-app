@@ -214,6 +214,20 @@ export type SearchableOption = {
   value: string;
 };
 
+type SearchableSelectProps = {
+  classes: any;
+  theme: ChatTheme;
+  label: string;
+  options: SearchableOption[];
+  selectedOptions: SearchableOption[];
+  onSelectedOptionsChange: (selectedOptions: SearchableOption[]) => void;
+};
+
+/**
+ * A generic search & select component that wraps around 'react-select'.
+ * It replaces react-select components with Material-UI components and styles.
+ * @param SearchableSelectProps
+ */
 function SearchableSelect({
   classes,
   theme,
@@ -221,7 +235,7 @@ function SearchableSelect({
   options,
   selectedOptions,
   onSelectedOptionsChange
-}) {
+}: SearchableSelectProps) {
   const selectStyles: Partial<SelectStyles> = {
     input: base => ({
       ...base,

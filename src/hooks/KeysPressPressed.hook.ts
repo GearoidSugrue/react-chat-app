@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 /**
- * Returns the keys pressed.
+ * A hook that returns the keys pressed.
  * Modified version of this code: https://codesandbox.io/s/y3qzyr3lrz
  */
 export function useKeysPressed(): Set<string> {

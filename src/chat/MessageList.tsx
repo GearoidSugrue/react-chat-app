@@ -15,7 +15,7 @@ import { ChatTheme, Message } from 'src/types';
 
 const styles = (theme: ChatTheme) => ({
   messagesList: {
-    overflow: 'auto' // TODO fix not showing scroll bar issue,
+    overflow: 'auto'
   }
 });
 
@@ -46,7 +46,7 @@ function MessageList({ theme, classes, messages = [] }: MessageListProps) {
 
   return (
     <Fade in={true} timeout={theme.transitions.duration.enteringScreen}>
-      {/* todo investigate react-native ListView */}
+      {/* // TODO investigate react-native ListView */}
       <List dense={true} className={classes.messagesList}>
         {messages.map(({ username, message, timestamp }, i) => {
           return (

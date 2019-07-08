@@ -68,6 +68,12 @@ type CreateChatroomProps = Readonly<{
   onCancel: () => void;
 }>;
 
+// ! Error "Warning: Can't perform a React state update on an unmounted component" is being thrown by this dialog on successfully close.
+
+/**
+ * Dialog for creating new Chatrooms and adding users to it.
+ * @param CreateChatroomProps
+ */
 function CreateChatroom({
   classes,
   open,
@@ -219,5 +225,5 @@ function CreateChatroom({
 }
 
 export default withMobileDialog({ breakpoint: 'xs' })(
-  withStyles(styles, { withTheme: true })(CreateChatroom)
+  withStyles(styles)(CreateChatroom)
 );

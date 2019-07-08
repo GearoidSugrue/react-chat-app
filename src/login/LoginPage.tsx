@@ -1,17 +1,23 @@
 import React, { useState } from 'react';
 import FlexView from 'react-flexview';
 
-import { Button, Fade, withStyles } from '@material-ui/core';
+import { Button, createStyles, Fade, withStyles } from '@material-ui/core';
 
 import { ChatTheme, UserType } from 'src/types';
 import CreateUser from './CreateUser';
 import LoginUser from './LoginUser';
 
-const styles = () => ({
-  button: {
-    margin: '8px'
-  }
-});
+const styles = () =>
+  createStyles({
+    button: {
+      margin: '8px'
+    },
+    loginContainer: {
+      minWidth: '25%',
+      minHeight: '25%',
+      alignItems: 'stretch'
+    }
+  });
 
 type LoginPageProps = {
   classes: any;
@@ -19,6 +25,11 @@ type LoginPageProps = {
   onLogin: (user: UserType) => void;
 };
 
+/**
+ * Container component for user login page.
+ * Flips between user login and user create components.
+ * @param LoginPageProps
+ */
 function LoginPage({ classes, theme, onLogin }: LoginPageProps) {
   const [isNewUser, setIsNewUser] = useState(false);
 
@@ -55,8 +66,8 @@ function LoginPage({ classes, theme, onLogin }: LoginPageProps) {
       <FlexView
         column
         grow
+        className={classes.loginContainer}
         vAlignContent="center"
-        style={{ minWidth: '25%', minHeight: '25%', alignItems: 'stretch' }}
       >
         {!isNewUser && (
           <Fade in={true} timeout={theme.transitions.duration.enteringScreen}>

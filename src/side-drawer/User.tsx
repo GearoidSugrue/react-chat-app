@@ -51,6 +51,12 @@ type UserProps = Readonly<{
   onUserSelected: (user: UserType) => void;
 }>;
 
+/**
+ * Displays a user's name appended with the number of new unseen messages.
+ * If it's selected then the user is highlighted.
+ * If it's not selected then it will listen for new messages and increment the unseen messages counter.
+ * @param UserProps
+ */
 function User({
   classes,
   user,
@@ -107,11 +113,15 @@ function User({
     [isSelected, setUnseenMessagesCount]
   );
 
+  function handleUserSelected() {
+    onUserSelected(user);
+  }
+
   return (
     <ListItem
       button
       selected={isSelected}
-      onClick={() => onUserSelected(user)}
+      onClick={handleUserSelected}
       classes={{
         selected: selectedClasses,
         gutters: classes.gutterPadding

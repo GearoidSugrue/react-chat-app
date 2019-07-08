@@ -37,6 +37,10 @@ type BrowseChatroomDialogProps = Readonly<{
   onCancel: () => void;
 }>;
 
+/**
+ * Dialog for browsing and joining chatrooms.
+ * @param BrowseChatroomDialogProps
+ */
 function BrowseChatroomDialog({
   open,
   fullScreen,

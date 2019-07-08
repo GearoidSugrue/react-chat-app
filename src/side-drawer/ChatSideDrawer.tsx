@@ -52,6 +52,11 @@ type ChatSideDrawerProps = Readonly<{
   onMobileDrawerToggle: () => void;
 }>;
 
+/**
+ * A container component that encapsulates the use details bar, chatroom list and users list.
+ * It contains fragments for small screen and large screen devices.
+ * @param ChatSideDrawerProps
+ */
 function ChatSideDrawer({
   classes,
   theme,

@@ -49,6 +49,10 @@ type LoginUserProps = Readonly<{
   onLogin: (user: UserType) => void;
 }>;
 
+/**
+ * A component for user login.
+ * @param LoginUserProps
+ */
 function LoginUser({ classes, theme, onLogin }: LoginUserProps) {
   const [selectedUser, setSelectedUser] = useState({} as UserType);
   const { users, status, retry } = useFetchUsers();

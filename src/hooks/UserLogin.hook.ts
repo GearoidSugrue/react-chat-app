@@ -3,7 +3,15 @@ import { useEffect, useState } from 'react';
 import { useChatApi } from 'src/chat-api';
 import { UserType } from 'src/types';
 
-export function useUserLogin() {
+type UserLoginInfo = {
+  user: UserType;
+  isLoggedIn: boolean;
+};
+
+/**
+ * A hook that returns the logged in user info.
+ */
+export function useUserLogin(): UserLoginInfo {
   const chatApi = useChatApi();
   const [user, setUser] = useState({} as UserType);
   const isLoggedIn = Boolean(user.userId);

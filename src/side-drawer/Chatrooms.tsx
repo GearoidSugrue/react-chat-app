@@ -41,6 +41,11 @@ type ChatroomsProps = Readonly<{
   onChatroomSelected: (chatroom: ChatroomType) => void;
 }>;
 
+/**
+ * Displays a list of chatrooms the logged in user is a member of.
+ * A 'Join Chatrooms' button at the end of the list pops open a dialog.
+ * @param ChatroomsProps
+ */
 function Chatrooms({
   classes,
   selectedChatroom,

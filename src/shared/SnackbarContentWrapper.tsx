@@ -58,6 +58,11 @@ type SnackbarContentWrapperProps = Readonly<{
   onClose: (event: any, reason?: string) => void;
 }>;
 
+/**
+ * A shared component for displaying consistent snackbars.
+ * There are multiple variants to choose from, each one using their own color and icon.
+ * @param SnackbarContentWrapperProps
+ */
 function SnackbarContentWrapper({
   classes,
   variant,
@@ -72,8 +77,15 @@ function SnackbarContentWrapper({
     classes[variant],
     classes.snackbarContainer
   );
+  const iconClasses = clsx(classes.icon, classes.iconVariant);
 
-  const closeIconButton = (
+  const iconFragment = (
+    <span id="client-snackbar" className={classes.message}>
+      <Icon className={iconClasses} />
+      {message}
+    </span>
+  );
+  const closeButtonFragment = (
     <IconButton
       key="close"
       aria-label="Close"
@@ -85,23 +97,18 @@ function SnackbarContentWrapper({
   );
 
   const snackbarActions = action
-    ? [action, closeIconButton]
-    : [closeIconButton];
+    ? [action, closeButtonFragment]
+    : [closeButtonFragment];
 
   return (
     <SnackbarContent
       className={snackbarContentClasses}
       aria-describedby="client-snackbar"
-      message={
-        <span id="client-snackbar" className={classes.message}>
-          <Icon className={clsx(classes.icon, classes.iconVariant)} />
-          {message}
-        </span>
-      }
+      message={iconFragment}
       action={snackbarActions}
       {...other}
     />
   );
 }
 
-export default withStyles(styles, { withTheme: true })(SnackbarContentWrapper);
+export default withStyles(styles)(SnackbarContentWrapper);

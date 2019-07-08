@@ -22,10 +22,15 @@ const styles = (theme: ChatTheme) =>
 
 type PendingButtonProps = Readonly<{
   classes: any;
-  button: any; // TODO: Look at material-ui and React component composition for better way to do this
+  button: any; // TODO: Look at material-ui and React component composition to see if it's a better way to do this
   pending: boolean;
 }>;
 
+/**
+ * A shared component for wrapping buttons.
+ * It disables the button when pending and overlays a progress spinner.
+ * @param PendingButtonProps
+ */
 function PendingButton({ classes, button, pending }: PendingButtonProps) {
   return (
     <div className={classes.createButtonWrapper}>
@@ -37,4 +42,4 @@ function PendingButton({ classes, button, pending }: PendingButtonProps) {
   );
 }
 
-export default withStyles(styles, { withTheme: true })(PendingButton);
+export default withStyles(styles)(PendingButton);

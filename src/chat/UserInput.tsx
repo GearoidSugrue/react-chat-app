@@ -53,7 +53,7 @@ function UserInput({
   const sendKeysPressed = useAreKeysPressed(['Shift', 'Enter']);
   const inputRef = useRef(null);
 
-  const isValidInput = message && !!message.trimRight(); // removes trailing new lines
+  const isValidInput = message && !!message.trimRight();
 
   if (isValidInput && sendKeysPressed) {
     sendMessage();

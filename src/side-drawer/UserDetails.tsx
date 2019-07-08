@@ -33,9 +33,16 @@ type UserDetailsProps = Readonly<{
   onLogout: () => void;
 }>;
 
+/**
+ * Displays the logged in user's username and profile and contains a menu for logging out.
+ * @param UserDetailsProps
+ */
 function UserDetails({ classes, username, onLogout }: UserDetailsProps) {
   const [userMenuElement, setUserMenuElement] = useState();
   const [menuWidth, setMenuWidth] = useState(0);
+
+  const open = Boolean(userMenuElement);
+  const id = open ? 'menu-popover' : null;
 
   function handleOpen(event: React.ChangeEvent<any>) {
     setUserMenuElement(event.currentTarget);
@@ -50,9 +57,6 @@ function UserDetails({ classes, username, onLogout }: UserDetailsProps) {
     setUserMenuElement(null);
     onLogout();
   }
-
-  const open = Boolean(userMenuElement);
-  const id = open ? 'menu-popover' : null;
 
   return (
     <Toolbar disableGutters={true} className={classes.toolbar}>
@@ -96,4 +100,4 @@ function UserDetails({ classes, username, onLogout }: UserDetailsProps) {
   );
 }
 
-export default withStyles(styles, { withTheme: true })(UserDetails);
+export default withStyles(styles)(UserDetails);

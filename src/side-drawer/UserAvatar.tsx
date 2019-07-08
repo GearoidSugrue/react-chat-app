@@ -20,9 +20,16 @@ type UserAvatarProps = Readonly<{
   username: string;
 }>;
 
-// ? move to shared components
+// TODO move to shared components
 // TODO add error case for img loading!
 // TODO investigate other animations such as zoom, etc
+
+/**
+ * A shared component that loads the user's profile image.
+ * At the moment it's only using placeholders that are auto-generated based on a the username.
+ * Ref: https://api.adorable.io
+ * @param UserAvatarProps
+ */
 function UserAvatar({ classes, username }: UserAvatarProps) {
   const [isAvatarLoaded, setIsAvatarLoaded] = useState(false);
 
@@ -39,7 +46,7 @@ function UserAvatar({ classes, username }: UserAvatarProps) {
 
   return (
     <>
-      {/* todo check if this works as expected  */}
+      {/* // TODO check if this works as expected  */}
       {username && (
         <Fade in={true} timeout={300}>
           <Avatar

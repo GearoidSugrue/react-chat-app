@@ -15,6 +15,9 @@ export interface ChatTheme extends Theme {
   };
 }
 
+/**
+ * This is only used to type the object literal used when creating an instance of a theme.
+ */
 export interface ChatThemeOptions extends ThemeOptions {
   sideDrawer: {
     width: string;

@@ -6,7 +6,10 @@ import { ChatroomType } from 'src/types';
 
 export const fetchRoomsStatus = fetchStatus;
 
-// fetches the list of rooms and then updates the list whenever changes occur
+/**
+ * A hook that fetches the list of rooms and then updates the list whenever a new room event occurs
+ * @param roomFilterPredicate - A function used to filter the returned results
+ */
 export function useFetchRooms(
   roomFilterPredicate?: (room: ChatroomType) => boolean // TODO delete this if it's not gonna be used
 ) {

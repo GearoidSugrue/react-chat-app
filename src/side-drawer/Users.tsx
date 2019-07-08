@@ -22,6 +22,10 @@ type UsersProps = Readonly<{
   onUserSelected: (user: UserType) => void;
 }>;
 
+/**
+ * Displays the list of users.
+ * @param UsersProps
+ */
 function Users({ classes, selectedUser, onUserSelected }: UsersProps) {
   const { users, status: usersStatus, retry } = useFetchUsers();
   const { user: loggedInUser } = useUserLogin();

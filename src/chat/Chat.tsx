@@ -68,6 +68,7 @@ function Chat({ userId, username, selectedChatroom, selectedUser }: ChatProps) {
     );
 
     // TODO implement nicer looking UI for showing what users are typing
+    // ? would making it's positioning absolute solve the jittering scrollbar issue
     return (
       <>
         {isTyping && (

@@ -25,6 +25,10 @@ type ErrorMessageProps = Readonly<{
   showError: boolean;
 }>;
 
+/**
+ * Shared component for consistent error message displaying.
+ * @param ErrorMessageProps
+ */
 function ErrorMessage({
   classes,
   theme,

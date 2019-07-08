@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import {
   Button,
+  createStyles,
   FormControl,
   IconButton,
   InputAdornment,
@@ -14,24 +15,29 @@ import { Clear } from '@material-ui/icons';
 
 import { ChatTheme } from 'src/types';
 
-const styles = (theme: ChatTheme) => ({
-  createUserElement: {
-    margin: theme.spacing(1),
-    minWidth: '300px'
-  },
-  inputLabel: {
-    margin: theme.spacing(1)
-  },
-  clearButton: {
-    marginRight: '-10px'
-  }
-});
+const styles = (theme: ChatTheme) =>
+  createStyles({
+    createUserElement: {
+      margin: theme.spacing(1),
+      minWidth: '300px'
+    },
+    inputLabel: {
+      margin: theme.spacing(1)
+    },
+    clearButton: {
+      marginRight: '-10px'
+    }
+  });
 
 type CreateUserProps = Readonly<{
   classes: any;
   onCreateUser: ({ username }) => void;
 }>;
 
+/**
+ * A component for creating new users.
+ * @param CreateUserProps
+ */
 function CreateUser({ classes, onCreateUser }: CreateUserProps) {
   const [username, setUsername] = useState('');
   const [labelWidth, setLabelWidth] = useState(0);
@@ -74,6 +80,7 @@ function CreateUser({ classes, onCreateUser }: CreateUserProps) {
         <OutlinedInput
           className={classes.createUserElement}
           id="username-input"
+          autoComplete="off"
           autoFocus={true}
           value={username}
           onChange={handleUsernameChange}

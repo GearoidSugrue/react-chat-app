@@ -1,3 +1,7 @@
+/**
+ * This wraps an instance of ChatApi in a Context and exposes a Provider and for it.
+ * The Provider is used to wrap the App, this then enables any component to use the 'useChatApi' hook to get the same instance of ChatApi.
+ */
 import * as React from 'react';
 import { createContext, useContext } from 'react';
 
@@ -17,4 +21,7 @@ export const ChatApiProvider = ({ chatApi, children }: any) => (
   </ChatApiContext.Provider>
 );
 
+/**
+ * This convenance hook that allows all components to use the ChatApi instance without having to import both ChatApiContext and useContext.
+ */
 export const useChatApi = () => useContext(ChatApiContext);

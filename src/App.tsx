@@ -90,6 +90,12 @@ type AppProps = {
   classes: any;
 };
 
+/**
+ * Parent container for the rest of the chat app container components.
+ * Displays the login page for users not logged in.
+ * Displays the sideDrawer and chat container for logged in users.
+ * @param AppProps
+ */
 function App({ classes }: AppProps) {
   const chatApi = useChatApi();
   const { user, isLoggedIn } = useUserLogin();
@@ -184,4 +190,4 @@ function App({ classes }: AppProps) {
   );
 }
 
-export default withStyles(styles, { withTheme: true })(App);
+export default withStyles(styles)(App);

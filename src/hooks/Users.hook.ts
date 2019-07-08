@@ -6,15 +6,16 @@ import { OnlineStatusMessage, UserType } from 'src/types';
 
 export const fetchUsersStatus = fetchStatus;
 
-// fetches the list of users and then updates the list whenever changes occur
-// TODO: remove filter predicate if it's not used
+/**
+ * A hook that fetches the list of users and then updates the list whenever a new user is created or online status changes
+ */
 export function useFetchUsers(
-  usersFilterPredicate?: (user: UserType) => boolean,
+  usersFilterPredicate?: (user: UserType) => boolean, // TODO: remove filter predicate if it's not used
   userIds?: string[]
 ) {
   const [users, setUsers] = useState<UserType[]>([]);
 
-  // TODO: if !!userIds, load just them instead of all users
+  // ? if !!userIds, load just them instead of all users
   const { data: fetchedUsers, ...fetch } = useFetch('/users');
   const chatApi = useChatApi();
 

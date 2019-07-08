@@ -1,5 +1,5 @@
 export * from './Chatroom.type';
-export * from './ChatroomTypingChange.type';
+export * from './TypingChange.type';
 export * from './ChatTheme.type';
 export * from './Message.type';
 export * from './OnlineStatusMessage.type';

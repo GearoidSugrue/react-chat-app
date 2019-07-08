@@ -25,6 +25,11 @@ export enum SendChatEvent {
   TYPING_DIRECT = 'typing direct'
 }
 
+/**
+ * A class that wraps socketIO and POST/PUT http requests for the chat app.
+ *
+ * Socket events are converted to Observables which allow hooks and components to subscribe to updates.
+ */
 export class ChatApi {
   HOST: string = process.env.REACT_APP_API_HOST;
 
@@ -90,7 +95,6 @@ export class ChatApi {
   }
 
   login(user: UserType) {
-    console.log('ChatAPI - login', { userId: user.userId });
     const { userId, username } = user || ({} as UserType);
 
     if (userId && username) {
@@ -100,7 +104,6 @@ export class ChatApi {
   }
 
   logout() {
-    console.log('ChatAPI - logout');
     this.socket.emit('logout');
     this.loggedInUser$.next({} as UserType);
   }

@@ -5,9 +5,15 @@ import { useChatApi } from 'src/chat-api';
 import { TypingChange } from 'src/types';
 import { useOnlineStatus } from './OnlineStatus.hook';
 
+/**
+ * A hook that returns if user is typing.
+ * @param userId
+ * @param loggedInUserId
+ * @param toChatroomId
+ */
 export function useIsUserTyping(
   userId: string,
-  loggedInUserId: string,
+  loggedInUserId: string, // ? would using useUserLogin hook instead of passing in loggedInUserId be easier?
   toChatroomId?: string
 ) {
   const chatApi = useChatApi();

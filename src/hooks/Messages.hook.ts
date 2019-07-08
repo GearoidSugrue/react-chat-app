@@ -13,8 +13,9 @@ type UseMessagesProps = {
   selectedUser: UserType;
 };
 
+// TODO look into splitting this into separate User and Chatroom versions as the conditionals make this code awkward
 /**
- *  Fetches messages and listens for new messages
+ *  A hook that fetches messages and listens for new messages
  */
 export function useMessages({
   userId,
