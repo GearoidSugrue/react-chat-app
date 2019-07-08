@@ -1,4 +1,3 @@
-import clsx from 'clsx';
 import React, { useState } from 'react';
 
 import { Avatar, Fade, withStyles } from '@material-ui/core';
@@ -7,22 +6,17 @@ import { ChatTheme } from 'src/types';
 
 const styles = (theme: ChatTheme) => ({
   avatar: {
-    borderRadius: '25%'
-  },
-  loading: {
+    borderRadius: '25%',
     background: theme.palette.primary.light,
-    transition: 'background-color 1s ease' // TODO investigate this vs/and Fade
+    color: theme.palette.primary.contrastText
   }
 });
 
 type UserAvatarProps = Readonly<{
   classes: any;
+  theme: ChatTheme;
   username: string;
 }>;
-
-// TODO move to shared components
-// TODO add error case for img loading!
-// TODO investigate other animations such as zoom, etc
 
 /**
  * A shared component that loads the user's profile image.
@@ -30,31 +24,42 @@ type UserAvatarProps = Readonly<{
  * Ref: https://api.adorable.io
  * @param UserAvatarProps
  */
-function UserAvatar({ classes, username }: UserAvatarProps) {
-  const [isAvatarLoaded, setIsAvatarLoaded] = useState(false);
-
-  const avatarClasses = clsx(
-    classes.avatar,
-    !isAvatarLoaded && classes.loading
-  );
-
-  const handleAvatarLoaded = () => setIsAvatarLoaded(true);
+function UserAvatar({ classes, theme, username }: UserAvatarProps) {
+  const [avatarLoaded, setAvatarLoaded] = useState(false);
+  const [imgLoadError, setImgLoadError] = useState(false);
 
   const avatarUrl = username
     ? `https://api.adorable.io/avatars/36/${username}.png`
     : '';
+  const avatarLetter = username && username.charAt(0).toUpperCase();
+
+  const handleAvatarLoaded = () => setAvatarLoaded(true);
+
+  const handleAvatarLoadError = () => setImgLoadError(true);
+
+  const avatarLetterFragment = (
+    <Fade in={imgLoadError} timeout={theme.transitions.duration.enteringScreen}>
+      <span>{avatarLetter}</span>
+    </Fade>
+  );
+
+  const avatarImageFragment = (
+    <Fade in={avatarLoaded} timeout={theme.transitions.duration.enteringScreen}>
+      <img
+        src={avatarUrl}
+        onLoad={handleAvatarLoaded}
+        onError={handleAvatarLoadError}
+      />
+    </Fade>
+  );
 
   return (
     <>
-      {/* // TODO check if this works as expected  */}
       {username && (
-        <Fade in={true} timeout={300}>
-          <Avatar
-            className={avatarClasses}
-            src={avatarUrl}
-            onLoad={handleAvatarLoaded}
-            onError={handleAvatarLoaded}
-          />
+        <Fade in={true} timeout={theme.transitions.duration.enteringScreen}>
+          <Avatar className={classes.avatar}>
+            {imgLoadError ? avatarLetterFragment : avatarImageFragment}
+          </Avatar>
         </Fade>
       )}
     </>
