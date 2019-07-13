@@ -21,11 +21,12 @@ import { Clear, Close } from '@material-ui/icons';
 
 import { useChatApi } from 'src/chat-api';
 import { fetchUsersStatus, useFetchUsers, useUserLogin } from 'src/hooks';
-import ErrorMessage from 'src/shared/ErrorMessage';
-import PendingButton from 'src/shared/PendingButton';
-import SearchableSelect, {
-  SearchableOption
-} from 'src/shared/SearchableSelect';
+import {
+  ErrorMessage,
+  PendingButton,
+  SearchableOption,
+  SearchableSelect
+} from 'src/shared';
 import { ChatTheme, UserType } from 'src/types';
 
 const MAX_CHATROOM_NAME_LENGTH = 22;

@@ -14,8 +14,7 @@ import {
 import { Clear } from '@material-ui/icons';
 
 import { useChatApi } from 'src/chat-api';
-import ErrorMessage from 'src/shared/ErrorMessage';
-import PendingButton from 'src/shared/PendingButton';
+import { ErrorMessage, PendingButton } from 'src/shared';
 import { ChatTheme, UserType } from 'src/types';
 
 const styles = (theme: ChatTheme) =>

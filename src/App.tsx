@@ -13,11 +13,11 @@ import {
 import { amber } from '@material-ui/core/colors';
 import { Menu } from '@material-ui/icons';
 
+import { Chat } from 'src/chat';
 import { useChatApi } from 'src/chat-api';
-import Chat from 'src/chat/Chat';
 import { useUserLogin } from 'src/hooks';
-import LoginPage from 'src/login/LoginPage';
-import ChatSideDrawer from 'src/side-drawer/ChatSideDrawer';
+import { LoginPage } from 'src/login';
+import { ChatSideDrawer } from 'src/side-drawer';
 import { ChatroomType, ChatTheme, UserType } from 'src/types';
 
 const styles = (theme: ChatTheme) => ({

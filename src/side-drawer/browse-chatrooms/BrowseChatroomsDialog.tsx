@@ -19,11 +19,12 @@ import { Close } from '@material-ui/icons';
 
 import { useChatApi } from 'src/chat-api';
 import { fetchRoomsStatus, useFetchRooms, useUserLogin } from 'src/hooks';
-import ErrorMessage from 'src/shared/ErrorMessage';
-import PendingButton from 'src/shared/PendingButton';
-import SearchableSelect, {
-  SearchableOption
-} from 'src/shared/SearchableSelect';
+import {
+  ErrorMessage,
+  PendingButton,
+  SearchableOption,
+  SearchableSelect
+} from 'src/shared';
 import { ChatroomType, ChatTheme } from 'src/types';
 
 const styles = (theme: ChatTheme) =>

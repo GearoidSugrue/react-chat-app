@@ -10,7 +10,7 @@ import {
   withStyles
 } from '@material-ui/core';
 
-import UserAvatar from 'src/shared/UserAvatar';
+import { UserAvatar } from 'src/shared';
 import { ChatTheme, Message } from 'src/types';
 
 const styles = () => ({
