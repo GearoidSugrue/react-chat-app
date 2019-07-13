@@ -92,12 +92,10 @@ function ChatSideDrawer({
       </Typography>
 
       {isLoggedIn && (
-        <>
-          <Chatrooms
-            selectedChatroom={selectedChatroom}
-            onChatroomSelected={onChatroomSelected}
-          />
-        </>
+        <Chatrooms
+          selectedChatroom={selectedChatroom}
+          onChatroomSelected={onChatroomSelected}
+        />
       )}
     </div>
   );
@@ -121,7 +119,6 @@ function ChatSideDrawer({
     <div>
       <UserDetails username={username} onLogout={onLogout} />
       <Divider />
-
       {chatroomsFragment}
       <Divider />
       {usersFragment}

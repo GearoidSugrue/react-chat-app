@@ -37,7 +37,7 @@ function ErrorMessage({
         <Fade in={true} timeout={theme.transitions.duration.enteringScreen}>
           <TextField
             fullWidth
-            error={true}
+            error
             variant="outlined"
             value={errorMessage}
             inputProps={{
