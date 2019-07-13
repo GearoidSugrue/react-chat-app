@@ -140,10 +140,10 @@ function BrowseChatroomDialog({
   // TODO type this properly
   const joinButtonFragment: any = (
     <Button
+      color="secondary"
       variant="contained"
       disabled={!selectedRooms.length || joinPending}
       onClick={handleJoinChatrooms}
-      color="secondary"
     >
       {joinButtonText}
     </Button>

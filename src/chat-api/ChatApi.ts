@@ -108,6 +108,23 @@ export class ChatApi {
     this.loggedInUser$.next({} as UserType);
   }
 
+  async createUser(username: string): Promise<UserType> {
+    try {
+      const createUserConfig: AxiosRequestConfig = {
+        url: `http://${this.HOST}/users`,
+        method: 'POST',
+        data: {
+          username
+        }
+      };
+      const result = await axios(createUserConfig);
+      return result.data;
+    } catch (error) {
+      console.error('Error occurred creating user', error);
+      throw error;
+    }
+  }
+
   async createChatroom(
     chatroomName: string,
     memberIds: string[],

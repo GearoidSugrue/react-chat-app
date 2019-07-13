@@ -13,7 +13,10 @@ import {
 } from '@material-ui/core';
 import { Clear } from '@material-ui/icons';
 
-import { ChatTheme } from 'src/types';
+import { useChatApi } from 'src/chat-api';
+import ErrorMessage from 'src/shared/ErrorMessage';
+import PendingButton from 'src/shared/PendingButton';
+import { ChatTheme, UserType } from 'src/types';
 
 const styles = (theme: ChatTheme) =>
   createStyles({
@@ -24,6 +27,9 @@ const styles = (theme: ChatTheme) =>
     inputLabel: {
       margin: theme.spacing(1)
     },
+    createUserButton: {
+      minWidth: '300px'
+    },
     clearButton: {
       marginRight: '-10px'
     }
@@ -31,7 +37,7 @@ const styles = (theme: ChatTheme) =>
 
 type CreateUserProps = Readonly<{
   classes: any;
-  onCreateUser: ({ username }) => void;
+  onCreateUser: (username: UserType) => void;
 }>;
 
 /**
@@ -39,7 +45,10 @@ type CreateUserProps = Readonly<{
  * @param CreateUserProps
  */
 function CreateUser({ classes, onCreateUser }: CreateUserProps) {
+  const chatApi = useChatApi();
   const [username, setUsername] = useState('');
+  const [createUserPending, setCreateUserPending] = useState(false);
+  const [createUserError, setCreateUserError] = useState(false);
   const [labelWidth, setLabelWidth] = useState(0);
   const labelRef = useRef(null);
 
@@ -55,9 +64,30 @@ function CreateUser({ classes, onCreateUser }: CreateUserProps) {
     setUsername('');
   }
 
-  function handleCreateUser() {
-    onCreateUser({ username });
+  async function handleCreateUser() {
+    setCreateUserPending(true);
+    try {
+      const user = await chatApi.createUser(username);
+      setCreateUserPending(false);
+      setCreateUserError(false);
+      onCreateUser(user);
+    } catch (error) {
+      setCreateUserPending(false);
+      setCreateUserError(true);
+    }
   }
+
+  const createUserButtonFragment = (
+    <Button
+      className={classes.createUserButton}
+      color="secondary"
+      variant="contained"
+      disabled={!username || createUserPending}
+      onClick={handleCreateUser}
+    >
+      {createUserError ? 'Retry' : 'Create User'}
+    </Button>
+  );
 
   return (
     <>
@@ -99,15 +129,17 @@ function CreateUser({ classes, onCreateUser }: CreateUserProps) {
         />
       </FormControl>
 
-      <Button
-        className={classes.createUserElement}
-        color="secondary"
-        variant="contained"
-        disabled={!username}
-        onClick={handleCreateUser}
-      >
-        Create User
-      </Button>
+      <div className={classes.createUserElement}>
+        <ErrorMessage
+          errorMessage="Error: Failed to create user!"
+          showError={createUserError}
+        />
+      </div>
+
+      <PendingButton
+        button={createUserButtonFragment}
+        pending={createUserPending}
+      />
     </>
   );
 }
