@@ -33,15 +33,9 @@ const styles = (theme: ChatTheme) =>
     },
     loading: {
       background: theme.palette.primary.light,
-      minHeight: '64px',
+      minHeight: '56px',
       margin: theme.spacing(2, 0),
       borderRadius: theme.spacing(0.5)
-    },
-    loadingFailedContainer: {
-      minHeight: '64px'
-    },
-    retryButton: {
-      marginLeft: theme.spacing(1)
     }
   });
 
@@ -155,28 +149,6 @@ function BrowseChatroomDialog({
     </Button>
   );
 
-  const loadingRoomsFragment = (
-    <Fade in={true} timeout={theme.transitions.duration.enteringScreen}>
-      <div className={classes.loading} />
-    </Fade>
-  );
-
-  const loadingRoomsErrorFragment = (
-    <Fade in={true} timeout={theme.transitions.duration.enteringScreen}>
-      <Typography className={classes.loadingFailedContainer} color="inherit">
-        Failed to load chatrooms!
-        <Button
-          className={classes.retryButton}
-          color="secondary"
-          disabled={status === fetchRoomsStatus.FETCHING}
-          onClick={retryRooms}
-        >
-          Retry
-        </Button>
-      </Typography>
-    </Fade>
-  );
-
   return (
     <Dialog fullWidth fullScreen={fullScreen} open={open} onClose={onClose}>
       <DialogTitle id="browse-dialog-title">Join Chatrooms</DialogTitle>
@@ -186,7 +158,11 @@ function BrowseChatroomDialog({
         </DialogContentText>
 
         <div className={classes.browseChatroomElement}>
-          {roomsStatus === fetchRoomsStatus.FETCHING && loadingRoomsFragment}
+          {roomsStatus === fetchRoomsStatus.FETCHING && (
+            <Fade in={true} timeout={theme.transitions.duration.enteringScreen}>
+              <div className={classes.loading} />
+            </Fade>
+          )}
 
           {roomsStatus === fetchRoomsStatus.SUCCESS && (
             <SearchableSelect
@@ -197,8 +173,24 @@ function BrowseChatroomDialog({
             />
           )}
 
-          {roomsStatus === fetchRoomsStatus.ERROR && loadingRoomsErrorFragment}
+          {roomsStatus === fetchRoomsStatus.ERROR && (
+            <ErrorMessage
+              errorMessage="Error: Failed to load chatrooms!"
+              showError={true}
+              action={
+                <Button
+                  color="secondary"
+                  disabled={status === fetchRoomsStatus.FETCHING}
+                  onClick={retryRooms}
+                >
+                  Retry
+                </Button>
+              }
+            />
+          )}
+        </div>
 
+        <div className={classes.browseChatroomElement}>
           <ErrorMessage
             errorMessage="Error: Failed to join chatrooms!"
             showError={joinError}
@@ -206,6 +198,7 @@ function BrowseChatroomDialog({
         </div>
       </DialogContent>
 
+      {/* // TODO these button should have a right margin of 16px (theme.spacing * 2), so they align with content */}
       <DialogActions>
         <Button variant="outlined" onClick={onClose} color="secondary">
           Cancel

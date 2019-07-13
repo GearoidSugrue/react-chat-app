@@ -29,7 +29,7 @@ const styles = (theme: ChatTheme) =>
   createStyles({
     input: {
       display: 'flex',
-      padding: theme.spacing(1),
+      padding: theme.spacing(0.5, 1),
       height: 'auto',
       overflow: 'hidden'
     },

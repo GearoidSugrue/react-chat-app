@@ -63,12 +63,9 @@ const styles = (theme: ChatTheme) =>
     },
     loading: {
       background: theme.palette.primary.light,
-      minHeight: '64px',
+      minHeight: '56px',
       margin: theme.spacing(2, 0),
       borderRadius: theme.spacing(0.5)
-    },
-    loadingFailedContainer: {
-      minHeight: '64px'
     },
     retryButton: {
       marginLeft: theme.spacing(1)
@@ -218,28 +215,6 @@ function CreateChatroomDialog({
     </Button>
   );
 
-  const loadingUsersFragment = (
-    <Fade in={true} timeout={theme.transitions.duration.enteringScreen}>
-      <div className={classes.loading} />
-    </Fade>
-  );
-
-  const loadingUsersErrorFragment = (
-    <Fade in={true} timeout={theme.transitions.duration.enteringScreen}>
-      <Typography className={classes.loadingFailedContainer} color="inherit">
-        Failed to load users!
-        <Button
-          className={classes.retryButton}
-          color="secondary"
-          disabled={status === fetchUsersStatus.FETCHING}
-          onClick={retryUsers}
-        >
-          Retry
-        </Button>
-      </Typography>
-    </Fade>
-  );
-
   return (
     <Dialog fullWidth fullScreen={fullScreen} open={open} onClose={onCancel}>
       <DialogTitle id="browse-dialog-title">Create Chatroom</DialogTitle>
@@ -252,7 +227,11 @@ function CreateChatroomDialog({
         {chatroomNameFragment}
 
         <div className={classes.createChatroomElement}>
-          {usersStatus === fetchUsersStatus.FETCHING && loadingUsersFragment}
+          {usersStatus === fetchUsersStatus.FETCHING && (
+            <Fade in={true} timeout={theme.transitions.duration.enteringScreen}>
+              <div className={classes.loading} />
+            </Fade>
+          )}
 
           {usersStatus === fetchUsersStatus.SUCCESS && (
             <SearchableSelect
@@ -263,14 +242,31 @@ function CreateChatroomDialog({
             />
           )}
 
-          {usersStatus === fetchUsersStatus.ERROR && loadingUsersErrorFragment}
+          {usersStatus === fetchUsersStatus.ERROR && (
+            <ErrorMessage
+              errorMessage="Error: Failed to load users!"
+              showError={true}
+              action={
+                <Button
+                  color="secondary"
+                  disabled={status === fetchUsersStatus.FETCHING}
+                  onClick={retryUsers}
+                >
+                  Retry
+                </Button>
+              }
+            />
+          )}
         </div>
 
-        <ErrorMessage
-          errorMessage="Error: Failed to created chatroom!"
-          showError={createError}
-        />
+        <div className={classes.createChatroomElement}>
+          <ErrorMessage
+            errorMessage="Error: Failed to created chatroom!"
+            showError={createError}
+          />
+        </div>
       </DialogContent>
+
       <DialogActions>
         <Button variant="outlined" onClick={onCancel} color="secondary">
           Cancel

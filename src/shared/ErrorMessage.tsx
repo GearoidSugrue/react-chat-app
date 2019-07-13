@@ -11,18 +11,14 @@ import { Error } from '@material-ui/icons';
 
 import { ChatTheme } from 'src/types';
 
-const styles = (theme: ChatTheme) =>
-  createStyles({
-    errorContainer: {
-      margin: theme.spacing(2, 0)
-    }
-  });
+const styles = () => createStyles({});
 
 type ErrorMessageProps = Readonly<{
   classes: any;
   theme: ChatTheme;
   errorMessage: string;
   showError: boolean;
+  action?: any; // TODO type this properly
 }>;
 
 /**
@@ -30,10 +26,10 @@ type ErrorMessageProps = Readonly<{
  * @param ErrorMessageProps
  */
 function ErrorMessage({
-  classes,
   theme,
   errorMessage,
-  showError
+  showError,
+  action
 }: ErrorMessageProps) {
   return (
     <>
@@ -41,7 +37,6 @@ function ErrorMessage({
         <Fade in={true} timeout={theme.transitions.duration.enteringScreen}>
           <TextField
             fullWidth
-            className={classes.errorContainer}
             error={true}
             variant="outlined"
             value={errorMessage}
@@ -54,7 +49,8 @@ function ErrorMessage({
                 <InputAdornment position="start">
                   <Error color="error" />
                 </InputAdornment>
-              )
+              ),
+              endAdornment: action || ''
             }}
           />
         </Fade>
