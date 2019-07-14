@@ -1,28 +1,54 @@
 import React, { useEffect, useState } from 'react';
 import FlexView from 'react-flexview';
 
-import { Divider, Fade, Typography, withStyles } from '@material-ui/core';
+import {
+  Button,
+  Divider,
+  Fade,
+  Typography,
+  withStyles
+} from '@material-ui/core';
 
 import { useChatApi } from 'src/chat-api';
 import { fetchMessagesStatus, useIsUserTyping, useMessages } from 'src/hooks';
-import { ChatroomType, UserType } from 'src/types';
+import { VerticalErrorMessage } from 'src/shared';
+import { ChatroomType, ChatTheme, UserType } from 'src/types';
 import MessageList from './MessageList';
+import MessagePlaceholders from './placeholders/MessagePlaceholders';
 import UserInput from './UserInput';
 
 // TODO: show online and offline users in a sub-toolbar?
 
-const styles = () => ({});
+const styles = (theme: ChatTheme) => ({
+  landingPageText: {
+    margin: theme.spacing(2)
+  },
+  errorMessage: {
+    minWidth: '250px'
+  }
+});
 
 type ChatProps = Readonly<{
+  classes: any;
   userId: string;
   username: string;
   selectedChatroom: ChatroomType;
   selectedUser: UserType;
 }>;
 
-function Chat({ userId, username, selectedChatroom, selectedUser }: ChatProps) {
+function Chat({
+  classes,
+  userId,
+  username,
+  selectedChatroom,
+  selectedUser
+}: ChatProps) {
   const chatApi = useChatApi();
-  const { messages, status: messagesStatus } = useMessages({
+  const {
+    messages,
+    status: messagesStatus,
+    retry: retryMessages
+  } = useMessages({
     userId,
     selectedChatroom,
     selectedUser
@@ -107,38 +133,60 @@ function Chat({ userId, username, selectedChatroom, selectedUser }: ChatProps) {
     <Fade in={true}>
       <>
         {!recipientId && (
-          <Typography variant="h5" color="inherit">
-            {`Hello ${username}, select a room or user to start chatting!`}
-          </Typography>
+          <FlexView column grow vAlignContent="center" hAlignContent="center">
+            <Typography
+              variant="h5"
+              color="inherit"
+              className={classes.landingPageText}
+            >
+              {`Hello ${username}, select a chatroom or user to start chatting!`}
+            </Typography>
+          </FlexView>
         )}
 
         {recipientId && (
           <>
             <FlexView column grow basis="75%">
               {messagesStatus === fetchMessagesStatus.FETCHING && (
-                <Typography color="inherit" style={{ margin: '8px' }}>
-                  Loading messages...
-                </Typography>
+                <MessagePlaceholders placeholderCount={4} />
               )}
               {messagesStatus === fetchMessagesStatus.SUCCESS && (
                 <MessageList messages={messages} />
+              )}
+              {messagesStatus === fetchMessagesStatus.ERROR && (
+                <FlexView
+                  column
+                  grow
+                  vAlignContent="center"
+                  hAlignContent="center"
+                >
+                  <VerticalErrorMessage
+                    className={classes.errorMessage}
+                    errorMessage="Error: Failed to load messages!"
+                    showError={true}
+                    action={
+                      <Button color="secondary" onClick={retryMessages}>
+                        Retry
+                      </Button>
+                    }
+                  />
+                </FlexView>
               )}
             </FlexView>
 
             <Divider />
 
-            <>
-              <Typography>
-                {participantsIds.map(id => (
-                  <TypingUserFragment
-                    key={id}
-                    userId={id}
-                    chatroomId={selectedChatroom.chatroomId}
-                    loggedInUser={userId}
-                  />
-                ))}
-              </Typography>
-            </>
+            <Typography>
+              {participantsIds.map(id => (
+                <TypingUserFragment
+                  key={id}
+                  userId={id}
+                  chatroomId={selectedChatroom.chatroomId}
+                  loggedInUser={userId}
+                />
+              ))}
+            </Typography>
+
             <UserInput
               recipientId={recipientId}
               onTyping={handleTypingChange}

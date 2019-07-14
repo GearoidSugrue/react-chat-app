@@ -16,6 +16,7 @@ type UserAvatarProps = Readonly<{
   classes: any;
   theme: ChatTheme;
   username: string;
+  fadeIn?: boolean; // Decides if the component should be faded in. The user img and fallback letter inside the component always fade in.
 }>;
 
 /**
@@ -24,10 +25,16 @@ type UserAvatarProps = Readonly<{
  * Ref: https://api.adorable.io
  * @param UserAvatarProps
  */
-function UserAvatar({ classes, theme, username }: UserAvatarProps) {
+function UserAvatar({
+  classes,
+  theme,
+  username,
+  fadeIn = true
+}: UserAvatarProps) {
   const [avatarLoaded, setAvatarLoaded] = useState(false);
   const [imgLoadError, setImgLoadError] = useState(false);
 
+  const fadeDuration = fadeIn ? theme.transitions.duration.enteringScreen : 0;
   const avatarUrl = username
     ? `https://api.adorable.io/avatars/36/${username}.png`
     : '';
@@ -56,7 +63,7 @@ function UserAvatar({ classes, theme, username }: UserAvatarProps) {
   return (
     <>
       {username && (
-        <Fade in={true} timeout={theme.transitions.duration.enteringScreen}>
+        <Fade in={true} timeout={fadeDuration}>
           <Avatar className={classes.avatar}>
             {imgLoadError ? avatarLetterFragment : avatarImageFragment}
           </Avatar>

@@ -105,10 +105,16 @@ function CreateChatroomDialog({
   const [createPending, setCreatePending] = useState(false);
   const [createError, setCreateError] = useState(false);
 
-  const searchableUsers: SearchableOption[] = users.map((user: UserType) => ({
+  const notLoggedInUser = (user: UserType): boolean =>
+    user.userId !== loggedInUser.userId;
+  const makeUserSearchable = (user: UserType): SearchableOption => ({
     value: user.userId,
     label: user.username
-  }));
+  });
+
+  const searchableUsers: SearchableOption[] = users
+    .filter(notLoggedInUser)
+    .map(makeUserSearchable);
 
   function handleNameChange(event: React.ChangeEvent<{ value: string }>) {
     const name = event.target.value || '';

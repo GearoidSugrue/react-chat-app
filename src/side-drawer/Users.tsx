@@ -1,22 +1,13 @@
 import React from 'react';
-import FlexView from 'react-flexview/lib';
 
-import {
-  Button,
-  Fade,
-  List,
-  ListItem,
-  TextField,
-  withStyles
-} from '@material-ui/core';
-import { Error } from '@material-ui/icons';
+import { Button, List, withStyles } from '@material-ui/core';
 
 import { useUserLogin } from 'src/hooks';
 import { fetchUsersStatus, useFetchUsers } from 'src/hooks';
+import { VerticalErrorMessage } from 'src/shared';
 import { ChatTheme, UserType } from 'src/types';
+import UserPlaceholders from './placeholders/UserPlaceholders';
 import User from './User';
-
-const PLACEHOLDER_COUNT = 4;
 
 const styles = (theme: ChatTheme) => ({
   loading: {
@@ -35,7 +26,6 @@ const styles = (theme: ChatTheme) => ({
 
 type UsersProps = Readonly<{
   classes: any;
-  theme: ChatTheme;
   selectedUser: UserType;
   onUserSelected: (user: UserType) => void;
 }>;
@@ -44,7 +34,7 @@ type UsersProps = Readonly<{
  * Displays the list of users.
  * @param UsersProps
  */
-function Users({ classes, theme, selectedUser, onUserSelected }: UsersProps) {
+function Users({ classes, selectedUser, onUserSelected }: UsersProps) {
   const { users, status: usersStatus, retry } = useFetchUsers();
   const { user: loggedInUser } = useUserLogin();
 
@@ -63,19 +53,7 @@ function Users({ classes, theme, selectedUser, onUserSelected }: UsersProps) {
   return (
     <>
       {usersStatus === fetchUsersStatus.FETCHING && (
-        <Fade in={true} timeout={1000}>
-          <List disablePadding={true}>
-            {[...Array(PLACEHOLDER_COUNT)].map((_, index) => (
-              <ListItem
-                button
-                key={index}
-                className={classes.loadingPlaceholder}
-              >
-                <div className={classes.loading} />
-              </ListItem>
-            ))}
-          </List>
-        </Fade>
+        <UserPlaceholders placeholderCount={10} />
       )}
 
       {usersStatus === fetchUsersStatus.SUCCESS && (
@@ -95,28 +73,15 @@ function Users({ classes, theme, selectedUser, onUserSelected }: UsersProps) {
       )}
 
       {usersStatus === fetchUsersStatus.ERROR && (
-        <Fade in={true} timeout={theme.transitions.duration.enteringScreen}>
-          <FlexView column vAlignContent="center" hAlignContent="center">
-            <Error color="error" className={classes.errorElement} />
-            <TextField
-              error
-              variant="outlined"
-              id="error-loading-users"
-              value="Failed to load users!"
-              inputProps={{
-                readOnly: true,
-                disabled: true
-              }}
-            />
-            <Button
-              color="secondary"
-              className={classes.errorElement}
-              onClick={retry}
-            >
+        <VerticalErrorMessage
+          errorMessage="Failed to load users!"
+          showError={true}
+          action={
+            <Button color="secondary" onClick={retry}>
               Retry
             </Button>
-          </FlexView>
-        </Fade>
+          }
+        />
       )}
     </>
   );

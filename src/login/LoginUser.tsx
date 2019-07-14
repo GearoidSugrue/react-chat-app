@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import React, { useState } from 'react';
 
 import {
@@ -11,18 +12,17 @@ import {
 } from '@material-ui/core';
 
 import { fetchUsersStatus, useFetchUsers } from 'src/hooks';
+import { ErrorMessage } from 'src/shared';
 import { ChatTheme, UserType } from 'src/types';
 
 const styles = (theme: ChatTheme) =>
   createStyles({
     loginUserElement: {
       margin: theme.spacing(1),
-      minWidth: '300px'
+      minWidth: '320px'
     },
     loadUsersFailedContainer: {
-      margin: theme.spacing(1),
-      minHeight: '56px',
-      minWidth: '300px'
+      minHeight: '56px'
     },
     retryButton: {
       marginLeft: theme.spacing(1)
@@ -72,6 +72,11 @@ function LoginUser({ classes, theme, onLogin }: LoginUserProps) {
     </Fade>
   );
 
+  const loadErrorClasses = clsx(
+    classes.loginUserElement,
+    classes.loadUsersFailedContainer
+  );
+
   return (
     <>
       <Typography className={classes.loginUserElement} variant="h5">
@@ -107,20 +112,22 @@ function LoginUser({ classes, theme, onLogin }: LoginUserProps) {
       )}
 
       {status === fetchUsersStatus.ERROR && (
-        <Typography
-          className={classes.loadUsersFailedContainer}
-          color="inherit"
-        >
-          Failed to load users!
-          <Button
-            className={classes.retryButton}
-            color="secondary"
-            disabled={status === fetchUsersStatus.FETCHING}
-            onClick={retry}
-          >
-            Retry
-          </Button>
-        </Typography>
+        <div className={loadErrorClasses}>
+          <ErrorMessage
+            errorMessage="Error: Failed to load users!"
+            showError={true}
+            action={
+              <Button
+                className={classes.retryButton}
+                color="secondary"
+                disabled={status === fetchUsersStatus.FETCHING}
+                onClick={retry}
+              >
+                Retry
+              </Button>
+            }
+          />
+        </div>
       )}
 
       <Button

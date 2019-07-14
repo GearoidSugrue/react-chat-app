@@ -46,6 +46,7 @@ export function useMessages({
     return undefined;
   }, [selectedChatroomId, selectedUserId, userId]);
 
+  // TODO look into canceling fetch in progress. Seeing issues in the UI when network is slow.
   const { data: fetchedMessages, ...fetch } = useFetch(
     messagesEndpoint,
     messagesConfig

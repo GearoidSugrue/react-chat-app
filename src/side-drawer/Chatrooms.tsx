@@ -1,23 +1,20 @@
 import React, { useState } from 'react';
-import FlexView from 'react-flexview';
 
 import {
   Button,
-  Fade,
   List,
   ListItem,
-  TextField,
   Typography,
   withStyles
 } from '@material-ui/core';
-import { AddCircle, Error } from '@material-ui/icons';
+import { AddCircle } from '@material-ui/icons';
 
 import { fetchRoomsStatus, useFetchRooms, useUserLogin } from 'src/hooks';
+import { VerticalErrorMessage } from 'src/shared';
 import { ChatroomType, ChatTheme } from 'src/types';
 import BrowseChatroomsDialog from './browse-chatrooms/BrowseChatroomsDialog';
 import Chatroom from './Chatroom';
-
-const PLACEHOLDER_COUNT = 4;
+import ChatroomsPlaceholders from './placeholders/ChatroomsPlaceholders';
 
 const styles = (theme: ChatTheme) => ({
   joinChatroomsButton: {
@@ -31,24 +28,11 @@ const styles = (theme: ChatTheme) => ({
   joinChatroomsText: {
     // the add circle svg size is based on font-size which is throwing off the Join Chatroom text, this is to counter it
     marginLeft: theme.spacing(2) - 1
-  },
-  loading: {
-    width: '66%',
-    height: theme.typography.fontSize,
-    background: theme.palette.primary.light,
-    borderRadius: theme.spacing(0.5)
-  },
-  loadingPlaceholder: {
-    minHeight: '48px'
-  },
-  errorElement: {
-    margin: theme.spacing(1, 2)
   }
 });
 
 type ChatroomsProps = Readonly<{
   classes: any;
-  theme: ChatTheme;
   selectedChatroom: ChatroomType;
   onChatroomSelected: (chatroom: ChatroomType) => void;
 }>;
@@ -60,7 +44,6 @@ type ChatroomsProps = Readonly<{
  */
 function Chatrooms({
   classes,
-  theme,
   selectedChatroom,
   onChatroomSelected
 }: ChatroomsProps) {
@@ -84,72 +67,48 @@ function Chatrooms({
 
   return (
     <>
+      {/* // TODO placeholder count could be got from User if user still contains chatroomIds info after DB implementation. 
+            Or else use store chatroom count in local storage and use it next time the user logs in. 
+        */}
       {roomsStatus === fetchRoomsStatus.FETCHING && (
-        <Fade in={true} timeout={1000}>
-          <List disablePadding={true}>
-            {[...Array(PLACEHOLDER_COUNT)].map((_, index) => (
-              <ListItem
-                button
-                key={index}
-                className={classes.loadingPlaceholder}
-              >
-                <div className={classes.loading} />
-              </ListItem>
-            ))}
-          </List>
-        </Fade>
+        <ChatroomsPlaceholders placeholderCount={5} />
       )}
 
       {roomsStatus === fetchRoomsStatus.SUCCESS && (
-        <Fade in={true} timeout={theme.transitions.duration.enteringScreen}>
-          <List disablePadding={true}>
-            {rooms.map(chatroom => (
-              <Chatroom
-                key={chatroom.chatroomId}
-                chatroom={chatroom}
-                isSelected={selectedChatroom.chatroomId === chatroom.chatroomId}
-                onChatroomSelected={onChatroomSelected}
-              />
-            ))}
+        <List disablePadding={true}>
+          {rooms.map(chatroom => (
+            <Chatroom
+              key={chatroom.chatroomId}
+              chatroom={chatroom}
+              isSelected={selectedChatroom.chatroomId === chatroom.chatroomId}
+              onChatroomSelected={onChatroomSelected}
+            />
+          ))}
 
-            <ListItem
-              button
-              key="join-chatroom"
-              className={classes.joinChatroomsButton}
-              onClick={handleOpenJoinChatrooms}
-            >
-              <AddCircle className={classes.joinChatroomsCircle} />
-              <Typography noWrap className={classes.joinChatroomsText}>
-                Join Chatrooms
-              </Typography>
-            </ListItem>
-          </List>
-        </Fade>
+          <ListItem
+            button
+            key="join-chatroom"
+            className={classes.joinChatroomsButton}
+            onClick={handleOpenJoinChatrooms}
+          >
+            <AddCircle className={classes.joinChatroomsCircle} />
+            <Typography noWrap className={classes.joinChatroomsText}>
+              Join Chatrooms
+            </Typography>
+          </ListItem>
+        </List>
       )}
 
       {roomsStatus === fetchRoomsStatus.ERROR && (
-        <Fade in={true} timeout={theme.transitions.duration.enteringScreen}>
-          <FlexView column vAlignContent="center" hAlignContent="center">
-            <Error color="error" className={classes.errorElement} />
-            <TextField
-              error
-              variant="outlined"
-              id="error-loading-chatrooms"
-              value="Failed to load chatrooms!"
-              inputProps={{
-                readOnly: true,
-                disabled: true
-              }}
-            />
-            <Button
-              color="secondary"
-              className={classes.errorElement}
-              onClick={retry}
-            >
+        <VerticalErrorMessage
+          errorMessage="Failed to load chatrooms!"
+          showError={true}
+          action={
+            <Button color="secondary" onClick={retry}>
               Retry
             </Button>
-          </FlexView>
-        </Fade>
+          }
+        />
       )}
 
       {joinChatroomsOpen && (
@@ -162,4 +121,4 @@ function Chatrooms({
   );
 }
 
-export default withStyles(styles, { withTheme: true })(Chatrooms);
+export default withStyles(styles)(Chatrooms);

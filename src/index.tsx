@@ -44,7 +44,8 @@ const themeOptions: ChatThemeOptions = {
   chatColors: {
     offline: '#2b2e30', // Dark-gray
     online: '#00b16a', // Jade
-    success: '#00b16a' // Jade
+    success: '#00b16a', // Jade
+    greyText: '#bdc3c7' // Light Grey
   }
 };
 const theme = createMuiTheme(themeOptions);

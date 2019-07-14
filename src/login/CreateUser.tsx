@@ -21,13 +21,13 @@ const styles = (theme: ChatTheme) =>
   createStyles({
     createUserElement: {
       margin: theme.spacing(1),
-      minWidth: '300px'
+      minWidth: '320px'
     },
     inputLabel: {
       margin: theme.spacing(1)
     },
     createUserButton: {
-      minWidth: '300px'
+      minWidth: '320px'
     },
     clearButton: {
       marginRight: '-10px'
@@ -128,12 +128,14 @@ function CreateUser({ classes, onCreateUser }: CreateUserProps) {
         />
       </FormControl>
 
-      <div className={classes.createUserElement}>
-        <ErrorMessage
-          errorMessage="Error: Failed to create user!"
-          showError={createUserError}
-        />
-      </div>
+      {createUserError && (
+        <div className={classes.createUserElement}>
+          <ErrorMessage
+            errorMessage="Error: Failed to create user!"
+            showError={createUserError}
+          />
+        </div>
+      )}
 
       <PendingButton
         button={createUserButtonFragment}

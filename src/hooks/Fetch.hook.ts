@@ -47,6 +47,7 @@ export function useFetch(endpoint: string, fetchConfig?: AxiosRequestConfig) {
       if (endpoint) {
         fetchData();
       }
+      // TODO investigate way to cancel current request when config changes!
     },
     [endpoint, fetchConfig, retryCount, setStatus, setData]
   );
