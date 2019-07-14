@@ -5,27 +5,13 @@ import { Button, List, withStyles } from '@material-ui/core';
 import { useUserLogin } from 'src/hooks';
 import { fetchUsersStatus, useFetchUsers } from 'src/hooks';
 import { VerticalErrorMessage } from 'src/shared';
-import { ChatTheme, UserType } from 'src/types';
-import UserPlaceholders from './placeholders/UserPlaceholders';
+import { UserType } from 'src/types';
+import { UserPlaceholders } from './placeholders';
 import User from './User';
 
-const styles = (theme: ChatTheme) => ({
-  loading: {
-    width: '66%',
-    height: theme.typography.fontSize,
-    background: theme.palette.primary.light,
-    borderRadius: theme.spacing(0.5)
-  },
-  loadingPlaceholder: {
-    minHeight: '48px'
-  },
-  errorElement: {
-    margin: theme.spacing(1, 2)
-  }
-});
+const styles = () => ({});
 
 type UsersProps = Readonly<{
-  classes: any;
   selectedUser: UserType;
   onUserSelected: (user: UserType) => void;
 }>;
@@ -34,7 +20,7 @@ type UsersProps = Readonly<{
  * Displays the list of users.
  * @param UsersProps
  */
-function Users({ classes, selectedUser, onUserSelected }: UsersProps) {
+function Users({ selectedUser, onUserSelected }: UsersProps) {
   const { users, status: usersStatus, retry } = useFetchUsers();
   const { user: loggedInUser } = useUserLogin();
 
@@ -87,4 +73,4 @@ function Users({ classes, selectedUser, onUserSelected }: UsersProps) {
   );
 }
 
-export default withStyles(styles, { withTheme: true })(Users);
+export default withStyles(styles)(Users);

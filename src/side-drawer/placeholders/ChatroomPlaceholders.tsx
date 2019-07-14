@@ -31,17 +31,17 @@ const styles = (theme: ChatTheme) =>
     }
   });
 
-type MessagePlaceholdersProps = {
+type ChatroomPlaceholdersProps = {
   classes: any;
   theme: ChatTheme;
   placeholderCount: number;
 };
 
-function ChatroomsPlaceholders({
+function ChatroomPlaceholders({
   classes,
   theme,
   placeholderCount
-}: MessagePlaceholdersProps) {
+}: ChatroomPlaceholdersProps) {
   return (
     <Fade in={true} timeout={theme.transitions.duration.enteringScreen}>
       <List disablePadding={true}>
@@ -58,4 +58,4 @@ function ChatroomsPlaceholders({
   );
 }
 
-export default withStyles(styles, { withTheme: true })(ChatroomsPlaceholders);
+export default withStyles(styles, { withTheme: true })(ChatroomPlaceholders);

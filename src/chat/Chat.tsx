@@ -14,7 +14,7 @@ import { fetchMessagesStatus, useIsUserTyping, useMessages } from 'src/hooks';
 import { VerticalErrorMessage } from 'src/shared';
 import { ChatroomType, ChatTheme, UserType } from 'src/types';
 import MessageList from './MessageList';
-import MessagePlaceholders from './placeholders/MessagePlaceholders';
+import { MessagePlaceholders } from './placeholders';
 import UserInput from './UserInput';
 
 // TODO: show online and offline users in a sub-toolbar?

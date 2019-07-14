@@ -14,7 +14,7 @@ import { VerticalErrorMessage } from 'src/shared';
 import { ChatroomType, ChatTheme } from 'src/types';
 import BrowseChatroomsDialog from './browse-chatrooms/BrowseChatroomsDialog';
 import Chatroom from './Chatroom';
-import ChatroomsPlaceholders from './placeholders/ChatroomsPlaceholders';
+import { ChatroomPlaceholders } from './placeholders';
 
 const styles = (theme: ChatTheme) => ({
   joinChatroomsButton: {
@@ -71,7 +71,7 @@ function Chatrooms({
             Or else use store chatroom count in local storage and use it next time the user logs in. 
         */}
       {roomsStatus === fetchRoomsStatus.FETCHING && (
-        <ChatroomsPlaceholders placeholderCount={5} />
+        <ChatroomPlaceholders placeholderCount={5} />
       )}
 
       {roomsStatus === fetchRoomsStatus.SUCCESS && (
