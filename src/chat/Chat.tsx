@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import FlexView from 'react-flexview';
+import { Subscription } from 'rxjs';
 
 import {
   Button,
@@ -55,7 +56,7 @@ function Chat({
   });
   const recipientId = selectedChatroom.chatroomId || selectedUser.userId;
 
-  const [participantsIds, setParticipantsIds] = useState([]);
+  const [participantsIds, setParticipantsIds] = useState([] as string[]);
 
   useEffect(
     function updateParticipantsOnChange() {
@@ -66,6 +67,26 @@ function Chat({
       }
     },
     [selectedChatroom, selectedUser, setParticipantsIds]
+  );
+
+  useEffect(
+    function subscribeToNewChatroomMembers() {
+      console.log('subscribeToNewChatroomMembers effect');
+      let newChatroomMembersSub: Subscription;
+
+      if (selectedChatroom.chatroomId) {
+        function addNewMember(newMemberId: string) {
+          setParticipantsIds([...participantsIds, newMemberId]);
+        }
+
+        newChatroomMembersSub = chatApi
+          .listenForNewChatroomMembers(selectedChatroom.chatroomId)
+          .subscribe(addNewMember);
+      }
+      return () => newChatroomMembersSub && newChatroomMembersSub.unsubscribe();
+    },
+
+    [selectedChatroom, selectedUser, participantsIds, setParticipantsIds]
   );
 
   useEffect(

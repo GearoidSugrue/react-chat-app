@@ -5,6 +5,7 @@ import { filter, map, share, tap } from 'rxjs/operators';
 import {
   ChatroomType,
   Message,
+  NewMember,
   OnlineStatusMessage,
   TypingChange,
   UserType
@@ -14,6 +15,7 @@ export enum ChatEvent {
   ONLINE_STATUS_CHANGE = 'online status change',
   NEW_USER = 'users updated',
   NEW_CHATROOM = 'new chatroom',
+  NEW_CHATROOM_MEMBER = 'new chatroom member',
   CHATROOM_TYPING_CHANGE = 'typing in chatroom change',
   DIRECT_TYPING_CHANGE = 'direct typing change'
 }
@@ -36,6 +38,7 @@ export class ChatApi {
   loggedInUser$: BehaviorSubject<UserType>;
 
   newChatroom$: Observable<ChatroomType>;
+  newChatroomMember$: Observable<NewMember>;
   usersUpdates$: Observable<any>;
   messages$: Observable<Message>;
   onlineStatusUpdates$: Observable<OnlineStatusMessage>;
@@ -55,6 +58,13 @@ export class ChatApi {
       tap(chatroom => console.log('New chatroom received:', chatroom)),
       share()
     );
+    this.newChatroomMember$ = fromEvent<NewMember>(
+      socket,
+      ChatEvent.NEW_CHATROOM_MEMBER
+    ).pipe(
+      tap(newMember => console.log('New chatroom member received:', newMember)),
+      share()
+    );
     this.usersUpdates$ = fromEvent(socket, ChatEvent.NEW_USER);
     // this.newUsers$ = fromEvent(socket, 'new users');
 
@@ -67,9 +77,7 @@ export class ChatApi {
       socket,
       ChatEvent.ONLINE_STATUS_CHANGE
     ).pipe(
-      tap((user: UserType) =>
-        console.log('User online status change...', user)
-      ),
+      tap((user: UserType) => console.log('User online status change:', user)),
       share()
     ) as Observable<OnlineStatusMessage>;
 
@@ -78,7 +86,7 @@ export class ChatApi {
       ChatEvent.CHATROOM_TYPING_CHANGE
     ).pipe(
       tap((typingUpdate: TypingChange) =>
-        console.log('chatroom typing update...', typingUpdate)
+        console.log('Chatroom typing update:', typingUpdate)
       ),
       share()
     ) as Observable<TypingChange>;
@@ -88,7 +96,7 @@ export class ChatApi {
       ChatEvent.DIRECT_TYPING_CHANGE
     ).pipe(
       tap((typingUpdate: TypingChange) =>
-        console.log('direct typing update...', typingUpdate)
+        console.log('Direct typing update:', typingUpdate)
       ),
       share()
     ) as Observable<TypingChange>;
@@ -281,5 +289,15 @@ export class ChatApi {
       typingUpdate.userId === fromUserId && typingUpdate.toUserId === toUserId;
 
     return this.directTypingUpdate$.pipe(filter(correctUser));
+  }
+
+  listenForNewChatroomMembers(selectedChatroomId: string): Observable<string> {
+    const correctChatroom = ({ chatroomId }: NewMember) =>
+      chatroomId === selectedChatroomId;
+
+    return this.newChatroomMember$.pipe(
+      filter(correctChatroom),
+      map(newMember => newMember.userId)
+    );
   }
 }
