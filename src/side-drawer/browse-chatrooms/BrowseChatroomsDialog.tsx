@@ -52,7 +52,7 @@ type BrowseChatroomDialogProps = Readonly<{
   theme: ChatTheme;
   open: boolean;
   fullScreen: boolean;
-  onClose: () => void;
+  onClose: (roomsJoined?: ChatroomType[]) => void;
 }>;
 
 /**
@@ -72,13 +72,16 @@ function BrowseChatroomDialog({
   const { rooms, status: roomsStatus, retry: retryRooms } = useFetchRooms(
     nonUserRoomsPredicate
   );
-  const [selectedRooms, setSelectedRooms] = useState([]);
+  const [selectedRooms, setSelectedRooms] = useState([] as ChatroomType[]);
   const [joinButtonText, setJoinButtonText] = useState('Join Chatroom');
 
   const [joinPending, setJoinPending] = useState(false);
   const [joinError, setJoinError] = useState(false);
 
   const searchableRooms: SearchableOption[] = rooms.map(createSearchableRoom);
+  const selectedSearchableRooms: SearchableOption[] = selectedRooms.map(
+    createSearchableRoom
+  );
 
   useEffect(
     function updateJoinButtonText() {
@@ -97,20 +100,25 @@ function BrowseChatroomDialog({
     return !memberIds.includes(user.userId);
   }
 
-  function handleSelectedRoomsChange(updatedRooms: SearchableOption[]) {
-    setSelectedRooms(updatedRooms || []);
+  function handleSelectedRoomsChange(
+    updatedSearchableRooms: SearchableOption[]
+  ) {
+    const convertToChatroom = (searchableRoom: SearchableOption) =>
+      rooms.find(room => room.chatroomId === searchableRoom.value);
+
+    const updatedRooms = updatedSearchableRooms.map(convertToChatroom);
+    setSelectedRooms(updatedRooms);
   }
 
   async function handleJoinChatrooms() {
     setJoinPending(true);
-    const chatroomIds = selectedRooms.map(
-      (room: SearchableOption) => room.value
-    );
+    const chatroomIds = selectedRooms.map(room => room.chatroomId);
+
     try {
       await chatApi.joinChatrooms(chatroomIds, user.userId);
       showJoinSuccessSnackbar(chatroomIds);
       setJoinPending(false);
-      onClose();
+      onClose(selectedRooms);
     } catch (err) {
       setJoinError(true);
       setJoinPending(false);
@@ -169,7 +177,7 @@ function BrowseChatroomDialog({
             <SearchableSelect
               label="Chatrooms *"
               options={searchableRooms}
-              selectedOptions={selectedRooms}
+              selectedOptions={selectedSearchableRooms}
               onSelectedOptionsChange={handleSelectedRoomsChange}
             />
           )}
@@ -201,7 +209,7 @@ function BrowseChatroomDialog({
 
       {/* // TODO these button should have a right margin of 16px (theme.spacing * 2), so they align with content */}
       <DialogActions>
-        <Button variant="outlined" onClick={onClose} color="secondary">
+        <Button variant="outlined" onClick={() => onClose()} color="secondary">
           Cancel
         </Button>
 

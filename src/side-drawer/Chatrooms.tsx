@@ -48,7 +48,7 @@ function Chatrooms({
   onChatroomSelected
 }: ChatroomsProps) {
   const { user } = useUserLogin();
-  const { rooms, status: roomsStatus, retry } = useFetchRooms(
+  const { rooms, status: roomsStatus, addRooms, retry } = useFetchRooms(
     userRoomsPredicate
   );
   const [joinChatroomsOpen, setJoinChatroomsOpen] = useState(false);
@@ -61,7 +61,10 @@ function Chatrooms({
     setJoinChatroomsOpen(true);
   }
 
-  function handleCloseJoinChatrooms() {
+  function handleCloseJoinChatrooms(roomsJoined: ChatroomType[]) {
+    if (roomsJoined) {
+      addRooms(roomsJoined);
+    }
     setJoinChatroomsOpen(false);
   }
 

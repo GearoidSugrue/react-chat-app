@@ -13,9 +13,13 @@ export const fetchRoomsStatus = fetchStatus;
 export function useFetchRooms(
   roomFilterPredicate?: (room: ChatroomType) => boolean // TODO delete this if it's not gonna be used
 ) {
-  const [rooms, setRooms] = useState([]);
+  const [rooms, setRooms] = useState([] as ChatroomType[]);
   const { data: fetchedRooms, ...fetch } = useFetch('/rooms');
   const chatApi = useChatApi();
+
+  function addRooms(newRooms: ChatroomType[]) {
+    setRooms([...rooms, ...newRooms]);
+  }
 
   useEffect(
     function setLoadedRooms() {
@@ -50,6 +54,7 @@ export function useFetchRooms(
 
   return {
     ...fetch,
-    rooms
+    rooms,
+    addRooms
   };
 }
