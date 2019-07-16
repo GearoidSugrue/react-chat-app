@@ -9,6 +9,7 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
+  Typography,
   withStyles
 } from '@material-ui/core';
 
@@ -32,11 +33,13 @@ const styles = (theme: ChatTheme) =>
     primaryTextPlaceholder: {
       width: '5%',
       minWidth: '120px',
+      height: '16px',
       margin: '4px 0'
     },
     secondaryTextPlaceholder: {
       width: '40%',
       minWidth: '180px',
+      height: '16px',
       margin: '8px 0 4px'
     }
   });
@@ -61,6 +64,7 @@ function MessagePlaceholders({
     classes.secondaryTextPlaceholder
   );
 
+  // ! FIX: Error ""...validateDOMNesting(...): <div> cannot appear as a descendant of <p>. ..." Most likely caused by the way ListItemText primary and secondary are used
   return (
     <Fade in={true} timeout={theme.transitions.duration.enteringScreen}>
       <List dense={true} className={classes.messagesPlaceholder}>
@@ -74,8 +78,10 @@ function MessagePlaceholders({
               <Avatar className={classes.avatarPlaceholder} />
             </ListItemAvatar>
             <ListItemText
-              primary={<div className={primaryTextPlaceholderClasses} />}
-              secondary={<div className={secondaryTextPlaceholderClasses} />}
+              primary={<Typography className={primaryTextPlaceholderClasses} />}
+              secondary={
+                <Typography className={secondaryTextPlaceholderClasses} />
+              }
             />
           </ListItem>
         ))}
