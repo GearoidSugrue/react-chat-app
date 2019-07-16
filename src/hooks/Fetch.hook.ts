@@ -11,6 +11,8 @@ export const fetchStatus = {
   ERROR
 };
 
+// TODO investigate abortable fetch: https://github.com/mauricedb/use-abortable-fetch
+
 /**
  * A hook that wraps axios fetch. It provides useful status info and retry functionality.
  * @param endpoint - endpoint to fetch data from

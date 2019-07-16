@@ -16,22 +16,28 @@ import { ChatTheme } from 'src/types';
 
 const styles = (theme: ChatTheme) =>
   createStyles({
+    messagesPlaceholder: {
+      minHeight: '60px'
+    },
     avatarPlaceholder: {
       borderRadius: '25%',
       background: theme.palette.primary.light
     },
     loading: {
       width: '200px',
-      height: theme.typography.fontSize,
-      margin: '4px 0',
+      height: '16px',
       background: theme.palette.primary.light,
       borderRadius: theme.spacing(0.5)
     },
     primaryTextPlaceholder: {
-      width: '25%'
+      width: '5%',
+      minWidth: '120px',
+      margin: '4px 0'
     },
     secondaryTextPlaceholder: {
-      width: '50%'
+      width: '40%',
+      minWidth: '180px',
+      margin: '8px 0 4px'
     }
   });
 
@@ -43,6 +49,7 @@ type MessagePlaceholdersProps = {
 
 function MessagePlaceholders({
   classes,
+  theme,
   placeholderCount
 }: MessagePlaceholdersProps) {
   const primaryTextPlaceholderClasses = clsx(
@@ -55,8 +62,8 @@ function MessagePlaceholders({
   );
 
   return (
-    <Fade in={true} timeout={1000}>
-      <List dense={true}>
+    <Fade in={true} timeout={theme.transitions.duration.enteringScreen}>
+      <List dense={true} className={classes.messagesPlaceholder}>
         {[...Array(placeholderCount)].map((_, index) => (
           <ListItem
             className={classes.message}

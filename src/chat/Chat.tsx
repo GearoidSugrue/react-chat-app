@@ -198,14 +198,16 @@ function Chat({
             <Divider />
 
             <Typography>
-              {participantsIds.map(id => (
-                <TypingUserFragment
-                  key={id}
-                  userId={id}
-                  chatroomId={selectedChatroom.chatroomId}
-                  loggedInUser={userId}
-                />
-              ))}
+              {participantsIds
+                .filter(id => id !== userId)
+                .map(id => (
+                  <TypingUserFragment
+                    key={id}
+                    userId={id}
+                    chatroomId={selectedChatroom.chatroomId}
+                    loggedInUser={userId}
+                  />
+                ))}
             </Typography>
 
             <UserInput
