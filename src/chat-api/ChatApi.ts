@@ -24,7 +24,8 @@ export enum SendChatEvent {
   MESSAGE_TO_CHATROOM = 'new message to chatroom',
   MESSAGE_TO_USER = 'new message to user',
   TYPING_IN_CHATROOM = 'typing in chatroom',
-  TYPING_DIRECT = 'typing direct'
+  TYPING_DIRECT = 'typing direct',
+  JOIN_CHATROOMS = 'join chatrooms'
 }
 
 /**
@@ -174,6 +175,10 @@ export class ChatApi {
         }
       };
       await axios(joinRoomConfig);
+
+      // ! Currently the server's express layer doesn't have direct access to the socket connections so it can't add the user to the chatroom
+      // so a temporary solution, until after a proper DB is in place and the server architecture updated, is to have the ui send a join event through socket.
+      this.socket.emit(SendChatEvent.JOIN_CHATROOMS, { chatroomIds });
       return chatroomIds;
     } catch (error) {
       console.error('Error occurred joining rooms', chatroomIds, error);
@@ -297,7 +302,7 @@ export class ChatApi {
 
     return this.newChatroomMember$.pipe(
       filter(correctChatroom),
-      map(newMember => newMember.userId)
+      map(newMember => newMember.newUserId)
     );
   }
 }

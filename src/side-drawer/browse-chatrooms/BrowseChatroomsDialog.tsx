@@ -106,8 +106,9 @@ function BrowseChatroomDialog({
     const convertToChatroom = (searchableRoom: SearchableOption) =>
       rooms.find(room => room.chatroomId === searchableRoom.value);
 
-    const updatedRooms = updatedSearchableRooms.map(convertToChatroom);
-    setSelectedRooms(updatedRooms);
+    const updatedRooms =
+      updatedSearchableRooms && updatedSearchableRooms.map(convertToChatroom);
+    setSelectedRooms(updatedRooms || []);
   }
 
   async function handleJoinChatrooms() {

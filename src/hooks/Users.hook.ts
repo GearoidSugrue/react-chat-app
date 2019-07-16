@@ -10,8 +10,7 @@ export const fetchUsersStatus = fetchStatus;
  * A hook that fetches the list of users and then updates the list whenever a new user is created or online status changes
  */
 export function useFetchUsers(
-  usersFilterPredicate?: (user: UserType) => boolean, // TODO: remove filter predicate if it's not used
-  userIds?: string[]
+  usersFilterPredicate?: (user: UserType) => boolean // TODO: remove filter predicate if it's not used
 ) {
   const [users, setUsers] = useState<UserType[]>([]);
 
@@ -58,15 +57,17 @@ export function useFetchUsers(
   );
 
   useEffect(
-    function subscribeToUserList() {
-      console.log('chatApi in subscribe to new users effect');
+    function subscribeToNewUsers() {
+      console.log('subscribeToUserList effect');
 
-      // TODO implement this correctly! Listen for new users!
-      const usersSub = chatApi.usersUpdates$.subscribe(setUsers);
+      function addNewUser(newUser: UserType) {
+        setUsers([...users, newUser]);
+      }
+      const usersSub = chatApi.usersUpdates$.subscribe(addNewUser);
 
       return () => usersSub.unsubscribe();
     },
-    [chatApi, setUsers]
+    [chatApi, users, setUsers]
   );
 
   return {

@@ -18,7 +18,9 @@ export function useFetchRooms(
   const chatApi = useChatApi();
 
   function addRooms(newRooms: ChatroomType[]) {
-    setRooms([...rooms, ...newRooms]);
+    if (newRooms) {
+      setRooms([...rooms, ...newRooms]);
+    }
   }
 
   useEffect(
