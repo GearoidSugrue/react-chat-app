@@ -1,5 +1,3 @@
-import { format } from 'date-fns';
-import differenceInMinutes from 'date-fns/difference_in_minutes';
 import React, { useEffect, useState } from 'react';
 
 import {
@@ -8,39 +6,28 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
+  ListSubheader,
   Typography,
   withStyles
 } from '@material-ui/core';
 
 import { UserAvatar } from 'src/shared';
 import { ChatTheme, Message } from 'src/types';
-
-const MAX_TIME_DIFFERENCE_MINS = 5;
-
-function shouldMessageBeGrouped(
-  curIndex: number,
-  prevIndex: number,
-  messages: Message[]
-): boolean {
-  if (prevIndex < 0) {
-    return false;
-  }
-
-  const { userId: curUserId, timestamp: curTimestamp } = messages[curIndex];
-  const { userId: prevUserId, timestamp: prevTimestamp } = messages[prevIndex];
-
-  if (curUserId !== prevUserId) {
-    return false;
-  }
-
-  const timeDifference = differenceInMinutes(curTimestamp, prevTimestamp);
-  return timeDifference < MAX_TIME_DIFFERENCE_MINS;
-}
+import {
+  getDateHeaderText,
+  getTimeText,
+  shouldDisplayDateHeader,
+  shouldMessageBeGrouped
+} from './MessageListDateHelpers';
 
 const styles = (theme: ChatTheme) =>
   createStyles({
     messagesList: {
+      paddingTop: 0,
       overflow: 'auto'
+    },
+    messageDateHeader: {
+      backgroundColor: theme.palette.background.default
     },
     messageUsername: {
       fontWeight: 500
@@ -56,9 +43,6 @@ const styles = (theme: ChatTheme) =>
       whiteSpace: 'pre-line'
     }
   });
-
-// TODO add date somewhere: MMMM Do, YYYY   e.g. June 10th, 2019
-const TIME_FORMAT = 'HH:mm A'; // 14:18 PM
 
 type MessageListProps = {
   classes: any;
@@ -93,34 +77,44 @@ function MessageList({ theme, classes, messages = [] }: MessageListProps) {
       {messages.map(
         ({ username, message, timestamp }, index, messagesArray) => {
           return (
-            <ListItem key={timestamp} alignItems="flex-start">
-              {shouldMessageBeGrouped(index, index - 1, messagesArray) ? (
-                <ListItemText inset>
-                  <Typography className={classes.message}>{message}</Typography>
-                </ListItemText>
-              ) : (
-                <>
-                  <ListItemAvatar>
-                    <UserAvatar username={username} fadeIn={false} />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={
-                      <Typography className={classes.messageUsername}>
-                        {username}
-                        <span className={classes.messageTime}>
-                          {format(timestamp, TIME_FORMAT)}
-                        </span>
-                      </Typography>
-                    }
-                    secondary={
-                      <Typography className={classes.message}>
-                        {message}
-                      </Typography>
-                    }
-                  />
-                </>
+            <React.Fragment key={timestamp}>
+              {shouldDisplayDateHeader(index, index - 1, messagesArray) && (
+                <ListSubheader className={classes.messageDateHeader}>
+                  {getDateHeaderText(timestamp)}
+                </ListSubheader>
               )}
-            </ListItem>
+
+              <ListItem alignItems="flex-start">
+                {shouldMessageBeGrouped(index, index - 1, messagesArray) ? (
+                  <ListItemText inset>
+                    <Typography className={classes.message}>
+                      {message}
+                    </Typography>
+                  </ListItemText>
+                ) : (
+                  <>
+                    <ListItemAvatar>
+                      <UserAvatar username={username} fadeIn={false} />
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={
+                        <Typography className={classes.messageUsername}>
+                          {username}
+                          <span className={classes.messageTime}>
+                            {getTimeText(timestamp)}
+                          </span>
+                        </Typography>
+                      }
+                      secondary={
+                        <Typography className={classes.message}>
+                          {message}
+                        </Typography>
+                      }
+                    />
+                  </>
+                )}
+              </ListItem>
+            </React.Fragment>
           );
         }
       )}
