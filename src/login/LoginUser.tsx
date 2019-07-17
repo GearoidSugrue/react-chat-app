@@ -103,7 +103,7 @@ function LoginUser({ classes, theme, onLogin }: LoginUserProps) {
             {users
               .filter(user => !user.online)
               .map(user => (
-                <MenuItem key={user.username} value={user as any}>
+                <MenuItem key={user.userId} value={user as any}>
                   {user.username}
                 </MenuItem>
               ))}

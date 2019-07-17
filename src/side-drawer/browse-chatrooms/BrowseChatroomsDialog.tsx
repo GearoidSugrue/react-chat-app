@@ -160,7 +160,12 @@ function BrowseChatroomDialog({
   );
 
   return (
-    <Dialog fullWidth fullScreen={fullScreen} open={open} onClose={onClose}>
+    <Dialog
+      fullWidth
+      fullScreen={fullScreen}
+      open={open}
+      onClose={() => onClose()}
+    >
       <DialogTitle id="browse-dialog-title">Join Chatrooms</DialogTitle>
       <DialogContent>
         <DialogContentText>
