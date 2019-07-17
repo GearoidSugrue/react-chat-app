@@ -60,11 +60,7 @@ function MessageList({ theme, classes, messages = [] }: MessageListProps) {
       console.log('scrollToBottom effect');
 
       if (messagesEndRef && messagesEndRef.scrollIntoView) {
-        if (messages.length < 100) {
-          messagesEndRef.scrollIntoView({ behavior: 'smooth' }); // scrolls top-to-bottom if the list isn't too big
-        } else {
-          messagesEndRef.scrollIntoView({ behavior: 'auto' }); // jumps straight to the bottom of the list if there are a lot of messages
-        }
+        messagesEndRef.scrollIntoView({ behavior: 'smooth' }); // scrolls top-to-bottom if the list on new messages
       }
     },
     [messages, messagesEndRef]
