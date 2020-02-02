@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import React, { useState } from 'react';
 
 import { Avatar, Fade, withStyles } from '@material-ui/core';
@@ -6,9 +7,17 @@ import { ChatTheme } from 'src/types';
 
 const styles = (theme: ChatTheme) => ({
   avatar: {
-    borderRadius: '25%',
     background: theme.palette.primary.light,
-    color: theme.palette.primary.contrastText
+    color: theme.palette.primary.contrastText,
+    boxShadow: `0px 0px 0px 1px grey`
+  },
+  small: {
+    width: `${theme.avatar.small}px`,
+    height: `${theme.avatar.small}px`
+  },
+  large: {
+    width: `${theme.avatar.large}px`,
+    height: `${theme.avatar.large}px`
   }
 });
 
@@ -16,6 +25,8 @@ type UserAvatarProps = Readonly<{
   classes: any;
   theme: ChatTheme;
   username: string;
+  size?: 'small' | 'large';
+  variant?: 'square' | 'rounded' | 'circle';
   fadeIn?: boolean; // Decides if the component should be faded in. The user img and fallback letter inside the component always fade in.
 }>;
 
@@ -29,14 +40,17 @@ function UserAvatar({
   classes,
   theme,
   username,
+  size = 'large',
+  variant = 'rounded',
   fadeIn = true
 }: UserAvatarProps) {
   const [avatarLoaded, setAvatarLoaded] = useState(false);
   const [imgLoadError, setImgLoadError] = useState(false);
 
   const fadeDuration = fadeIn ? theme.transitions.duration.enteringScreen : 0;
+
   const avatarUrl = username
-    ? `https://api.adorable.io/avatars/36/${username}.png`
+    ? `https://api.adorable.io/avatars/${theme.avatar[size]}/${username}.png`
     : '';
   const avatarLetter = username && username.charAt(0).toUpperCase();
 
@@ -56,15 +70,17 @@ function UserAvatar({
         src={avatarUrl}
         onLoad={handleAvatarLoaded}
         onError={handleAvatarLoadError}
+        className={classes[size]}
       />
     </Fade>
   );
+  const avatarClasses = clsx(classes.avatar, classes[size]);
 
   return (
     <>
       {username && (
         <Fade in={true} timeout={fadeDuration}>
-          <Avatar className={classes.avatar}>
+          <Avatar variant={variant} className={avatarClasses}>
             {imgLoadError ? avatarLetterFragment : avatarImageFragment}
           </Avatar>
         </Fade>

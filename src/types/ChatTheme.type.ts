@@ -14,6 +14,10 @@ export interface ChatTheme extends Theme {
     success: string;
     greyText: string;
   };
+  avatar: {
+    small: number;
+    large: number;
+  };
 }
 
 /**
@@ -28,5 +32,9 @@ export interface ChatThemeOptions extends ThemeOptions {
     online: string;
     success: string;
     greyText: string;
+  };
+  avatar: {
+    small: number;
+    large: number;
   };
 }

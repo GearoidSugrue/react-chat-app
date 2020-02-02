@@ -21,7 +21,6 @@ const styles = (theme: ChatTheme) =>
       minHeight: '60px'
     },
     avatarPlaceholder: {
-      borderRadius: '25%',
       background: theme.palette.primary.light
     },
     loading: {
@@ -64,9 +63,11 @@ function MessagePlaceholders({
     classes.secondaryTextPlaceholder
   );
 
+  const fadeDuration = theme.transitions.duration.enteringScreen * 3;
+
   // ! FIX: Error ""...validateDOMNesting(...): <div> cannot appear as a descendant of <p>. ..." Most likely caused by the way ListItemText primary and secondary are used
   return (
-    <Fade in={true} timeout={theme.transitions.duration.enteringScreen}>
+    <Fade in={true} timeout={fadeDuration} style={{ transitionDelay: '700ms' }}>
       <List dense={true} className={classes.messagesPlaceholder}>
         {[...Array(placeholderCount)].map((_, index) => (
           <ListItem
@@ -75,7 +76,7 @@ function MessagePlaceholders({
             alignItems="flex-start"
           >
             <ListItemAvatar>
-              <Avatar className={classes.avatarPlaceholder} />
+              <Avatar className={classes.avatarPlaceholder} variant="circle" />
             </ListItemAvatar>
             <ListItemText
               primary={<Typography className={primaryTextPlaceholderClasses} />}

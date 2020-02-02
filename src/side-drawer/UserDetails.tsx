@@ -65,7 +65,7 @@ function UserDetails({ classes, username, onLogout }: UserDetailsProps) {
         className={classes.userBarButton}
         onClick={handleOpen}
       >
-        <UserAvatar username={username} />
+        <UserAvatar username={username} variant="circle" />
         <Typography noWrap className={classes.userBarElement}>
           {username}
         </Typography>
