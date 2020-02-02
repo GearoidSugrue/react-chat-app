@@ -1,7 +1,5 @@
 {
   "editor.formatOnSave": true,
-  "prettier.tslintIntegration": true,
-  "prettier.eslintIntegration": false,
   "editor.codeActionsOnSave": {
     "source.fixAll.tslint": true
   },

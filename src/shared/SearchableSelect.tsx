@@ -6,9 +6,9 @@ import clsx from 'clsx';
 import React from 'react';
 
 import Select, { createFilter } from 'react-select';
-import { SelectComponents } from 'react-select/lib/components';
-import { Config as FilterConfig } from 'react-select/lib/filters';
-import { Styles as SelectStyles } from 'react-select/lib/styles';
+import { SelectComponents } from 'react-select/src/components';
+import { Config as FilterConfig } from 'react-select/src/filters';
+import { Styles as SelectStyles } from 'react-select/src/styles';
 
 import {
   Chip,
