@@ -31,7 +31,7 @@ export function shouldDisplayDateHeader(
   curIndex: number,
   prevIndex: number,
   messages: Message[]
-) {
+): boolean {
   if (prevIndex < 0) {
     return true;
   }
@@ -42,7 +42,7 @@ export function shouldDisplayDateHeader(
   return !isSameDay(prevTimestamp, curTimestamp);
 }
 
-export function getDateHeaderText(timestamp) {
+export function getDateHeaderText(timestamp: string): string {
   if (isToday(timestamp)) {
     return 'Today';
   } else if (isYesterday(timestamp)) {
@@ -52,6 +52,6 @@ export function getDateHeaderText(timestamp) {
   }
 }
 
-export function getTimeText(timestamp: string) {
+export function getTimeText(timestamp: string): string {
   return format(timestamp, TIME_FORMAT);
 }

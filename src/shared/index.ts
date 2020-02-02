@@ -1,4 +1,5 @@
 export { default as ErrorMessage } from './ErrorMessage';
+export { default as OnlineStatusBadge } from './OnlineStatusBadge';
 export { default as PendingButton } from './PendingButton';
 export {
   default as SearchableSelect,

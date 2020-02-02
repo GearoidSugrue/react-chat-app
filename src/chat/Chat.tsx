@@ -167,12 +167,15 @@ function Chat({
 
         {recipientId && (
           <>
-            <FlexView column grow basis="75%">
+            <FlexView column grow basis="85%">
               {messagesStatus === fetchMessagesStatus.FETCHING && (
                 <MessagePlaceholders placeholderCount={4} />
               )}
               {messagesStatus === fetchMessagesStatus.SUCCESS && (
-                <MessageList messages={messages} />
+                <MessageList
+                  messages={messages}
+                  chatroomId={selectedChatroom.chatroomId}
+                />
               )}
               {messagesStatus === fetchMessagesStatus.ERROR && (
                 <FlexView

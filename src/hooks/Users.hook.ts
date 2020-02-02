@@ -9,9 +9,7 @@ export const fetchUsersStatus = fetchStatus;
 /**
  * A hook that fetches the list of users and then updates the list whenever a new user is created or online status changes
  */
-export function useFetchUsers(
-  usersFilterPredicate?: (user: UserType) => boolean // TODO: remove filter predicate if it's not used
-) {
+export function useFetchUsers() {
   const [users, setUsers] = useState<UserType[]>([]);
 
   // ? if !!userIds, load just them instead of all users
@@ -22,11 +20,13 @@ export function useFetchUsers(
 
   useEffect(
     function setLoadedUsers() {
-      const filteredUsers = usersFilterPredicate
-        ? fetchedUsers.filter(usersFilterPredicate)
-        : fetchedUsers;
+      // todo: only load provided user ids instead of this...
+      const onlineStatusComparator = (
+        { online: onlineA }: UserType,
+        { online: onlineB }: UserType
+      ) => (onlineA === onlineB ? 0 : onlineA ? -1 : 1);
 
-      setUsers(filteredUsers);
+      setUsers(fetchedUsers.sort(onlineStatusComparator));
     },
     [setUsers, fetchedUsers]
   );

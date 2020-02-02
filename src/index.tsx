@@ -46,6 +46,10 @@ const themeOptions: ChatThemeOptions = {
     online: '#00b16a', // Jade
     success: '#00b16a', // Jade
     greyText: '#bdc3c7' // Light Grey
+  },
+  avatar: {
+    small: 24,
+    large: 40
   }
 };
 const theme = createMuiTheme(themeOptions);

@@ -27,14 +27,19 @@ const styles = (theme: ChatTheme) =>
       display: 'flex',
       justifyContent: 'space-between',
       fontWeight: 500,
-      padding: theme.spacing(1, 2)
+      padding: theme.spacing(1, 2),
+      textTransform: 'uppercase',
+      letterSpacing: '0.01px'
     },
     directMessageHeader: {
       fontWeight: 500,
-      padding: theme.spacing(1, 2)
+      padding: theme.spacing(1, 2),
+      textTransform: 'uppercase',
+      letterSpacing: '0.01px'
     },
     drawer: {
-      width: theme.sideDrawer.width
+      width: theme.sideDrawer.width,
+      boxShadow: '0 65px 4px -1px black'
     }
   });
 
@@ -142,6 +147,7 @@ function ChatSideDrawer({
           This would give the drawer a chance to start loading data and rendering and then start sliding rather than doing it all at once.
         */}
         <Drawer
+          elevation={12}
           classes={{
             paper: classes.drawer
           }}
@@ -160,6 +166,7 @@ function ChatSideDrawer({
 
       <Hidden xsDown implementation="js">
         <Drawer
+          elevation={12}
           classes={{
             paper: classes.drawer
           }}

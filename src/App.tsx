@@ -3,17 +3,12 @@ import { SnackbarProvider } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import FlexView from 'react-flexview';
 
-import {
-  AppBar,
-  IconButton,
-  Toolbar,
-  Typography,
-  withStyles
-} from '@material-ui/core';
+import { AppBar, IconButton, Toolbar, Typography } from '@material-ui/core';
 import { amber } from '@material-ui/core/colors';
 import { Menu } from '@material-ui/icons';
+import { withStyles } from '@material-ui/styles';
 
-import { Chat } from 'src/chat';
+import { Chat, ChatroomMembersToolbar } from 'src/chat';
 import { useChatApi } from 'src/chat-api';
 import { useUserLogin } from 'src/hooks';
 import { LoginPage } from 'src/login';
@@ -36,7 +31,6 @@ const styles = (theme: ChatTheme) => ({
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen
     }),
-
     // small screens won't show a side drawer so no need for a left margin on the toolbar
     marginLeft: 0,
 
@@ -45,6 +39,9 @@ const styles = (theme: ChatTheme) => ({
       width: `calc(100% - ${theme.sideDrawer.width})`,
       marginLeft: theme.sideDrawer.width
     }
+  },
+  mainToolbar: {
+    boxShadow: '0 0 4px -1px black'
   },
   menuButton: {
     marginRight: 20,
@@ -106,6 +103,7 @@ const styles = (theme: ChatTheme) => ({
 
 type AppProps = {
   classes: any;
+  theme: ChatTheme;
 };
 
 /**
@@ -114,13 +112,14 @@ type AppProps = {
  * Displays the sideDrawer and chat container for logged in users.
  * @param AppProps
  */
-function App({ classes }: AppProps) {
+function App({ theme, classes }: AppProps) {
   const chatApi = useChatApi();
   const { user, isLoggedIn } = useUserLogin();
   const { username, userId } = user;
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [selectedChatroom, setChatroom] = useState({} as ChatroomType);
   const [selectedUser, setSelectedUser] = useState({} as UserType);
+  const isChatroomSelected = !!selectedChatroom.name;
 
   useEffect(
     function closeMobileDrawerOnSelection() {
@@ -194,7 +193,7 @@ function App({ classes }: AppProps) {
         />
 
         <AppBar position="relative" className={appBarClasses}>
-          <Toolbar>
+          <Toolbar className={classes.mainToolbar}>
             <IconButton
               className={sideDrawerButtonClasses}
               onClick={handleSideDrawerToggle}
@@ -207,6 +206,10 @@ function App({ classes }: AppProps) {
                 : selectedUser.username || 'Group Chat'}
             </Typography>
           </Toolbar>
+          <ChatroomMembersToolbar
+            isChatroomSelected={isChatroomSelected}
+            membersIds={selectedChatroom.memberIds}
+          />
         </AppBar>
 
         <FlexView column grow className={mainContentClasses}>
@@ -225,4 +228,4 @@ function App({ classes }: AppProps) {
   );
 }
 
-export default withStyles(styles)(App);
+export default withStyles(styles as any, { withTheme: true })(App);

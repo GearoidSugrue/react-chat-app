@@ -33,7 +33,7 @@ const styles = (theme: ChatTheme) => ({
     margin: theme.spacing(0, 1, 0, 2)
   },
   unseenMessages: {
-    fontWeight: 600
+    fontWeight: 500
   },
   unseenMessageCounter: {
     color: theme.chatColors.online

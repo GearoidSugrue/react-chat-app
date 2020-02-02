@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   Button,
   createStyles,
-  Slide,
+  // Slide,
   TextField,
   withStyles
 } from '@material-ui/core';
@@ -16,9 +16,25 @@ const styles = (theme: ChatTheme) =>
   createStyles({
     userInput: {
       display: 'flex',
-      padding: theme.spacing(1, 2)
+      padding: theme.spacing(1, 2),
+      animation: `$showInput ${
+        theme.transitions.duration.enteringScreen
+      } ease-in-out`
+
       // TODO set height 16px or 14px...
       // 'textAlign': 'center' // prevents scroll bar from showing on parent container
+    },
+    '@keyframes showInput': {
+      '0%': {
+        transform: 'translateY(100%)',
+        opacity: 0,
+        height: 0
+      },
+      '100%': {
+        transform: 'translateY(0%)',
+        opacity: 1,
+        height: '*'
+      }
     },
     sendButton: {
       margin: theme.spacing(1, 0, 0.5, 1),
@@ -112,41 +128,41 @@ function UserInput({
   }
 
   return (
-    <Slide
-      mountOnEnter
-      unmountOnExit
-      direction="up"
-      in={true}
-      timeout={theme.transitions.duration.enteringScreen}
-    >
-      <div className={classes.userInput}>
-        <TextField
-          fullWidth
-          inputRef={inputRef}
-          margin="dense"
-          id="user-input"
-          variant="outlined"
-          rows="1"
-          rowsMax="4"
-          autoFocus={true}
-          multiline={true}
-          label="Send a message (Shift + Enter)"
-          value={message}
-          onChange={handleInputChange}
-        />
+    // <Slide
+    //   mountOnEnter
+    //   unmountOnExit
+    //   direction="up"
+    //   in={true}
+    //   timeout={theme.transitions.duration.enteringScreen}
+    // >
+    <div className={classes.userInput}>
+      <TextField
+        fullWidth
+        inputRef={inputRef}
+        margin="dense"
+        id="user-input"
+        variant="outlined"
+        rows="2"
+        rowsMax="4"
+        autoFocus={true}
+        multiline={true}
+        label="Send a message (Shift + Enter)"
+        value={message}
+        onChange={handleInputChange}
+      />
 
-        <Button
-          variant="contained"
-          color="secondary"
-          className={classes.sendButton}
-          disabled={!userInputMap[recipientId]}
-          onClick={sendMessage}
-        >
-          Send
-          <Send className={classes.sendIcon} />
-        </Button>
-      </div>
-    </Slide>
+      <Button
+        variant="contained"
+        color="secondary"
+        className={classes.sendButton}
+        disabled={!userInputMap[recipientId]}
+        onClick={sendMessage}
+      >
+        Send
+        <Send className={classes.sendIcon} />
+      </Button>
+    </div>
+    // </Slide>
   );
 }
 
