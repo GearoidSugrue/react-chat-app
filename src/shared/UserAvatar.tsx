@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Avatar, Fade, withStyles } from '@material-ui/core';
 
@@ -25,6 +25,7 @@ type UserAvatarProps = Readonly<{
   classes: any;
   theme: ChatTheme;
   username: string;
+  imageUrl?: string;
   size?: 'small' | 'large';
   variant?: 'square' | 'rounded' | 'circle';
   fadeIn?: boolean; // Decides if the component should be faded in. The user img and fallback letter inside the component always fade in.
@@ -39,23 +40,38 @@ type UserAvatarProps = Readonly<{
 function UserAvatar({
   classes,
   theme,
-  username,
+  username = '',
+  imageUrl,
   size = 'large',
   variant = 'rounded',
   fadeIn = true
 }: UserAvatarProps) {
+  const [avatarUrl, setAvatarUrl] = useState('');
   const [avatarLoaded, setAvatarLoaded] = useState(false);
   const [imgLoadError, setImgLoadError] = useState(false);
 
   const fadeDuration = fadeIn ? theme.transitions.duration.enteringScreen : 0;
 
-  const avatarUrl = username
-    ? `https://api.adorable.io/avatars/${theme.avatar[size]}/${username}.png`
-    : '';
   const avatarLetter = username && username.charAt(0).toUpperCase();
 
-  const handleAvatarLoaded = () => setAvatarLoaded(true);
+  useEffect(
+    function setupAvatarUrl() {
+      if (imageUrl) {
+        setAvatarUrl(imageUrl);
+      } else {
+        const strippedUsername = username.replace(/\s+/g, '');
 
+        if (strippedUsername) {
+          const imageSize = theme.avatar[size];
+          const url = `https://api.adorable.io/avatars/${imageSize}/${strippedUsername}.png`;
+          setAvatarUrl(url);
+        }
+      }
+    },
+    [imageUrl]
+  );
+
+  const handleAvatarLoaded = () => setAvatarLoaded(true);
   const handleAvatarLoadError = () => setImgLoadError(true);
 
   const avatarLetterFragment = (

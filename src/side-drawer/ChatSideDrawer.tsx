@@ -72,7 +72,6 @@ function ChatSideDrawer({
   onMobileDrawerToggle
 }: ChatSideDrawerProps) {
   const { user, isLoggedIn } = useUserLogin();
-  const { username } = user;
   const [createChatroomOpen, setCreateChatroomOpen] = useState(false);
 
   function handleOpenCreateChatroom() {
@@ -122,7 +121,7 @@ function ChatSideDrawer({
 
   const sideDrawerFragment = (
     <div>
-      <UserDetails username={username} onLogout={onLogout} />
+      <UserDetails user={user} onLogout={onLogout} />
       <Divider />
       {chatroomsFragment}
       <Divider />

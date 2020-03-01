@@ -104,11 +104,12 @@ export class ChatApi {
   }
 
   login(user: UserType) {
-    const { userId, username } = user || ({} as UserType);
+    const { userId, username, isGuestUser } = user || ({} as UserType);
 
-    if (userId && username) {
+    this.loggedInUser$.next(user);
+
+    if (isGuestUser) {
       this.socket.emit('login', { userId, username });
-      this.loggedInUser$.next(user);
     }
   }
 

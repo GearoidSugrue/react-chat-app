@@ -80,7 +80,7 @@ function LoginUser({ classes, theme, onLogin }: LoginUserProps) {
   return (
     <>
       <Typography className={classes.loginUserElement} variant="h5">
-        Login
+        Login As Guest
       </Typography>
       {status === fetchUsersStatus.FETCHING && loadingBarFragment}
 

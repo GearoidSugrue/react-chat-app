@@ -12,7 +12,7 @@ import {
 import { MoreVert } from '@material-ui/icons';
 
 import { UserAvatar } from 'src/shared';
-import { ChatTheme } from 'src/types';
+import { ChatTheme, UserType } from 'src/types';
 
 const styles = (theme: ChatTheme) => ({
   toolbar: {
@@ -29,7 +29,7 @@ const styles = (theme: ChatTheme) => ({
 
 type UserDetailsProps = Readonly<{
   classes: any;
-  username: string;
+  user: UserType;
   onLogout: () => void;
 }>;
 
@@ -37,7 +37,8 @@ type UserDetailsProps = Readonly<{
  * Displays the logged in user's username and profile and contains a menu for logging out.
  * @param UserDetailsProps
  */
-function UserDetails({ classes, username, onLogout }: UserDetailsProps) {
+function UserDetails({ classes, user, onLogout }: UserDetailsProps) {
+  const { username, imageUrl } = user;
   const [userMenuElement, setUserMenuElement] = useState();
   const [menuWidth, setMenuWidth] = useState(0);
 
@@ -65,7 +66,7 @@ function UserDetails({ classes, username, onLogout }: UserDetailsProps) {
         className={classes.userBarButton}
         onClick={handleOpen}
       >
-        <UserAvatar username={username} variant="circle" />
+        <UserAvatar username={username} imageUrl={imageUrl} variant="circle" />
         <Typography noWrap className={classes.userBarElement}>
           {username}
         </Typography>

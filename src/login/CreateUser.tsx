@@ -95,7 +95,7 @@ function CreateUser({ classes, onCreateUser }: CreateUserProps) {
         variant="h5"
         color="inherit"
       >
-        Create New User
+        Create New Guest User
       </Typography>
 
       <FormControl variant="outlined">
