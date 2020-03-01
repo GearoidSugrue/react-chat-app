@@ -40,7 +40,7 @@ type UserAvatarProps = Readonly<{
 function UserAvatar({
   classes,
   theme,
-  username = '',
+  username,
   imageUrl,
   size = 'large',
   variant = 'rounded',
@@ -59,7 +59,7 @@ function UserAvatar({
       if (imageUrl) {
         setAvatarUrl(imageUrl);
       } else {
-        const strippedUsername = username.replace(/\s+/g, '');
+        const strippedUsername = username && username.replace(/\s+/g, '');
 
         if (strippedUsername) {
           const imageSize = theme.avatar[size];
@@ -68,7 +68,7 @@ function UserAvatar({
         }
       }
     },
-    [imageUrl]
+    [username, imageUrl]
   );
 
   const handleAvatarLoaded = () => setAvatarLoaded(true);

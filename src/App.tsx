@@ -2,6 +2,8 @@ import clsx from 'clsx';
 import { SnackbarProvider } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import FlexView from 'react-flexview';
+// @ts-ignore - https://github.com/anthonyjgrove/react-google-login/issues/303
+import { useGoogleLogout } from 'react-google-login';
 
 import { AppBar, IconButton, Toolbar, Typography } from '@material-ui/core';
 import { amber } from '@material-ui/core/colors';
@@ -14,6 +16,9 @@ import { useUserLogin } from 'src/hooks';
 import { LoginPage } from 'src/login';
 import { ChatSideDrawer } from 'src/side-drawer';
 import { ChatroomType, ChatTheme, UserType } from 'src/types';
+
+const CLIENT_ID: string =
+  '846000660038-gd5uokfllcrj421o1c9e2dh3qd0edcsb.apps.googleusercontent.com';
 
 const styles = (theme: ChatTheme) => ({
   root: {
@@ -121,6 +126,12 @@ function App({ theme, classes }: AppProps) {
   const [selectedUser, setSelectedUser] = useState({} as UserType);
   const isChatroomSelected = !!selectedChatroom.name;
 
+  const { signOut } = useGoogleLogout({
+    clientId: CLIENT_ID,
+    onLogoutSuccess: () => console.log('User logged out'),
+    onFailure: () => console.warn('Failed to logout...')
+  });
+
   useEffect(
     function closeMobileDrawerOnSelection() {
       setMobileDrawerOpen(false);
@@ -133,6 +144,9 @@ function App({ theme, classes }: AppProps) {
   }
 
   function handleLogout() {
+    if (!user.isGuestUser) {
+      signOut();
+    }
     chatApi.logout();
     setChatroom({} as ChatroomType);
     setSelectedUser({} as UserType);
